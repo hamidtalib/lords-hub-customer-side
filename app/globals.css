@@ -1,0 +1,177 @@
+@import 'tailwindcss';
+
+:root {
+  /* Vibrant light gradient gaming theme */
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.15 0.02 270);
+  --card: oklch(0.99 0 0);
+  --card-foreground: oklch(0.15 0.02 270);
+  --popover: oklch(0.99 0 0);
+  --popover-foreground: oklch(0.15 0.02 270);
+  --primary: oklch(0.55 0.3 260);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.68 0.25 50);
+  --secondary-foreground: oklch(0.1 0 0);
+  --muted: oklch(0.88 0.02 270);
+  --muted-foreground: oklch(0.45 0.05 270);
+  --accent: oklch(0.75 0.28 140);
+  --accent-foreground: oklch(0.1 0 0);
+  --destructive: oklch(0.62 0.22 20);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.88 0.05 270);
+  --input: oklch(0.96 0.02 270);
+  --ring: oklch(0.55 0.3 260);
+  --chart-1: oklch(0.55 0.3 260);
+  --chart-2: oklch(0.68 0.25 50);
+  --chart-3: oklch(0.75 0.28 140);
+  --chart-4: oklch(0.62 0.22 20);
+  --chart-5: oklch(0.5 0.2 280);
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.15 0.02 270);
+}
+
+@theme inline {
+  --font-sans: 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-gradient-to-br from-white via-purple-50/40 to-cyan-50/40 text-foreground min-h-screen;
+  }
+}
+
+@layer components {
+  /* Enhanced button styling with visible text on hover */
+  .btn-game {
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-bold rounded-xl overflow-hidden transition-all duration-500 ease-out shadow-md hover:shadow-xl text-white;
+    background: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #a855f7 100%);
+  }
+
+  .btn-game:hover {
+    @apply transform scale-110 shadow-2xl;
+    box-shadow: 0 0 50px rgba(99, 102, 241, 0.7), 0 0 100px rgba(168, 85, 247, 0.4);
+    filter: brightness(1.1);
+  }
+
+  .btn-game:active {
+    @apply scale-95;
+  }
+
+  .btn-game:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  /* Secondary cyan button */
+  .btn-secondary {
+    @apply relative inline-flex items-center justify-center px-6 py-3 font-bold rounded-xl transition-all duration-500 text-white overflow-hidden shadow-md hover:shadow-xl;
+    background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+  }
+
+  .btn-secondary:hover {
+    @apply transform scale-110 shadow-2xl;
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.7);
+    filter: brightness(1.1);
+  }
+
+  .btn-secondary:active {
+    @apply scale-95;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply text-transparent bg-clip-text font-black;
+    background-image: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #a855f7 100%);
+  }
+
+  .gradient-text-cyan {
+    @apply text-transparent bg-clip-text font-black;
+    background-image: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+  }
+
+  /* Improved card animations with smooth transitions */
+  .card-lift {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  .card-lift:hover {
+    @apply -translate-y-4 shadow-2xl;
+    box-shadow: 0 30px 60px -12px rgba(99, 102, 241, 0.2);
+  }
+
+  /* Floating animation */
+  @keyframes float-smooth {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-20px) scale(1.02); }
+  }
+
+  .animate-float-smooth {
+    animation: float-smooth 5s ease-in-out infinite;
+  }
+
+  /* Pulse glow */
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+    50% { box-shadow: 0 0 60px rgba(99, 102, 241, 0.7); }
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  /* Enhanced gradient backgrounds */
+  .section-gradient {
+    @apply bg-gradient-to-br from-purple-50 via-white to-cyan-50;
+  }
+
+  .hero-gradient {
+    @apply bg-gradient-to-br from-white via-purple-100/30 to-cyan-100/20;
+  }
+
+  /* Smooth transitions for all interactive elements */
+  button, a {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Neon text effect */
+  .neon-text {
+    @apply text-transparent bg-clip-text font-black;
+    background-image: linear-gradient(90deg, #6366f1, #7c3aed, #a855f7, #ec4899);
+    animation: neon-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes neon-glow {
+    0%, 100% { text-shadow: 0 0 30px rgba(99, 102, 241, 0.3); }
+    50% { text-shadow: 0 0 60px rgba(168, 85, 247, 0.6); }
+  }
+}
