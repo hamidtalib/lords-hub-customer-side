@@ -12,6 +12,7 @@ node_modules
 
 # production
 /build
+# Note: build directory is for Firebase Hosting static files, not Next.js
 
 # misc
 .DS_Store

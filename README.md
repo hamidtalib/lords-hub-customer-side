@@ -55,9 +55,23 @@ npm run dev
 ### Available Scripts
 
 - `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm start` - Start production server
+- `npm run build` - Build for production (creates `out` directory for static export)
+- `npm start` - Start production server (Note: not used with static export)
 - `npm run lint` - Run ESLint
+
+### Deployment to Firebase Hosting
+
+1. Build the Next.js app:
+```bash
+npm run build
+```
+
+2. Deploy to Firebase Hosting:
+```bash
+firebase deploy --only hosting
+```
+
+The app will be built as static files in the `out` directory, which Firebase Hosting will serve.
 
 ## Deployment
 
