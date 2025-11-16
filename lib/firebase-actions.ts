@@ -13,6 +13,7 @@ import {
   deleteDoc,
   orderBy,
   limit,
+  onSnapshot,
 } from 'firebase/firestore'
 import {
   ref,
@@ -137,10 +138,16 @@ export function subscribeToMessages(chatId: string, callback: (messages: any[]) 
       orderBy('timestamp', 'asc')
     )
     
-    const unsubscribe = onValue(dbRef(realtimeDB, `chats/${chatId}`), (snapshot) => {
-      if (snapshot.exists()) {
-        callback(Object.values(snapshot.val()))
-      }
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const messages = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        timestamp: doc.data().timestamp?.toDate?.() || doc.data().timestamp,
+      }))
+      callback(messages)
+    }, (error) => {
+      console.error('[v0] Error in message subscription:', error)
+      callback([])
     })
 
     return unsubscribe
