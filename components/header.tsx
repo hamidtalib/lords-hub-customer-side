@@ -1,31 +1,34 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Menu, X, MessageCircle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Menu, X, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import logo from "@/public/images/lords-hub-logo.png";
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { label: 'Accounts', href: '/accounts' },
-    { label: 'Gems', href: '/gems' },
-    { label: 'Diamonds', href: '/diamonds' },
-    { label: 'Bot Services', href: '/bots' },
-    { label: 'About', href: '/about' },
-    { label: 'FAQ', href: '/faq' },
-  ]
+    { label: "Accounts", href: "/accounts" },
+    { label: "Gems", href: "/gems" },
+    { label: "Diamonds", href: "/diamonds" },
+    { label: "Bot Services", href: "/bots" },
+    { label: "About", href: "/about" },
+    { label: "FAQ", href: "/faq" },
+  ];
 
   return (
-    <header className="sticky top-0 z-50 border-b-2 border-purple-200/50 bg-gradient-to-r from-white via-blue-50/30 to-white backdrop-blur-lg shadow-md">
+    <header className="sticky top-0 z-50 border-b-2 border-amber-500/30 bg-gradient-to-r from-slate-800/95 via-slate-800/95 to-slate-800/95 backdrop-blur-xl shadow-2xl">
       <nav className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group hover:opacity-80 transition-all duration-300">
-            <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-gradient-to-br from-purple-600 to-indigo-600 p-1 shadow-lg hover:shadow-2xl transition-all duration-300">
+          <Link
+            href="/"
+            className="flex items-center gap-3 group hover:opacity-80 transition-all duration-300"
+          >
+            <div className="relative h-16 w-16 rounded-lg overflow-hidden p-1 shadow-lg hover:shadow-2xl transition-all duration-300">
               <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/_%28LORDS%20HUB%20Favicon%20%28512%20x%20512%20px%29-qHfSQagDV1ofwET0q3ugp9CmOTCjJp.png"
+                src={logo}
                 alt="Lords Hub"
                 fill
                 className="object-contain"
@@ -39,7 +42,10 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
-                <Button variant="ghost" className="text-slate-700 font-bold hover:text-purple-600 hover:bg-purple-100/50 transition-all duration-300 rounded-lg">
+                <Button
+                  variant="ghost"
+                  className="text-slate-200 font-bold hover:text-amber-400 hover:bg-amber-500/20 transition-all duration-300 rounded-lg"
+                >
                   {link.label}
                 </Button>
               </Link>
@@ -48,7 +54,10 @@ export default function Header() {
 
           <div className="flex items-center gap-2">
             <Link href="/chat">
-              <Button size="sm" className="hidden sm:flex gap-2 btn-game font-bold">
+              <Button
+                size="sm"
+                className="hidden sm:flex gap-2 btn-game font-bold"
+              >
                 <MessageCircle className="h-4 w-4" />
                 Chat
               </Button>
@@ -56,9 +65,13 @@ export default function Header() {
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-purple-100 transition-all duration-300"
+              className="md:hidden p-2 rounded-lg hover:bg-amber-100 transition-all duration-300"
             >
-              {isOpen ? <X className="h-6 w-6 text-purple-600 font-bold" /> : <Menu className="h-6 w-6 text-slate-700" />}
+              {isOpen ? (
+                <X className="h-6 w-6 text-amber-400 font-bold" />
+              ) : (
+                <Menu className="h-6 w-6 text-slate-200" />
+              )}
             </button>
           </div>
         </div>
@@ -67,9 +80,9 @@ export default function Header() {
           <div className="mt-4 space-y-2 md:hidden animate-in fade-in duration-300">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href}>
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start text-slate-700 font-bold hover:text-purple-600 hover:bg-purple-100/50 transition-all duration-300"
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-slate-200 font-bold hover:text-amber-400 hover:bg-amber-500/20 transition-all duration-300"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}
@@ -86,5 +99,5 @@ export default function Header() {
         )}
       </nav>
     </header>
-  )
+  );
 }
