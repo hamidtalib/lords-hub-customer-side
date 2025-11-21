@@ -7,7 +7,7 @@ export interface MarketplaceProduct {
   title: string;
   category: ProductCategory;
   description?: string;
-  price?: number;
+  price: number | 0;
   originalPrice?: number;
   might?: string;
   troops?: string;

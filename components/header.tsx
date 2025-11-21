@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Menu, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/public/images/lords-hub-logo.png";
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -15,18 +16,19 @@ export default function Header() {
     { label: "Diamonds", href: "/diamonds" },
     { label: "Bot Services", href: "/bots" },
     { label: "About", href: "/about" },
+    { label: "Blog", href: "/about" },
     { label: "FAQ", href: "/faq" },
   ];
 
   return (
     <header className="sticky top-0 z-50 border-b-2 border-amber-500/30 bg-gradient-to-r from-slate-800/95 via-slate-800/95 to-slate-800/95 backdrop-blur-xl shadow-2xl">
-      <nav className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+      <nav className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <Link
             href="/"
             className="flex items-center gap-3 group hover:opacity-80 transition-all duration-300"
           >
-            <div className="relative h-16 w-16 rounded-lg overflow-hidden p-1 shadow-lg hover:shadow-2xl transition-all duration-300">
+            <div className="relative h-20 w-20">
               <Image
                 src={logo}
                 alt="Lords Hub"
@@ -34,7 +36,7 @@ export default function Header() {
                 className="object-contain"
               />
             </div>
-            <span className="text-2xl font-black gradient-text hidden sm:inline">
+            <span className="text-xl font-black gradient-text hidden sm:inline">
               LORDS HUB
             </span>
           </Link>

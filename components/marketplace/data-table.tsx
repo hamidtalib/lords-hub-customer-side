@@ -82,7 +82,9 @@ export function MarketplaceDataTable<T extends MarketplaceProduct>({
               {columns.map((column) => (
                 <th
                   key={column.id}
-                  className={`px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-slate-300 ${column.className ?? ""}`}
+                  className={`px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-300 ${
+                    column.className ?? ""
+                  } text-center`}
                 >
                   {column.label}
                 </th>
@@ -98,7 +100,9 @@ export function MarketplaceDataTable<T extends MarketplaceProduct>({
                 {columns.map((column) => (
                   <td
                     key={`${item.id}-${column.id}`}
-                    className={`whitespace-nowrap px-6 py-4 text-sm font-semibold text-slate-200 ${column.className ?? ""}`}
+                    className={`whitespace-nowrap px-6 py-4 text-center text-sm font-semibold text-slate-200 ${
+                      column.className ?? ""
+                    }`}
                   >
                     {column.render
                       ? column.render(item)
@@ -115,4 +119,3 @@ export function MarketplaceDataTable<T extends MarketplaceProduct>({
     </div>
   );
 }
-
