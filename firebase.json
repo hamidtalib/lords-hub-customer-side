@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "public": "out",
+    "site": "lordshubgaming",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
