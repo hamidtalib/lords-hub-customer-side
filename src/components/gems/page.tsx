@@ -3,14 +3,19 @@
 import { useState, useMemo } from "react";
 import { ShoppingCart, Calculator } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
 import Link from "next/link";
 import {
   MarketplaceDataTable,
   TableColumn,
 } from "@/src/components/marketplace/data-table";
-import { MarketplaceProduct } from "@/lib/types/products";
+import { MarketplaceProduct } from "@/store/lib/types/products";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 
 export default function GemsPage() {
@@ -135,7 +140,7 @@ export default function GemsPage() {
   return (
     <>
       <ScrollAnimation />
-      
+
       <section
         className="px-4 py-24 text-center bg-cover bg-center border-b-4 border-amber-500/30 fade-up"
         style={{

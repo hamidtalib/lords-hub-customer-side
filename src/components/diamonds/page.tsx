@@ -7,7 +7,7 @@ import {
   MarketplaceDataTable,
   TableColumn,
 } from "@/src/components/marketplace/data-table";
-import { MarketplaceProduct } from "@/lib/types/products";
+import { MarketplaceProduct } from "@/store/lib/types/products";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 
 export default function DiamondsPage() {
@@ -93,9 +93,7 @@ export default function DiamondsPage() {
         className: "text-right",
         render: (item) => (
           <div className="text-right">
-            <p className="text-2xl font-black gradient-text">
-              ${item.price}
-            </p>
+            <p className="text-2xl font-black gradient-text">${item.price}</p>
             {item.originalPrice && (
               <p className="text-xs text-slate-400 line-through">
                 ${item.originalPrice}
@@ -123,7 +121,7 @@ export default function DiamondsPage() {
   return (
     <>
       <ScrollAnimation />
-      
+
       <section
         className="border-b-4 border-amber-500/30 px-4 py-24 sm:px-6 lg:px-8 bg-cover bg-center fade-up"
         style={{

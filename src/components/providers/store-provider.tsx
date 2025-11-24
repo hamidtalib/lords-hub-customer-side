@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import { Provider } from "react-redux";
-import { store } from "@/lib/store/store";
+import { store } from "@/store/store";
 
 interface StoreProviderProps {
   children: ReactNode;
@@ -11,4 +11,3 @@ interface StoreProviderProps {
 export function StoreProvider({ children }: StoreProviderProps) {
   return <Provider store={store}>{children}</Provider>;
 }
-

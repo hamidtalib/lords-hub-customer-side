@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChatSession, ChatMessage } from "@/lib/types/products";
+import { ChatSession, ChatMessage } from "@/store/lib/types/products";
 
 interface ChatState {
   chats: ChatSession[];

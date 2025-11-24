@@ -7,7 +7,7 @@ import {
   MarketplaceDataTable,
   TableColumn,
 } from "@/src/components/marketplace/data-table";
-import { MarketplaceProduct } from "@/lib/types/products";
+import { MarketplaceProduct } from "@/store/lib/types/products";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Users } from "lucide-react";
@@ -29,7 +29,12 @@ export default function ReinBotsPage() {
       title: "Pro Rein Bot",
       description: "Advanced reinforcement with smart troop allocation",
       tier: "Premium",
-      highlights: ["Smart allocation", "Multi-target support", "Priority system", "24/7 monitoring"],
+      highlights: [
+        "Smart allocation",
+        "Multi-target support",
+        "Priority system",
+        "24/7 monitoring",
+      ],
       price: 15,
       stock: 7,
       category: "bots",
@@ -39,7 +44,12 @@ export default function ReinBotsPage() {
       title: "Elite Rein Bot",
       description: "Professional reinforcement bot with AI optimization",
       tier: "Elite",
-      highlights: ["AI optimization", "Guild coordination", "Custom rules", "Instant alerts"],
+      highlights: [
+        "AI optimization",
+        "Guild coordination",
+        "Custom rules",
+        "Instant alerts",
+      ],
       price: 20,
       stock: 4,
       category: "bots",
@@ -107,7 +117,7 @@ export default function ReinBotsPage() {
   return (
     <>
       <ScrollAnimation />
-      
+
       <section
         className="px-4 py-24 sm:px-6 lg:px-8 bg-cover bg-center border-b-4 border-green-500/30 fade-up"
         style={{
@@ -118,12 +128,11 @@ export default function ReinBotsPage() {
         <div className="mx-auto max-w-6xl text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Users className="h-12 w-12 text-green-400" />
-            <h1 className="text-5xl font-black gradient-text">
-              Rein Bots
-            </h1>
+            <h1 className="text-5xl font-black gradient-text">Rein Bots</h1>
           </div>
           <p className="text-xl text-slate-200 font-semibold max-w-2xl mx-auto">
-            Automated reinforcement management to support your alliance members 24/7.
+            Automated reinforcement management to support your alliance members
+            24/7.
           </p>
         </div>
       </section>
@@ -132,7 +141,8 @@ export default function ReinBotsPage() {
         <div className="mx-auto max-w-6xl">
           <Alert className="border-2 border-green-500/50 bg-gradient-to-r from-green-500/20 to-green-400/10 shadow-lg rounded-xl">
             <AlertDescription className="text-slate-200 text-base font-bold">
-              🛡️ Rein Bots: Never miss a reinforcement request with automated troop deployment and smart allocation!
+              🛡️ Rein Bots: Never miss a reinforcement request with automated
+              troop deployment and smart allocation!
             </AlertDescription>
           </Alert>
         </div>

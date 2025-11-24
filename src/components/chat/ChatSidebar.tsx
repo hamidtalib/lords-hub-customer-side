@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { ChatSession } from "@/lib/types/products";
+import { ChatSession } from "@/store/lib/types/products";
 
 interface ChatSidebarProps {
   chats: ChatSession[];
@@ -32,9 +32,7 @@ export function ChatSidebar({
       ) : chats.length === 0 ? (
         <div className="text-center py-8 text-slate-300 font-semibold">
           <p>No conversations yet</p>
-          <p className="text-sm mt-2">
-            Start a chat from a product page
-          </p>
+          <p className="text-sm mt-2">Start a chat from a product page</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -67,4 +65,3 @@ export function ChatSidebar({
     </div>
   );
 }
-

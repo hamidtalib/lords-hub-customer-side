@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useMemo } from "react";
-import { ChatSession, ChatMessage } from "@/lib/types/products";
+import { ChatSession, ChatMessage } from "@/store/lib/types/products";
 import { Card, CardHeader, CardContent } from "@/src/components/ui/card";
 import { ChatSidebar } from "@/src/components/chat/ChatSidebar";
 import { ChatHeader } from "@/src/components/chat/ChatHeader";
@@ -118,7 +118,7 @@ export default function ChatPage() {
         return "bg-slate-200/40 text-slate-700 border-slate-400";
     }
   };
-  
+
   const getStatusLabel = (status: string) => {
     switch (status) {
       case "new":
@@ -133,7 +133,7 @@ export default function ChatPage() {
   return (
     <>
       <ScrollAnimation />
-      
+
       <section className="px-4 py-8 sm:px-6 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl grid grid-cols-1 gap-6 lg:grid-cols-4">
           <ChatSidebar

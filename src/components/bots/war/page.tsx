@@ -7,7 +7,7 @@ import {
   MarketplaceDataTable,
   TableColumn,
 } from "@/src/components/marketplace/data-table";
-import { MarketplaceProduct } from "@/lib/types/products";
+import { MarketplaceProduct } from "@/store/lib/types/products";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Swords } from "lucide-react";
@@ -29,7 +29,12 @@ export default function WarBotsPage() {
       title: "Advanced War Bot",
       description: "Full KvK automation with strategic targeting",
       tier: "Premium",
-      highlights: ["Smart targeting", "Rally coordination", "Real-time alerts", "Anti-detection"],
+      highlights: [
+        "Smart targeting",
+        "Rally coordination",
+        "Real-time alerts",
+        "Anti-detection",
+      ],
       price: 12,
       stock: 8,
       category: "bots",
@@ -39,7 +44,12 @@ export default function WarBotsPage() {
       title: "Elite War Bot",
       description: "Professional-grade war automation with AI tactics",
       tier: "Elite",
-      highlights: ["AI-powered tactics", "Multi-account sync", "Priority support", "Custom strategies"],
+      highlights: [
+        "AI-powered tactics",
+        "Multi-account sync",
+        "Priority support",
+        "Custom strategies",
+      ],
       price: 15,
       stock: 5,
       category: "bots",
@@ -107,7 +117,7 @@ export default function WarBotsPage() {
   return (
     <>
       <ScrollAnimation />
-      
+
       <section
         className="px-4 py-24 sm:px-6 lg:px-8 bg-cover bg-center border-b-4 border-blue-500/30 fade-up"
         style={{
@@ -118,12 +128,11 @@ export default function WarBotsPage() {
         <div className="mx-auto max-w-6xl text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Swords className="h-12 w-12 text-red-400" />
-            <h1 className="text-5xl font-black gradient-text">
-              War Bots
-            </h1>
+            <h1 className="text-5xl font-black gradient-text">War Bots</h1>
           </div>
           <p className="text-xl text-slate-200 font-semibold max-w-2xl mx-auto">
-            Dominate Kingdom vs Kingdom battles with automated war strategies and rally coordination.
+            Dominate Kingdom vs Kingdom battles with automated war strategies
+            and rally coordination.
           </p>
         </div>
       </section>
@@ -132,7 +141,8 @@ export default function WarBotsPage() {
         <div className="mx-auto max-w-6xl">
           <Alert className="border-2 border-red-500/50 bg-gradient-to-r from-red-500/20 to-red-400/10 shadow-lg rounded-xl">
             <AlertDescription className="text-slate-200 text-base font-bold">
-              ⚔️ War Bots: Automated rally participation, strategic targeting, and real-time battle coordination!
+              ⚔️ War Bots: Automated rally participation, strategic targeting,
+              and real-time battle coordination!
             </AlertDescription>
           </Alert>
         </div>

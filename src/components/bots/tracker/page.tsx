@@ -7,7 +7,7 @@ import {
   MarketplaceDataTable,
   TableColumn,
 } from "@/src/components/marketplace/data-table";
-import { MarketplaceProduct } from "@/lib/types/products";
+import { MarketplaceProduct } from "@/store/lib/types/products";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Radar } from "lucide-react";
@@ -29,7 +29,12 @@ export default function TrackerBotsPage() {
       title: "Advanced Tracker Bot",
       description: "Comprehensive kingdom monitoring with analytics",
       tier: "Premium",
-      highlights: ["Real-time tracking", "Threat analysis", "Alliance intel", "Custom alerts"],
+      highlights: [
+        "Real-time tracking",
+        "Threat analysis",
+        "Alliance intel",
+        "Custom alerts",
+      ],
       price: 12,
       stock: 10,
       category: "bots",
@@ -39,7 +44,12 @@ export default function TrackerBotsPage() {
       title: "Elite Tracker Bot",
       description: "Professional intelligence gathering with AI predictions",
       tier: "Elite",
-      highlights: ["AI predictions", "Multi-kingdom tracking", "Detailed reports", "Priority alerts"],
+      highlights: [
+        "AI predictions",
+        "Multi-kingdom tracking",
+        "Detailed reports",
+        "Priority alerts",
+      ],
       price: 18,
       stock: 6,
       category: "bots",
@@ -107,7 +117,7 @@ export default function TrackerBotsPage() {
   return (
     <>
       <ScrollAnimation />
-      
+
       <section
         className="px-4 py-24 sm:px-6 lg:px-8 bg-cover bg-center border-b-4 border-purple-500/30 fade-up"
         style={{
@@ -118,12 +128,11 @@ export default function TrackerBotsPage() {
         <div className="mx-auto max-w-6xl text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Radar className="h-12 w-12 text-purple-400" />
-            <h1 className="text-5xl font-black gradient-text">
-              Tracker Bots
-            </h1>
+            <h1 className="text-5xl font-black gradient-text">Tracker Bots</h1>
           </div>
           <p className="text-xl text-slate-200 font-semibold max-w-2xl mx-auto">
-            Advanced intelligence gathering and enemy monitoring for strategic advantage.
+            Advanced intelligence gathering and enemy monitoring for strategic
+            advantage.
           </p>
         </div>
       </section>
@@ -132,7 +141,8 @@ export default function TrackerBotsPage() {
         <div className="mx-auto max-w-6xl">
           <Alert className="border-2 border-purple-500/50 bg-gradient-to-r from-purple-500/20 to-purple-400/10 shadow-lg rounded-xl">
             <AlertDescription className="text-slate-200 text-base font-bold">
-              🎯 Tracker Bots: Stay ahead with real-time enemy tracking, resource monitoring, and threat analysis!
+              🎯 Tracker Bots: Stay ahead with real-time enemy tracking,
+              resource monitoring, and threat analysis!
             </AlertDescription>
           </Alert>
         </div>

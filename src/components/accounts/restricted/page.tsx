@@ -7,7 +7,7 @@ import {
   MarketplaceDataTable,
   TableColumn,
 } from "@/src/components/marketplace/data-table";
-import { MarketplaceProduct } from "@/lib/types/products";
+import { MarketplaceProduct } from "@/store/lib/types/products";
 import Link from "next/link";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Shield } from "lucide-react";

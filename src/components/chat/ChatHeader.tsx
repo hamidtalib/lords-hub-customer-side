@@ -1,7 +1,7 @@
 "use client";
 
 import { CardDescription, CardTitle } from "@/src/components/ui/card";
-import { ChatSession } from "@/lib/types/products";
+import { ChatSession } from "@/store/lib/types/products";
 
 interface ChatHeaderProps {
   activeChat: ChatSession;
@@ -36,4 +36,3 @@ export function ChatHeader({
     </div>
   );
 }
-

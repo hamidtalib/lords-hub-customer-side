@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { MarketplaceProduct } from "@/lib/types/products";
+import { MarketplaceProduct } from "@/store/lib/types/products";
 
 type ColumnRenderer<T> = (item: T) => ReactNode;
 

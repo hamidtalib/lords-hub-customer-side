@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import { Loader2, CheckCircle2, CheckCheck } from "lucide-react";
-import { ChatMessage } from "@/lib/types/products";
+import { ChatMessage } from "@/store/lib/types/products";
 
 interface MessageListProps {
   messages: ChatMessage[];
