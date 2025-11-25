@@ -60,8 +60,9 @@ export default function DiamondsPage() {
       {
         id: "bundle",
         label: "Bundle",
+        className: "text-center",
         render: (item) => (
-          <div>
+          <div className="text-center">
             <p className="text-base font-black text-white">{item.title}</p>
             <p className="text-xs text-slate-300 line-clamp-1">
               {item.description || item.highlights?.[0] || "Fast top-up"}
@@ -70,48 +71,27 @@ export default function DiamondsPage() {
         ),
       },
       {
-        id: "tier",
-        label: "Tier",
-        render: (item) => (
-          <span className="inline-flex rounded-full border border-amber-400/40 px-3 py-1 text-xs font-semibold text-amber-200">
-            {item.tier || "Standard"}
-          </span>
-        ),
-      },
-      {
-        id: "stock",
-        label: "Slots",
-        render: (item) => (
-          <span className="text-sm font-bold text-slate-200">
-            {typeof item.stock === "number" ? `${item.stock} available` : "∞"}
-          </span>
-        ),
-      },
-      {
         id: "price",
         label: "Price",
-        className: "text-right",
+        className: "text-center",
         render: (item) => (
-          <div className="text-right">
+          <div className="text-center">
             <p className="text-2xl font-black gradient-text">${item.price}</p>
-            {item.originalPrice && (
-              <p className="text-xs text-slate-400 line-through">
-                ${item.originalPrice}
-              </p>
-            )}
           </div>
         ),
       },
       {
         id: "action",
         label: "Action",
-        className: "text-right",
+        className: "text-center",
         render: (item) => (
-          <Link href={`/chat?productId=${item.id}`}>
-            <Button size="sm" className="btn-game text-xs cursor-pointer">
-              Order
-            </Button>
-          </Link>
+          <div className="text-center">
+            <Link href={`/chat?productId=${item.id}`}>
+              <Button size="sm" className="btn-game text-xs cursor-pointer">
+                Order
+              </Button>
+            </Link>
+          </div>
         ),
       },
     ],

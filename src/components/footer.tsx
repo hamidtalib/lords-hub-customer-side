@@ -67,16 +67,38 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-start">
             <h4 className="font-bold text-slate-200 mb-4">Support</h4>
             <ul className="space-y-3 text-sm">
-              {["About Us", "FAQ", "Contact", "Privacy Policy"].map((item) => (
-                <li key={item}>
-                  <Link
-                    href="#"
-                    className="text-slate-300 hover:text-amber-400 transition-all duration-300 hover:translate-x-1 transform inline-block font-semibold"
-                  >
-                    {item}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link
+                  href="/about"
+                  className="text-slate-300 hover:text-amber-400 transition-all duration-300 hover:translate-x-1 transform inline-block font-semibold"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/faq"
+                  className="text-slate-300 hover:text-amber-400 transition-all duration-300 hover:translate-x-1 transform inline-block font-semibold"
+                >
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="text-slate-300 hover:text-amber-400 transition-all duration-300 hover:translate-x-1 transform inline-block font-semibold"
+                >
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/reviews"
+                  className="text-slate-300 hover:text-amber-400 transition-all duration-300 hover:translate-x-1 transform inline-block font-semibold"
+                >
+                  Reviews
+                </Link>
+              </li>
             </ul>
           </div>
 

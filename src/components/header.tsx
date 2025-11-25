@@ -21,6 +21,7 @@ export default function Header() {
       dropdown: [
         { label: "Restricted Kingdom Accounts", href: "/accounts/restricted" },
         { label: "Open Kingdom Accounts", href: "/accounts/open" },
+        { label: "Selling Accounts", href: "/accounts/selling" },
       ]
     },
     { label: "Gems", href: "/gems" },
@@ -30,12 +31,12 @@ export default function Header() {
       dropdown: [
         { label: "War Bots", href: "/bots/war" },
         { label: "Rein Bots", href: "/bots/rein" },
-        { label: "Tracker Bots", href: "/bots/tracker" },
+        { label: "KVK Bots", href: "/bots/kvk" },
+        { label: "Farm/Bank Bots", href: "/bots/farm" },
       ]
     },
+    { label: "Reviews", href: "/reviews" },
     { label: "About", href: "/about" },
-    { label: "Blog", href: "/blog" },
-    { label: "FAQ", href: "/faq" },
   ];
 
   const isActive = (href?: string, dropdown?: any[]) => {

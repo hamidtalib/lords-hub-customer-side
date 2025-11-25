@@ -2,6 +2,8 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
+import Header from "@/src/components/header";
+import Footer from "@/src/components/footer";
 import { Button } from "@/src/components/ui/button";
 import {
   MarketplaceDataTable,
@@ -10,48 +12,49 @@ import {
 import { MarketplaceProduct } from "@/store/lib/types/products";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
-import { Users } from "lucide-react";
+import { Wheat } from "lucide-react";
 
-export default function ReinBotsPage() {
+export default function FarmBots() {
   const botProducts: MarketplaceProduct[] = [
     {
-      id: "rbot1",
-      title: "Basic Rein Bot",
-      description: "Automated reinforcement sending and management",
+      id: "farmbot1",
+      title: "Basic Farm Bot",
+      description: "Automated resource farming for single account",
       tier: "Basic",
-      highlights: ["Auto-send reins", "Troop recall", "Alliance coordination"],
-      price: 10,
-      stock: 12,
+      highlights: ["Auto farming", "Resource collection", "Basic scheduling"],
+      price: 7,
+      stock: 20,
       category: "bots",
     },
     {
-      id: "rbot2",
-      title: "Pro Rein Bot",
-      description: "Advanced reinforcement with smart troop allocation",
+      id: "farmbot2",
+      title: "Advanced Farm Bot",
+      description: "Multi-account farm management with smart routing",
       tier: "Premium",
       highlights: [
-        "Smart allocation",
-        "Multi-target support",
-        "Priority system",
-        "24/7 monitoring",
+        "Multi-account support",
+        "Smart resource routing",
+        "Auto-shielding",
+        "Gathering optimization",
       ],
-      price: 15,
-      stock: 7,
+      price: 12,
+      stock: 10,
       category: "bots",
     },
     {
-      id: "rbot3",
-      title: "Elite Rein Bot",
-      description: "Professional reinforcement bot with AI optimization",
+      id: "farmbot3",
+      title: "Elite Farm Bot",
+      description: "Professional farm empire automation with AI optimization",
       tier: "Elite",
       highlights: [
-        "AI optimization",
-        "Guild coordination",
-        "Custom rules",
-        "Instant alerts",
+        "Unlimited accounts",
+        "AI resource optimization",
+        "Bank account management",
+        "Priority support 24/7",
+        "Custom farm strategies",
       ],
-      price: 20,
-      stock: 4,
+      price: 18,
+      stock: 6,
       category: "bots",
     },
   ];
@@ -75,6 +78,7 @@ export default function ReinBotsPage() {
         id: "tier",
         label: "Tier",
         className: "text-center",
+
         render: (item) => (
           <span className="inline-flex rounded-full border border-green-400/40 px-3 py-1 text-xs font-semibold text-green-200 text-center">
             {item.tier}
@@ -85,14 +89,13 @@ export default function ReinBotsPage() {
         id: "highlights",
         label: "Features",
         className: "text-center",
+
         render: (item) => (
-          <div className="text-center">
-            <ul className="text-xs text-slate-300 list-disc list-inside">
-              {item.highlights?.slice(0, 3).map((highlight) => (
-                <li key={highlight}>{highlight}</li>
-              ))}
-            </ul>
-          </div>
+          <ul className="text-xs text-slate-300 list-disc list-inside text-center">
+            {item.highlights?.slice(0, 3).map((highlight) => (
+              <li key={highlight}>{highlight}</li>
+            ))}
+          </ul>
         ),
       },
       {
@@ -124,24 +127,27 @@ export default function ReinBotsPage() {
   );
 
   return (
-    <>
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+      <Header />
       <ScrollAnimation />
 
       <section
         className="px-4 py-24 sm:px-6 lg:px-8 bg-cover bg-center border-b-4 border-green-500/30 fade-up"
         style={{
           backgroundImage:
-            "linear-gradient(180deg, rgba(6,9,20,0.85), rgba(6,9,20,0.95)), url('https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=1600&q=80')",
+            "linear-gradient(180deg, rgba(6,9,20,0.85), rgba(6,9,20,0.95)), url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1600&q=80')",
         }}
       >
         <div className="mx-auto max-w-6xl text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Users className="h-12 w-12 text-green-400" />
-            <h1 className="text-5xl font-black gradient-text">Rein Bots</h1>
+            <Wheat className="h-12 w-12 text-green-400" />
+            <h1 className="text-5xl font-black gradient-text">
+              Farm/Bank Bots
+            </h1>
           </div>
           <p className="text-xl text-slate-200 font-semibold max-w-2xl mx-auto">
-            Automated reinforcement management to support your alliance members
-            24/7.
+            Automate your resource farming empire with intelligent multi-account
+            management and bank coordination.
           </p>
         </div>
       </section>
@@ -150,8 +156,8 @@ export default function ReinBotsPage() {
         <div className="mx-auto max-w-6xl">
           <Alert className="border-2 border-green-500/50 bg-gradient-to-r from-green-500/20 to-green-400/10 shadow-lg rounded-xl">
             <AlertDescription className="text-slate-200 text-base font-bold">
-              🛡️ Rein Bots: Never miss a reinforcement request with automated
-              troop deployment and smart allocation!
+              🌾 Farm/Bank Bots: Automated resource gathering, multi-account
+              management, and smart resource routing to your main account!
             </AlertDescription>
           </Alert>
         </div>
@@ -163,11 +169,13 @@ export default function ReinBotsPage() {
             data={botProducts}
             columns={tableColumns}
             isLoading={false}
-            emptyTitle="No rein bots available"
-            emptySubtitle="Check back soon for new reinforcement bot services."
+            emptyTitle="No farm bots available"
+            emptySubtitle="Check back soon for new farm bot services."
           />
         </div>
       </section>
-    </>
+
+      <Footer />
+    </main>
   );
 }

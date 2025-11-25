@@ -61,9 +61,10 @@ export default function WarBotsPage() {
       {
         id: "service",
         label: "Service",
+        className: "text-center",
         render: (item) => (
-          <div>
-            <p className="text-base font-black text-white">{item.title}</p>
+          <div className="text-center">
+            <p className="text-base font-back text-white">{item.title}</p>
             <p className="text-xs text-slate-300 line-clamp-1">
               {item.description}
             </p>
@@ -73,8 +74,10 @@ export default function WarBotsPage() {
       {
         id: "tier",
         label: "Tier",
+        className: "text-center",
+
         render: (item) => (
-          <span className="inline-flex rounded-full border border-blue-400/40 px-3 py-1 text-xs font-semibold text-blue-200">
+          <span className="inline-flex rounded-full border border-blue-400/40 px-3 py-1 text-xs font-semibold text-blue-200 text-center">
             {item.tier}
           </span>
         ),
@@ -82,8 +85,10 @@ export default function WarBotsPage() {
       {
         id: "highlights",
         label: "Features",
+        className: "text-center",
+
         render: (item) => (
-          <ul className="text-xs text-slate-300 list-disc list-inside">
+          <ul className="text-xs text-slate-300 list-disc list-inside text-center">
             {item.highlights?.slice(0, 3).map((highlight) => (
               <li key={highlight}>{highlight}</li>
             ))}
@@ -93,21 +98,25 @@ export default function WarBotsPage() {
       {
         id: "price",
         label: "Price/Month",
-        className: "text-right",
+        className: "text-center",
         render: (item) => (
-          <p className="text-2xl font-black gradient-text">${item.price}</p>
+          <p className="text-2xl font-black gradient-text text-center">
+            ${item.price}
+          </p>
         ),
       },
       {
         id: "action",
         label: "Action",
-        className: "text-right",
+        className: " ",
         render: (item) => (
-          <Link href={`/chat?productId=${item.id}`}>
-            <Button size="sm" className="btn-game text-xs cursor-pointer">
-              Subscribe
-            </Button>
-          </Link>
+          <div className="text-center">
+            <Link href={`/chat?productId=${item.id}`}>
+              <Button size="sm" className="btn-game text-xs cursor-pointer">
+                Subscribe
+              </Button>
+            </Link>
+          </div>
         ),
       },
     ],

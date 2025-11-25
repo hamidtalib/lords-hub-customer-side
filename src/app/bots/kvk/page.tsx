@@ -2,6 +2,8 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
+import Header from "@/src/components/header";
+import Footer from "@/src/components/footer";
 import { Button } from "@/src/components/ui/button";
 import {
   MarketplaceDataTable,
@@ -10,48 +12,49 @@ import {
 import { MarketplaceProduct } from "@/store/lib/types/products";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
-import { Users } from "lucide-react";
+import { Trophy } from "lucide-react";
 
-export default function ReinBotsPage() {
+export default function KVKBots() {
   const botProducts: MarketplaceProduct[] = [
     {
-      id: "rbot1",
-      title: "Basic Rein Bot",
-      description: "Automated reinforcement sending and management",
+      id: "kvkbot1",
+      title: "Basic KVK Bot",
+      description: "Essential KVK automation for event participation",
       tier: "Basic",
-      highlights: ["Auto-send reins", "Troop recall", "Alliance coordination"],
+      highlights: ["Auto event join", "Point farming", "Basic alerts"],
       price: 10,
       stock: 12,
       category: "bots",
     },
     {
-      id: "rbot2",
-      title: "Pro Rein Bot",
-      description: "Advanced reinforcement with smart troop allocation",
+      id: "kvkbot2",
+      title: "Advanced KVK Bot",
+      description: "Complete KVK automation with strategic coordination",
       tier: "Premium",
       highlights: [
-        "Smart allocation",
-        "Multi-target support",
-        "Priority system",
-        "24/7 monitoring",
+        "Smart event targeting",
+        "Alliance coordination",
+        "Real-time notifications",
+        "Auto resource collection",
       ],
       price: 15,
-      stock: 7,
+      stock: 8,
       category: "bots",
     },
     {
-      id: "rbot3",
-      title: "Elite Rein Bot",
-      description: "Professional reinforcement bot with AI optimization",
+      id: "kvkbot3",
+      title: "Elite KVK Bot",
+      description: "Professional KVK domination with AI-powered strategies",
       tier: "Elite",
       highlights: [
-        "AI optimization",
-        "Guild coordination",
-        "Custom rules",
-        "Instant alerts",
+        "AI strategy optimization",
+        "Multi-account management",
+        "Priority support 24/7",
+        "Custom event scripts",
+        "Advanced analytics",
       ],
       price: 20,
-      stock: 4,
+      stock: 5,
       category: "bots",
     },
   ];
@@ -75,8 +78,9 @@ export default function ReinBotsPage() {
         id: "tier",
         label: "Tier",
         className: "text-center",
+
         render: (item) => (
-          <span className="inline-flex rounded-full border border-green-400/40 px-3 py-1 text-xs font-semibold text-green-200 text-center">
+          <span className="inline-flex rounded-full border border-purple-400/40 px-3 py-1 text-xs font-semibold text-purple-200 text-center">
             {item.tier}
           </span>
         ),
@@ -85,14 +89,13 @@ export default function ReinBotsPage() {
         id: "highlights",
         label: "Features",
         className: "text-center",
+
         render: (item) => (
-          <div className="text-center">
-            <ul className="text-xs text-slate-300 list-disc list-inside">
-              {item.highlights?.slice(0, 3).map((highlight) => (
-                <li key={highlight}>{highlight}</li>
-              ))}
-            </ul>
-          </div>
+          <ul className="text-xs text-slate-300 list-disc list-inside text-center">
+            {item.highlights?.slice(0, 3).map((highlight) => (
+              <li key={highlight}>{highlight}</li>
+            ))}
+          </ul>
         ),
       },
       {
@@ -124,34 +127,35 @@ export default function ReinBotsPage() {
   );
 
   return (
-    <>
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+      <Header />
       <ScrollAnimation />
 
       <section
-        className="px-4 py-24 sm:px-6 lg:px-8 bg-cover bg-center border-b-4 border-green-500/30 fade-up"
+        className="px-4 py-24 sm:px-6 lg:px-8 bg-cover bg-center border-b-4 border-purple-500/30 fade-up"
         style={{
           backgroundImage:
-            "linear-gradient(180deg, rgba(6,9,20,0.85), rgba(6,9,20,0.95)), url('https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=1600&q=80')",
+            "linear-gradient(180deg, rgba(6,9,20,0.85), rgba(6,9,20,0.95)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80')",
         }}
       >
         <div className="mx-auto max-w-6xl text-center">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Users className="h-12 w-12 text-green-400" />
-            <h1 className="text-5xl font-black gradient-text">Rein Bots</h1>
+            <Trophy className="h-12 w-12 text-purple-400" />
+            <h1 className="text-5xl font-black gradient-text">KVK Bots</h1>
           </div>
           <p className="text-xl text-slate-200 font-semibold max-w-2xl mx-auto">
-            Automated reinforcement management to support your alliance members
-            24/7.
+            Dominate Kingdom vs Kingdom events with automated participation and
+            strategic point farming.
           </p>
         </div>
       </section>
 
       <section className="px-4 py-6 sm:px-6 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl">
-          <Alert className="border-2 border-green-500/50 bg-gradient-to-r from-green-500/20 to-green-400/10 shadow-lg rounded-xl">
+          <Alert className="border-2 border-purple-500/50 bg-gradient-to-r from-purple-500/20 to-purple-400/10 shadow-lg rounded-xl">
             <AlertDescription className="text-slate-200 text-base font-bold">
-              🛡️ Rein Bots: Never miss a reinforcement request with automated
-              troop deployment and smart allocation!
+              🏆 KVK Bots: Automated event participation, point optimization,
+              and alliance coordination for maximum rewards!
             </AlertDescription>
           </Alert>
         </div>
@@ -163,11 +167,13 @@ export default function ReinBotsPage() {
             data={botProducts}
             columns={tableColumns}
             isLoading={false}
-            emptyTitle="No rein bots available"
-            emptySubtitle="Check back soon for new reinforcement bot services."
+            emptyTitle="No KVK bots available"
+            emptySubtitle="Check back soon for new KVK bot services."
           />
         </div>
       </section>
-    </>
+
+      <Footer />
+    </main>
   );
 }
