@@ -1,7 +1,20 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
-import { ChatSession, ChatMessage } from "@/store/lib/types/products";
+import { useState, useRef, useEffect } from "react";
+import { Loader2 } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  sendMessage,
+  loadUserChats,
+  getOrCreateChatSession,
+  selectChats,
+  selectActiveChat,
+  selectActiveMessages,
+  selectActiveChatId,
+  setActiveChat,
+} from "@/store/chat";
+import { useChatListener } from "@/lib/hooks/useChatListener";
+import { usePageOrigin } from "@/lib/hooks/usePageOrigin";
 import { Card, CardHeader, CardContent } from "@/src/components/ui/card";
 import { ChatSidebar } from "@/src/components/chat/ChatSidebar";
 import { ChatHeader } from "@/src/components/chat/ChatHeader";
@@ -11,101 +24,135 @@ import { ImageModal } from "@/src/components/chat/ImageModal";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 
 export default function ChatPage() {
-  const dummyChats: ChatSession[] = [
-    {
-      id: "admin-1",
-      productTitle: "Premium Lords Mobile Account",
-      status: "new",
-      createdAt: new Date(),
-    } as ChatSession,
-  ];
+  const dispatch = useAppDispatch();
+  const pageOrigin = usePageOrigin();
 
-  const dummyMessages: Record<string, ChatMessage[]> = {
-    "admin-1": [
-      {
-        id: "1",
-        chatId: "admin-1",
-        senderId: "admin",
-        senderType: "admin",
-        message: "Welcome! Please ask your questions here.",
-        timestamp: new Date(),
-        status: "read",
-      },
-      {
-        id: "2",
-        chatId: "admin-1",
-        senderId: "customer",
-        senderType: "customer",
-        message: "Hi, I want to buy this account.",
-        timestamp: new Date(),
-        status: "read",
-      },
-    ],
-  };
+  // Redux state
+  const chats = useAppSelector(selectChats);
+  const activeChat = useAppSelector(selectActiveChat);
+  const messages = useAppSelector(selectActiveMessages);
+  const activeChatId = useAppSelector(selectActiveChatId);
 
-  const [chats] = useState<ChatSession[]>(dummyChats);
-  const [messages, setMessages] =
-    useState<Record<string, ChatMessage[]>>(dummyMessages);
-  const [activeChatId, setActiveChatId] = useState<string>(dummyChats[0].id);
+  // Local UI state
   const [message, setMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [modalImageUrl, setModalImageUrl] = useState<string | null>(null);
-  const [showImageModal, setShowImageModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingChats, setLoadingChats] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null!);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const activeChat = chats.find((c) => c.id === activeChatId) || null;
-  const mergedMessages = useMemo(
-    () => (activeChat ? messages[activeChat.id] || [] : []),
-    [activeChat, messages]
-  );
 
-  const handleSendMessage = () => {
-    if (!activeChat) return;
-    if (!message.trim() && !selectedFile) return;
 
-    const newMsg: ChatMessage = {
-      id: Date.now().toString(),
-      chatId: activeChat.id,
-      message,
-      senderId: "customer",
-      senderType: "customer",
-      timestamp: new Date(),
-      status: "sending",
-      mediaUrl: previewImage || undefined,
+  // Set up real-time listener for active chat
+  useChatListener(activeChatId);
+
+  // Initialize chat - ensure default chat exists immediately
+  const hasInitialized = useRef(false);
+  useEffect(() => {
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+
+    const initializeChat = async () => {
+      try {
+        await dispatch(
+          getOrCreateChatSession({
+            productId: "admin-support",
+            productTitle: "Customer Support",
+            pageOrigin,
+          })
+        ).unwrap();
+        
+        setLoadingChats(false);
+      } catch (error) {
+        console.error("Failed to initialize chat:", error);
+        setLoadingChats(false);
+      }
     };
+
+    initializeChat();
+  }, [dispatch, pageOrigin]);
+
+  // Safety fallback: Stop loading if chats exist or after 2 seconds
+  useEffect(() => {
+    if (chats.length > 0) {
+      setLoadingChats(false);
+    }
+    
+    // Absolute maximum wait time
+    const timeout = setTimeout(() => {
+      setLoadingChats(false);
+    }, 2000);
+    
+    return () => clearTimeout(timeout);
+  }, [chats.length]);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Cleanup is handled by useChatListener hook
+    };
+  }, []);
+
+  const handleSendMessage = async () => {
+    if (!activeChatId) return;
+    if (!message.trim() && !selectedFile) return;
 
     setIsLoading(true);
 
-    setMessages((prev) => ({
-      ...prev,
-      [activeChat.id]: [...(prev[activeChat.id] || []), newMsg],
-    }));
+    try {
+      await dispatch(
+        sendMessage({
+          chatId: activeChatId,
+          message: message.trim(),
+          mediaUrl: previewImage || undefined,
+        })
+      ).unwrap();
 
-    setMessage("");
-    setSelectedFile(null);
-    setPreviewImage(null);
-
-    setTimeout(() => {
-      setMessages((prev) => ({
-        ...prev,
-        [activeChat.id]: prev[activeChat.id].map((msg) =>
-          msg.id === newMsg.id ? { ...msg, status: "read" } : msg
-        ),
-      }));
+      // Clear input
+      setMessage("");
+      setSelectedFile(null);
+      setPreviewImage(null);
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("File too large. Max 5MB.");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (ev) => setPreviewImage(ev.target?.result as string);
     reader.readAsDataURL(file);
     setSelectedFile(file);
+  };
+
+  const handleRemovePreview = () => {
+    setPreviewImage(null);
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleChatSelect = (chatId: string) => {
+    dispatch(setActiveChat(chatId));
   };
 
   const getStatusColor = (status: string) => {
@@ -139,14 +186,21 @@ export default function ChatPage() {
           <ChatSidebar
             chats={chats}
             activeChat={activeChat}
-            loadingChats={false}
-            onChatSelect={(c) => setActiveChatId(c.id)}
+            loadingChats={loadingChats}
+            onChatSelect={(chat) => handleChatSelect(chat.id)}
             getStatusColor={getStatusColor}
             getStatusLabel={getStatusLabel}
           />
 
           <div className="lg:col-span-3">
-            {activeChat ? (
+            {loadingChats ? (
+              <Card className="flex items-center justify-center h-96 border-2 border-amber-500/30 bg-gradient-to-br from-slate-800/90 to-slate-700/90">
+                <div className="flex flex-col items-center space-y-4">
+                  <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+                  <p className="text-slate-200 text-lg font-semibold">Initializing chat...</p>
+                </div>
+              </Card>
+            ) : activeChat ? (
               <Card className="flex flex-col h-full border-2 border-amber-500/30 bg-gradient-to-br from-slate-800/90 to-slate-700/90 shadow-2xl">
                 <CardHeader>
                   <ChatHeader
@@ -158,13 +212,13 @@ export default function ChatPage() {
 
                 <CardContent className="flex-1 overflow-y-auto p-4 max-h-[500px] space-y-4">
                   <MessageList
-                    messages={mergedMessages}
+                    messages={messages}
                     userId="customer"
                     onImageClick={(url) => {
                       setModalImageUrl(url);
-                      setShowImageModal(true);
                     }}
                   />
+                  <div ref={messagesEndRef} />
                 </CardContent>
 
                 <ChatInput
@@ -175,18 +229,20 @@ export default function ChatPage() {
                   isLoading={isLoading}
                   fileInputRef={fileInputRef}
                   onFileSelect={handleFileSelect}
-                  onRemovePreview={() => {
-                    setPreviewImage(null);
-                    setSelectedFile(null);
-                  }}
+                  onRemovePreview={handleRemovePreview}
                   onSendMessage={handleSendMessage}
                 />
               </Card>
             ) : (
               <Card className="flex items-center justify-center h-96 border-2 border-amber-500/30 bg-gradient-to-br from-slate-800/90 to-slate-700/90">
-                <p className="text-slate-200 text-lg font-semibold">
-                  Select a conversation to start chatting
-                </p>
+                <div className="flex flex-col items-center space-y-4">
+                  <p className="text-slate-200 text-lg font-semibold">
+                    No chat available
+                  </p>
+                  <p className="text-slate-400 text-sm">
+                    Please refresh the page
+                  </p>
+                </div>
               </Card>
             )}
           </div>
@@ -196,7 +252,6 @@ export default function ChatPage() {
       <ImageModal
         imageUrl={modalImageUrl}
         onClose={() => {
-          setShowImageModal(false);
           setModalImageUrl(null);
         }}
       />

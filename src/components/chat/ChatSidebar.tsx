@@ -29,11 +29,6 @@ export function ChatSidebar({
         <div className="flex items-center justify-center py-8">
           <Loader2 className="h-6 w-6 animate-spin text-amber-600" />
         </div>
-      ) : chats.length === 0 ? (
-        <div className="text-center py-8 text-slate-300 font-semibold">
-          <p>No conversations yet</p>
-          <p className="text-sm mt-2">Start a chat from a product page</p>
-        </div>
       ) : (
         <div className="space-y-2">
           {chats.map((chat) => (

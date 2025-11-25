@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useEffect } from "react";
 import { Loader2, CheckCircle2, CheckCheck } from "lucide-react";
 import { ChatMessage } from "@/store/lib/types/products";
+import { getVisitorId } from "@/lib/utils/visitorId";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -15,16 +15,14 @@ export function MessageList({
   userId,
   onImageClick,
 }: MessageListProps) {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
-  // }, [messages]);
+  // Use visitor ID to identify user's messages
+  const currentUserId = getVisitorId();
 
   if (messages.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full text-slate-300 font-semibold">
-        <p className="text-lg">Start a conversation with the seller</p>
+      <div className="flex flex-col items-center justify-center h-full text-slate-300 font-semibold space-y-2">
+        <p className="text-lg">No messages yet</p>
+        <p className="text-sm text-slate-400">Start chatting with support below</p>
       </div>
     );
   }
@@ -32,7 +30,7 @@ export function MessageList({
   return (
     <>
       {messages.map((msg) => {
-        const isUser = msg.senderType === "customer" && msg.senderId === userId;
+        const isUser = msg.senderType === "customer" && msg.senderId === currentUserId;
         return (
           <div
             key={msg.id}
@@ -52,7 +50,7 @@ export function MessageList({
                 >
                   <img
                     src={msg.mediaUrl}
-                    alt="Payment proof"
+                    alt="Attachment"
                     className="max-h-48 rounded-lg cursor-pointer"
                   />
                 </button>
@@ -81,7 +79,6 @@ export function MessageList({
           </div>
         );
       })}
-      <div ref={messagesEndRef} />
     </>
   );
 }

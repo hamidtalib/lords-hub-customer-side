@@ -1,4 +1,4 @@
-import ChatPage from "@/src/components/chat/page";
+import ChatPage from "@/src/components/chat/ChatPage.new";
 import Header from "@/src/components/header";
 import Footer from "@/src/components/footer";
 

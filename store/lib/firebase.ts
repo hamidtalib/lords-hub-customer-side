@@ -8,6 +8,7 @@ import { getAnalytics, isSupported } from "firebase/analytics";
 const firebaseConfig = {
   apiKey: "AIzaSyB2n2N-WB4KWoNbPtZdVj9piujqMn0WeCY",
   authDomain: "lordshubgaming.firebaseapp.com",
+  databaseURL: "https://lordshubgaming-default-rtdb.firebaseio.com",
   projectId: "lordshubgaming",
   storageBucket: "lordshubgaming.firebasestorage.app",
   messagingSenderId: "332774440952",

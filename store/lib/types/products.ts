@@ -23,6 +23,15 @@ export interface MarketplaceProduct {
   [key: string]: any;
 }
 
+export type PageOrigin = "gems" | "accounts" | "diamonds" | "bots" | "help" | "direct";
+
+export interface ChatMetadata {
+  pageOrigin: PageOrigin;
+  referrerUrl?: string;
+  entryTimestamp: Date;
+  userAgent?: string;
+}
+
 export interface ChatSession {
   title: string;
   id: string;
@@ -34,6 +43,7 @@ export interface ChatSession {
   createdAt: Date | null;
   lastMessageAt: Date | null;
   lastMessagePreview?: string;
+  metadata?: ChatMetadata;
 }
 
 export interface ChatMessage {
