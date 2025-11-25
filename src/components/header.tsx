@@ -54,13 +54,13 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b-2 border-amber-500/30 bg-gradient-to-r from-slate-800/95 via-slate-800/95 to-slate-800/95 backdrop-blur-xl shadow-2xl">
-      <nav className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
+      <nav className="mx-auto max-w-7xl px-2 py-2 sm:px-4 lg:px-8">
         <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-3 group hover:opacity-80 transition-all duration-300"
+            className="flex items-center gap-2 group hover:opacity-80 transition-all duration-300"
           >
-            <div className="relative h-20 w-20">
+            <div className="relative h-14 w-14 sm:h-20 sm:w-20">
               <Image
                 src={logo}
                 alt="Lords Hub"
@@ -68,26 +68,26 @@ export default function Header() {
                 className="object-contain"
               />
             </div>
-            <span className="text-xl font-black gradient-text hidden sm:inline">
+            <span className="text-sm sm:text-base lg:text-xl font-black gradient-text inline">
               LORDS HUB
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-0.5 lg:gap-1">
             {navLinks.map((link, index) => (
               <div key={link.label + index} className="relative group">
                 {link.dropdown ? (
                   <>
                     <Button
                       variant="ghost"
-                      className={`text-slate-200 font-bold hover:text-amber-400 hover:bg-amber-500/20 transition-all duration-300 rounded-lg cursor-pointer flex items-center gap-1 ${
+                      className={`text-slate-200 font-bold hover:text-amber-400 hover:bg-amber-500/20 transition-all duration-300 rounded-lg cursor-pointer flex items-center gap-1 text-xs lg:text-sm px-2 lg:px-3 whitespace-nowrap ${
                         isActive(undefined, link.dropdown)
                           ? "text-amber-400 bg-amber-500/20 border-b-2 border-amber-400"
                           : ""
                       }`}
                     >
                       {link.label}
-                      <ChevronDown className="h-4 w-4" />
+                      <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4" />
                     </Button>
                     <div className="absolute left-0 top-full mt-1 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                       <div className="bg-slate-800/95 backdrop-blur-xl border-2 border-amber-500/30 rounded-lg shadow-2xl py-2">
@@ -111,7 +111,7 @@ export default function Header() {
                   <Link href={link.href}>
                     <Button
                       variant="ghost"
-                      className={`text-slate-200 font-bold hover:text-amber-400 hover:bg-amber-500/20 transition-all duration-300 rounded-lg cursor-pointer ${
+                      className={`text-slate-200 font-bold hover:text-amber-400 hover:bg-amber-500/20 transition-all duration-300 rounded-lg cursor-pointer text-xs lg:text-sm px-2 lg:px-3 whitespace-nowrap ${
                         isActive(link.href)
                           ? "text-amber-400 bg-amber-500/20 border-b-2 border-amber-400"
                           : ""
@@ -125,46 +125,46 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <a
               href="https://t.me/lordshub"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex"
+              className="hidden lg:flex"
             >
               <Button
                 size="sm"
-                className="gap-2 btn-secondary font-bold cursor-pointer"
+                className="gap-2 btn-secondary font-bold cursor-pointer text-xs sm:text-sm"
               >
-                <ExternalLink className="h-4 w-4" />
-                Telegram
+                <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Telegram</span>
               </Button>
             </a>
-            <Link href="/chat">
+            <Link href="/chat" className="hidden sm:block">
               <Button
                 size="sm"
-                className="hidden sm:flex gap-2 btn-game font-bold cursor-pointer"
+                className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm"
               >
-                <MessageCircle className="h-4 w-4" />
-                Chat
+                <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden md:inline">Chat</span>
               </Button>
             </Link>
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-amber-100 transition-all duration-300 cursor-pointer"
+              className="md:hidden p-1.5 sm:p-2 rounded-lg hover:bg-amber-100 transition-all duration-300 cursor-pointer"
             >
               {isOpen ? (
-                <X className="h-6 w-6 text-amber-400 font-bold" />
+                <X className="h-5 w-5 sm:h-6 sm:w-6 text-amber-400 font-bold" />
               ) : (
-                <Menu className="h-6 w-6 text-slate-200" />
+                <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-slate-200" />
               )}
             </button>
           </div>
         </div>
 
         {isOpen && (
-          <div className="mt-4 space-y-2 md:hidden animate-in fade-in duration-300">
+          <div className="mt-4 space-y-3 md:hidden animate-in fade-in duration-300">
             {navLinks.map((link, index) => (
               <div key={link.label + index}>
                 {link.dropdown ? (
@@ -228,23 +228,25 @@ export default function Header() {
                 ) : null}
               </div>
             ))}
-            <a
-              href="https://t.me/lordshub"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full"
-            >
-              <Button className="w-full gap-2 btn-secondary font-bold cursor-pointer">
-                <ExternalLink className="h-4 w-4" />
-                Telegram
-              </Button>
-            </a>
-            <Link href="/chat" className="w-full">
-              <Button className="w-full gap-2 btn-game font-bold cursor-pointer">
-                <MessageCircle className="h-4 w-4" />
-                Chat with Us
-              </Button>
-            </Link>
+            <div className="space-y-3">
+              <a
+                href="https://t.me/lordshub"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full block"
+              >
+                <Button className="w-full gap-2 btn-secondary font-bold cursor-pointer">
+                  <ExternalLink className="h-4 w-4" />
+                  Telegram
+                </Button>
+              </a>
+              <Link href="/chat" className="w-full">
+                <Button className="w-full gap-2 btn-game font-bold cursor-pointer">
+                  <MessageCircle className="h-4 w-4" />
+                  Chat with Us
+                </Button>
+              </Link>
+            </div>
           </div>
         )}
       </nav>

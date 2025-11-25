@@ -8,48 +8,48 @@ import logo from "@/public/images/lords-hub-logo.png";
 export default function Footer() {
   return (
     <footer className="border-t-2 border-amber-500/30 bg-gradient-to-b from-slate-800/90 to-slate-900/90">
-      <div className="mx-auto max-w-7xl px-4 pt-16 pb-8 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-4 text-center md:text-left">
+      <div className="mx-auto max-w-7xl px-3 sm:px-4 pt-12 sm:pt-16 pb-6 sm:pb-8 lg:px-8">
+        <div className="grid grid-cols-1 gap-8 sm:gap-12 md:grid-cols-4 text-center md:text-left">
           {/* LOGO ONLY */}
           <div className="flex flex-col items-center md:items-start">
             <Image
               src={logo}
               alt="Lords Hub Logo"
-              width={70}
-              height={70}
-              className="mb-2"
+              width={60}
+              height={60}
+              className="mb-2 sm:w-[70px] sm:h-[70px]"
             />
-            <p className="mt-3 text-sm text-slate-300 leading-relaxed font-semibold">
+            <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed font-semibold max-w-xs">
               Your trusted marketplace for premium Lords Mobile accounts and
               services.
             </p>
 
-            <div className="mt-6 flex justify-center md:justify-start gap-4">
+            <div className="mt-4 sm:mt-6 flex justify-center md:justify-start gap-3 sm:gap-4">
               <Link
                 href="#"
                 className="text-slate-400 hover:text-amber-400 transition-all duration-300 hover:scale-125 transform"
               >
-                <Facebook className="h-5 w-5" />
+                <Facebook className="h-4 w-4 sm:h-5 sm:w-5" />
               </Link>
               <Link
                 href="#"
                 className="text-slate-400 hover:text-amber-400 transition-all duration-300 hover:scale-125 transform"
               >
-                <Instagram className="h-5 w-5" />
+                <Instagram className="h-4 w-4 sm:h-5 sm:w-5" />
               </Link>
               <Link
                 href="#"
                 className="text-slate-400 hover:text-amber-400 transition-all duration-300 hover:scale-125 transform"
               >
-                <MessageCircle className="h-5 w-5" />
+                <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
               </Link>
             </div>
           </div>
 
           {/* PRODUCTS */}
           <div className="flex flex-col items-center md:items-start">
-            <h4 className="font-bold text-slate-200 mb-4">Products</h4>
-            <ul className="space-y-3 text-sm">
+            <h4 className="font-bold text-slate-200 mb-3 sm:mb-4 text-sm sm:text-base">Products</h4>
+            <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
               {["Accounts", "Gems", "Diamonds", "Bot Services"].map((item) => (
                 <li key={item}>
                   <Link
@@ -65,8 +65,8 @@ export default function Footer() {
 
           {/* SUPPORT */}
           <div className="flex flex-col items-center md:items-start">
-            <h4 className="font-bold text-slate-200 mb-4">Support</h4>
-            <ul className="space-y-3 text-sm">
+            <h4 className="font-bold text-slate-200 mb-3 sm:mb-4 text-sm sm:text-base">Support</h4>
+            <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
               <li>
                 <Link
                   href="/about"
@@ -104,28 +104,28 @@ export default function Footer() {
 
           {/* SUBSCRIBE */}
           <div className="flex flex-col items-center md:items-start">
-            <h4 className="font-bold text-slate-200 mb-4">Subscribe</h4>
-            <p className="text-sm text-slate-300 mb-4 font-semibold text-center md:text-left">
+            <h4 className="font-bold text-slate-200 mb-3 sm:mb-4 text-sm sm:text-base">Subscribe</h4>
+            <p className="text-xs sm:text-sm text-slate-300 mb-3 sm:mb-4 font-semibold text-center md:text-left max-w-xs">
               Get updates on new accounts and deals.
             </p>
-            <div className="flex flex-col sm:flex-row gap-2 w-full">
+            <div className="flex flex-col sm:flex-row gap-2 w-full max-w-xs">
               <Input
                 type="email"
                 placeholder="Email"
-                className="border-2 border-amber-500/50 focus:border-amber-400 bg-slate-700/50 text-white placeholder:text-slate-400 text-sm font-semibold transition-all duration-300 flex-1"
+                className="border-2 border-amber-500/50 focus:border-amber-400 bg-slate-700/50 text-white placeholder:text-slate-400 text-xs sm:text-sm font-semibold transition-all duration-300 flex-1"
               />
               <Button
                 size="sm"
                 className="btn-secondary font-bold w-full sm:w-auto"
               >
-                <Send className="h-4 w-4" />
+                <Send className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-amber-500/30 pt-8 text-center text-sm text-slate-400 font-semibold">
-          <p>
+        <div className="mt-8 sm:mt-12 border-t border-amber-500/30 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-slate-400 font-semibold">
+          <p className="px-2">
             &copy; 2025 Lords Hub. All rights reserved. | Premium Gaming
             Marketplace
           </p>

@@ -79,7 +79,7 @@ export default function SocialSidebar({
 
   return (
     <div
-      className={`fixed ${positionClasses} z-40 hidden md:block`}
+      className={`fixed ${positionClasses} z-40 block`}
       style={{ 
         top: "50%",
         transform: "translateY(-50%)",
@@ -87,8 +87,8 @@ export default function SocialSidebar({
         maxHeight: "calc(100vh - 120px)" // Account for navbar and bottom spacing
       }}
     >
-      <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-1.5 shadow-2xl border border-amber-500/20">
-        <div className="flex flex-col gap-1.5">
+      <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-1 sm:p-1.5 shadow-2xl border border-amber-500/20">
+        <div className="flex flex-col gap-1 sm:gap-1.5">
           {icons.map((social, index) => (
             <a
               key={social.name}
@@ -101,23 +101,23 @@ export default function SocialSidebar({
               aria-label={social.name}
             >
               <div
-                className="w-8 h-8 rounded-md flex items-center justify-center transition-all duration-300 ease-out cursor-pointer"
+                className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 rounded-md flex items-center justify-center transition-all duration-300 ease-out cursor-pointer"
                 style={{
                   backgroundColor: hoveredIndex === index ? social.color : "rgba(15, 23, 42, 0.8)",
                   transform: hoveredIndex === index ? "scale(1.05)" : "scale(1)",
                   color: hoveredIndex === index ? "#ffffff" : iconColor,
                 }}
               >
-                <div className="w-3.5 h-3.5">
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 lg:w-3.5 lg:h-3.5">
                   {social.icon}
                 </div>
               </div>
 
-              {/* Tooltip */}
+              {/* Tooltip - only show on larger screens */}
               <div
                 className={`absolute ${
                   position === "left" ? "left-full ml-2" : "right-full mr-2"
-                } top-1/2 -translate-y-1/2 bg-slate-800 text-white px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap shadow-lg transition-all duration-200 pointer-events-none ${
+                } top-1/2 -translate-y-1/2 bg-slate-800 text-white px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap shadow-lg transition-all duration-200 pointer-events-none hidden sm:block ${
                   hoveredIndex === index
                     ? "opacity-100 visible"
                     : "opacity-0 invisible"

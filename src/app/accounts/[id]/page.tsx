@@ -7,35 +7,53 @@ import { getAccountById, accountsData } from "@/src/data/accountsData";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
+// Generate static paths for all accounts at build time
 export function generateStaticParams() {
   return accountsData.map((account) => ({
     id: account.id,
   }));
 }
 
-export default function AccountDetailsPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const account = getAccountById(params.id);
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function AccountDetailsPage({ params }: PageProps) {
+  const { id } = await params;
+  console.log("id: ", id);
+
+  const account = getAccountById(id);
 
   if (!account) {
     return (
       <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
         <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <h1 className="text-4xl font-black text-white mb-4">Account Not Found</h1>
-            <p className="text-slate-400 mb-6">
-              The account you're looking for doesn't exist.
+        <div className="flex items-center justify-center min-h-[60vh] px-4">
+          <div className="text-center max-w-2xl">
+            <h1 className="text-3xl sm:text-4xl font-black text-white mb-4">
+              Account Not Found
+            </h1>
+            <p className="text-slate-400 mb-4">
+              The account ID "{id}" doesn't exist in our database.
             </p>
-            <Link
-              href="/accounts/restricted"
-              className="text-amber-400 hover:text-amber-300 font-bold"
-            >
-              ← Back to Accounts
-            </Link>
+            <p className="text-slate-500 text-sm mb-6">
+              Available IDs: acc1, acc2, acc3, racc1, racc2, racc3, oacc1,
+              oacc2, oacc3
+            </p>
+            <div className="flex gap-4 justify-center flex-wrap">
+              <Link
+                href="/accounts/restricted"
+                className="text-amber-400 hover:text-amber-300 font-bold"
+              >
+                ← Restricted Accounts
+              </Link>
+              <Link
+                href="/accounts/open"
+                className="text-amber-400 hover:text-amber-300 font-bold"
+              >
+                Open Accounts →
+              </Link>
+            </div>
           </div>
         </div>
         <Footer />
@@ -49,22 +67,25 @@ export default function AccountDetailsPage({
       <ScrollAnimation />
 
       {/* Breadcrumb */}
-      <section className="px-4 py-6 sm:px-6 lg:px-8">
+      <section className="px-3 sm:px-4 py-4 sm:py-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <Link
             href={`/accounts/${account.category}`}
-            className="flex items-center gap-2 text-amber-400 hover:text-amber-300 font-bold transition-colors"
+            className="flex items-center gap-2 text-amber-400 hover:text-amber-300 font-bold transition-colors text-sm sm:text-base"
           >
-            <ArrowLeft className="w-4 h-4" />
-            Back to {account.category === "restricted" ? "Restricted" : "Open"} Kingdom Accounts
+            <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+            Back to {account.category === "restricted"
+              ? "Restricted"
+              : "Open"}{" "}
+            Kingdom Accounts
           </Link>
         </div>
       </section>
 
       {/* Account Details */}
-      <section className="px-4 py-8 sm:px-6 lg:px-8 fade-up">
+      <section className="px-3 sm:px-4 py-6 sm:py-8 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             {/* Left: Image Gallery */}
             <div>
               <AccountDetailsGallery
@@ -88,13 +109,13 @@ export default function AccountDetailsPage({
       </section>
 
       {/* Additional Info */}
-      <section className="px-4 py-12 sm:px-6 lg:px-8 fade-up">
+      <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl">
-          <div className="bg-gradient-to-br from-blue-900/20 to-slate-800/90 rounded-xl p-8 border-2 border-blue-500/30">
-            <h3 className="text-xl font-bold text-white mb-4">
+          <div className="bg-gradient-to-br from-blue-900/20 to-slate-800/90 rounded-xl p-5 sm:p-6 lg:p-8 border-2 border-blue-500/30">
+            <h3 className="text-lg sm:text-xl font-bold text-white mb-3 sm:mb-4">
               💡 How to Purchase
             </h3>
-            <ul className="space-y-2 text-slate-300">
+            <ul className="space-y-2 text-slate-300 text-sm sm:text-base">
               <li className="flex items-start gap-2">
                 <span className="text-amber-400 font-bold">1.</span>
                 <span>Click the "Buy This Account" button above</span>

@@ -80,12 +80,24 @@ export default function RestrictedAccountsPage() {
   const tableColumns = useMemo<TableColumn<MarketplaceProduct>[]>(
     () => [
       {
+        id: "image",
+        label: "Image",
+        className: "text-center",
+        render: (item) => (
+          <div className="flex justify-center">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-700 rounded-lg flex items-center justify-center">
+              <span className="text-2xl">🛡️</span>
+            </div>
+          </div>
+        ),
+      },
+      {
         id: "Accounts",
         label: "Accounts",
         render: (item) => (
           <div>
-            <p className="text-base font-black text-white">{item.title}</p>
-            <p className="text-xs text-slate-400">{item.description}</p>
+            <p className="text-base font-black text-white whitespace-nowrap">{item.title}</p>
+            <p className="text-xs text-slate-400 whitespace-nowrap">{item.description}</p>
           </div>
         ),
       },
@@ -94,7 +106,7 @@ export default function RestrictedAccountsPage() {
         label: "Price",
         className: "text-center",
         render: (item) => (
-          <p className="text-2xl font-black gradient-text text-center">
+          <p className="text-2xl font-black gradient-text text-center whitespace-nowrap">
             ${item.price}
           </p>
         ),
@@ -104,7 +116,7 @@ export default function RestrictedAccountsPage() {
         label: "Action",
         className: "text-center",
         render: (item) => (
-          <div className="flex gap-2 justify-center">
+          <div className="flex gap-2 justify-center whitespace-nowrap">
             <Link href={`/chat?productId=${item.id}`}>
               <Button size="sm" className="btn-game text-xs cursor-pointer">
                 Chat
@@ -127,31 +139,31 @@ export default function RestrictedAccountsPage() {
       <ScrollAnimation />
 
       <section
-        className="px-4 py-24 text-center bg-cover bg-center border-b-4 border-amber-500/30 fade-up"
+        className="px-3 sm:px-4 py-12 sm:py-20 lg:py-24 text-center bg-cover bg-center border-b-4 border-amber-500/30 fade-up"
         style={{
           backgroundImage:
             "linear-gradient(180deg, rgba(4,7,15,0.90), rgba(4,7,15,0.98)), url('https://images.unsplash.com/photo-1614732414444-096e5f1122d5?auto=format&fit=crop&w=1800&q=80')",
         }}
       >
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <Shield className="h-12 w-12 text-amber-400" />
-          <h1 className="text-5xl font-black gradient-text">
+        <div className="flex flex-col items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+          <Shield className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 text-amber-400" />
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black gradient-text text-center px-2">
             Restricted Kingdom Accounts
           </h1>
         </div>
-        <p className="text-xl text-slate-200 font-semibold max-w-2xl mx-auto">
+        <p className="text-sm sm:text-lg lg:text-xl text-slate-200 font-semibold max-w-2xl mx-auto px-4">
           Premium accounts from protected kingdoms with established alliances
           and secure environments.
         </p>
       </section>
 
-      <section className="px-4 py-12 sm:px-6 lg:px-8 fade-up">
+      <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl space-y-8">
-          <div className="flex justify-end gap-4 flex-wrap">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
             <Select
               value={priceRange}
               onChange={(e) => setPriceRange(e.target.value)}
-              className="w-36 px-3 py-1 rounded-lg bg-slate-700 text-white border-2 border-amber-500/50 focus:border-amber-400"
+              className="w-full sm:w-40 px-3 py-2 rounded-lg bg-slate-700 text-white border-2 border-amber-500/50 focus:border-amber-400 text-sm"
             >
               <option value="">All Prices</option>
               <option value="1-99">$1 - $99</option>
@@ -163,7 +175,7 @@ export default function RestrictedAccountsPage() {
             <Select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-36 px-3 py-1 rounded-lg bg-slate-700 text-white border-2 border-amber-500/50 focus:border-amber-400"
+              className="w-full sm:w-40 px-3 py-2 rounded-lg bg-slate-700 text-white border-2 border-amber-500/50 focus:border-amber-400 text-sm"
             >
               <option value="newest">Newest</option>
               <option value="price-low">Price: Low to High</option>

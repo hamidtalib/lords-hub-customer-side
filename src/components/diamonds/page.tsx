@@ -63,8 +63,8 @@ export default function DiamondsPage() {
         className: "text-center",
         render: (item) => (
           <div className="text-center">
-            <p className="text-base font-black text-white">{item.title}</p>
-            <p className="text-xs text-slate-300 line-clamp-1">
+            <p className="text-base font-black text-white whitespace-nowrap">{item.title}</p>
+            <p className="text-xs text-slate-300 whitespace-nowrap">
               {item.description || item.highlights?.[0] || "Fast top-up"}
             </p>
           </div>
@@ -76,7 +76,7 @@ export default function DiamondsPage() {
         className: "text-center",
         render: (item) => (
           <div className="text-center">
-            <p className="text-2xl font-black gradient-text">${item.price}</p>
+            <p className="text-2xl font-black gradient-text whitespace-nowrap">${item.price}</p>
           </div>
         ),
       },
@@ -85,7 +85,7 @@ export default function DiamondsPage() {
         label: "Action",
         className: "text-center",
         render: (item) => (
-          <div className="text-center">
+          <div className="text-center whitespace-nowrap">
             <Link href={`/chat?productId=${item.id}`}>
               <Button size="sm" className="btn-game text-xs cursor-pointer">
                 Order

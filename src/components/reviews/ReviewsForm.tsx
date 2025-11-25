@@ -49,20 +49,20 @@ export function ReviewsForm({ onSubmit }: ReviewsFormProps) {
 
   return (
     <Card className="border-2 border-amber-500/30 bg-gradient-to-br from-slate-800/90 to-slate-700/90 shadow-2xl">
-      <CardHeader>
-        <CardTitle className="text-2xl font-black text-white flex items-center gap-2">
+      <CardHeader className="p-4 sm:p-6">
+        <CardTitle className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
           <span className="text-amber-400">⭐</span>
           Write a Review
         </CardTitle>
-        <p className="text-slate-400 text-sm">
+        <p className="text-slate-400 text-xs sm:text-sm">
           Share your experience with Lords Hub
         </p>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <CardContent className="p-4 sm:p-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Name Input */}
           <div>
-            <label className="block text-sm font-bold text-slate-200 mb-2">
+            <label className="block text-xs sm:text-sm font-bold text-slate-200 mb-2">
               Your Name
             </label>
             <Input
@@ -70,19 +70,19 @@ export function ReviewsForm({ onSubmit }: ReviewsFormProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter your name"
-              className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400"
+              className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-400 text-sm sm:text-base"
               required
             />
           </div>
 
           {/* Rating */}
           <div>
-            <label className="block text-sm font-bold text-slate-200 mb-2">
+            <label className="block text-xs sm:text-sm font-bold text-slate-200 mb-2">
               Rating
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
               <StarRating rating={rating} onRatingChange={setRating} size="lg" />
-              <span className="text-slate-400 text-sm">
+              <span className="text-slate-400 text-xs sm:text-sm">
                 {rating > 0 ? `${rating} out of 5 stars` : "Select a rating"}
               </span>
             </div>
@@ -90,7 +90,7 @@ export function ReviewsForm({ onSubmit }: ReviewsFormProps) {
 
           {/* Review Message */}
           <div>
-            <label className="block text-sm font-bold text-slate-200 mb-2">
+            <label className="block text-xs sm:text-sm font-bold text-slate-200 mb-2">
               Your Review
             </label>
             <textarea
@@ -98,7 +98,7 @@ export function ReviewsForm({ onSubmit }: ReviewsFormProps) {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Tell us about your experience..."
               rows={5}
-              className="w-full px-3 py-2 bg-slate-700/50 border-2 border-slate-600 rounded-lg text-white placeholder:text-slate-400 focus:border-amber-500 focus:outline-none transition-colors"
+              className="w-full px-3 py-2 bg-slate-700/50 border-2 border-slate-600 rounded-lg text-white placeholder:text-slate-400 focus:border-amber-500 focus:outline-none transition-colors text-sm sm:text-base"
               required
             />
           </div>
@@ -107,13 +107,13 @@ export function ReviewsForm({ onSubmit }: ReviewsFormProps) {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white font-bold py-3"
+            className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white font-bold py-2.5 sm:py-3 text-sm sm:text-base"
           >
             {isSubmitting ? (
               "Submitting..."
             ) : (
               <>
-                <Send className="h-5 w-5 mr-2" />
+                <Send className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 Submit Review
               </>
             )}

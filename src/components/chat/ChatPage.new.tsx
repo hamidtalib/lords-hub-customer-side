@@ -51,28 +51,28 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <Card className="flex flex-col h-[600px] border-2 border-amber-500/30 bg-gradient-to-br from-slate-800/90 to-slate-700/90">
+    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-4xl">
+      <Card className="flex flex-col h-[500px] sm:h-[600px] border-2 border-amber-500/30 bg-gradient-to-br from-slate-800/90 to-slate-700/90">
         {/* Header */}
-        <CardHeader className="border-b border-amber-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-white">Customer Support</h2>
-              <p className="text-sm text-slate-400">
+        <CardHeader className="border-b border-amber-500/30 p-3 sm:p-6">
+          <div className="flex items-start sm:items-center justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-base sm:text-xl font-bold text-white truncate">Customer Support</h2>
+              <p className="text-xs sm:text-sm text-slate-400 truncate">
                 Chat with our support team
               </p>
             </div>
-            <div className="text-xs text-slate-400">
+            <div className="text-[10px] sm:text-xs text-slate-400 flex-shrink-0 bg-slate-700/50 px-2 py-1 rounded">
               ID: {session.visitorId.slice(-8)}
             </div>
           </div>
         </CardHeader>
 
         {/* Messages */}
-        <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+        <CardContent className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-3 sm:space-y-4">
           {!messages || messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">
-              <p className="text-slate-400">No messages yet. Start the conversation!</p>
+              <p className="text-slate-400 text-xs sm:text-sm text-center px-4">No messages yet. Start the conversation!</p>
             </div>
           ) : (
             <>
@@ -84,14 +84,14 @@ export default function ChatPage() {
                   }`}
                 >
                   <div
-                    className={`max-w-[70%] rounded-lg px-4 py-2 ${
+                    className={`max-w-[85%] sm:max-w-[70%] rounded-lg px-3 sm:px-4 py-2 break-words ${
                       msg.sender === "visitor"
                         ? "bg-amber-600 text-white"
                         : "bg-slate-700 text-slate-100"
                     }`}
                   >
-                    <p className="text-sm">{msg.text}</p>
-                    <p className="text-xs opacity-70 mt-1">
+                    <p className="text-xs sm:text-sm">{msg.text}</p>
+                    <p className="text-[10px] sm:text-xs opacity-70 mt-1">
                       {msg.timestamp.toLocaleTimeString()}
                     </p>
                   </div>
@@ -103,25 +103,25 @@ export default function ChatPage() {
         </CardContent>
 
         {/* Input */}
-        <div className="border-t border-amber-500/30 p-4">
-          <div className="flex space-x-2">
+        <div className="border-t border-amber-500/30 p-2 sm:p-4">
+          <div className="flex space-x-1.5 sm:space-x-2">
             <Input
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
               disabled={isSending}
-              className="flex-1 bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
+              className="flex-1 bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 text-xs sm:text-sm"
             />
             <Button
               onClick={handleSend}
               disabled={isSending || !inputText.trim()}
-              className="bg-amber-600 hover:bg-amber-700"
+              className="bg-amber-600 hover:bg-amber-700 px-3 sm:px-4"
             >
               {isSending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
               ) : (
-                <Send className="h-4 w-4" />
+                <Send className="h-3 w-3 sm:h-4 sm:w-4" />
               )}
             </Button>
           </div>

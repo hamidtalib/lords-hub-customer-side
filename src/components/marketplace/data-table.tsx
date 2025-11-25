@@ -50,16 +50,16 @@ export function MarketplaceDataTable<T extends MarketplaceProduct>({
 
   if (!data.length) {
     return (
-      <div className="relative overflow-hidden rounded-3xl border-2 border-amber-500/30 bg-gradient-to-br from-slate-900/90 via-slate-800/70 to-slate-900/90 p-8 shadow-2xl">
-        <div className="grid gap-6 md:grid-cols-2">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-amber-500/30 bg-gradient-to-br from-slate-900/90 via-slate-800/70 to-slate-900/90 p-4 sm:p-6 lg:p-8 shadow-2xl">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
           <div>
-            <h3 className="text-3xl font-black gradient-text mb-2">
+            <h3 className="text-2xl sm:text-3xl font-black gradient-text mb-2">
               {emptyTitle}
             </h3>
-            <p className="text-slate-200 font-semibold mb-6">{emptySubtitle}</p>
+            <p className="text-slate-200 font-semibold mb-4 sm:mb-6 text-sm sm:text-base">{emptySubtitle}</p>
             {emptyCta}
           </div>
-          <div className="relative h-56 w-full rounded-2xl overflow-hidden border border-amber-500/40">
+          <div className="relative h-40 sm:h-48 lg:h-56 w-full rounded-xl sm:rounded-2xl overflow-hidden border border-amber-500/40">
             <Image
               src={illustrationUrl}
               alt="Empty state illustration"
@@ -74,15 +74,15 @@ export function MarketplaceDataTable<T extends MarketplaceProduct>({
   }
 
   return (
-    <div className="overflow-hidden rounded-3xl border-2 border-amber-500/30 bg-slate-900/60 shadow-2xl">
+    <div className="overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-amber-500/30 bg-slate-900/60 shadow-2xl">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-amber-500/20">
+        <table className="w-full divide-y divide-amber-500/20">
           <thead className="bg-gradient-to-r from-amber-500/20 to-blue-500/20">
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.id}
-                  className={`px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-300 ${
+                  className={`px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-300 whitespace-nowrap ${
                     column.className ?? ""
                   } text-center`}
                 >
@@ -100,7 +100,7 @@ export function MarketplaceDataTable<T extends MarketplaceProduct>({
                 {columns.map((column) => (
                   <td
                     key={`${item.id}-${column.id}`}
-                    className={`whitespace-nowrap px-6 py-4 text-center text-sm font-semibold text-slate-200 ${
+                    className={`px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm font-semibold text-slate-200 ${
                       column.className ?? ""
                     }`}
                   >

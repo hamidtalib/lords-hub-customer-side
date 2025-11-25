@@ -17,7 +17,7 @@ export function AccountDetailsGallery({
   const [selectedImage, setSelectedImage] = useState(mainImage);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* Main Image */}
       <div className="relative w-full aspect-square bg-slate-900/50 rounded-xl overflow-hidden border-2 border-amber-500/30">
         <Image
@@ -30,7 +30,7 @@ export function AccountDetailsGallery({
       </div>
 
       {/* Thumbnail Gallery */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-4 gap-2 sm:gap-3">
         {galleryImages.map((image, index) => (
           <button
             key={index}
