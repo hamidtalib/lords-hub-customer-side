@@ -84,7 +84,7 @@ export default function GemsPageNew() {
 
       {/* Gem Calculator Section */}
       <section className="px-4 py-12 sm:px-6 lg:px-8 fade-up">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-6xl">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-black text-white mb-2">
               Calculate Your Gem Needs
@@ -100,7 +100,7 @@ export default function GemsPageNew() {
 
       {/* Info Section */}
       <section className="px-4 py-12 sm:px-6 lg:px-8 fade-up">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-6xl">
           <div className="bg-gradient-to-br from-blue-900/20 to-slate-800/90 rounded-xl p-8 border-2 border-blue-500/30">
             <h3 className="text-xl font-bold text-white mb-4">
               💡 How to Use the Calculator

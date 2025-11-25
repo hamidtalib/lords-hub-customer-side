@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { StoreProvider } from "@/src/components/providers/store-provider";
 import { FloatingChatButton } from "@/src/components/floating-chat-button";
+import SocialSidebar from "@/src/components/shared/SocialSidebar";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body className={`${geist.variable} font-sans antialiased`}>
         <StoreProvider>
           {children}
+          <SocialSidebar position="left" iconColor="#F6A600" />
           <FloatingChatButton />
           <Analytics />
         </StoreProvider>
