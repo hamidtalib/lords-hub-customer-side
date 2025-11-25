@@ -1,26 +1,81 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Send, Paperclip, X } from "lucide-react";
 import { useChat } from "@/lib/hooks/useChat";
 import { Card, CardHeader, CardContent } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 
-export default function ChatPage() {
-  const { session, messages, isLoading, isSending, sendMessage } = useChat();
-  const [inputText, setInputText] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 
-  // Auto-scroll to bottom when messages change
+export default function ChatPage() {
+  const { session, messages, isLoading, isSending, sendMessage, sendMediaMessage } = useChat();
+  const [inputText, setInputText] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-scroll to bottom when messages change - scroll the container, not the page
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
-  const handleSend = async () => {
-    if (!inputText.trim() || isSending) return;
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Reset errors
+    setFileError(null);
+
+    // Check file size
+    if (file.size > MAX_FILE_SIZE) {
+      setFileError("File size must be less than 2MB");
+      return;
+    }
+
+    // Check file type
+    const isImage = file.type.startsWith("image/");
+    const isVideo = file.type.startsWith("video/");
     
-    await sendMessage(inputText);
+    if (!isImage && !isVideo) {
+      setFileError("Only images and videos are allowed");
+      return;
+    }
+
+    setSelectedFile(file);
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFilePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+    setFilePreview(null);
+    setFileError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleSend = async () => {
+    if ((!inputText.trim() && !selectedFile) || isSending) return;
+    
+    if (selectedFile) {
+      await sendMediaMessage(inputText || "", selectedFile);
+      handleRemoveFile();
+    } else {
+      await sendMessage(inputText);
+    }
     setInputText("");
   };
 
@@ -69,7 +124,10 @@ export default function ChatPage() {
         </CardHeader>
 
         {/* Messages */}
-        <CardContent className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-3 sm:space-y-4">
+        <CardContent 
+          ref={messagesContainerRef}
+          className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-3 sm:space-y-4"
+        >
           {!messages || messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">
               <p className="text-slate-400 text-xs sm:text-sm text-center px-4">No messages yet. Start the conversation!</p>
@@ -90,7 +148,24 @@ export default function ChatPage() {
                         : "bg-slate-700 text-slate-100"
                     }`}
                   >
-                    <p className="text-xs sm:text-sm">{msg.text}</p>
+                    {msg.mediaUrl && (
+                      <div className="mb-2">
+                        {msg.mediaType === "image" ? (
+                          <img 
+                            src={msg.mediaUrl} 
+                            alt="Shared media" 
+                            className="rounded max-w-full h-auto max-h-64 object-contain"
+                          />
+                        ) : msg.mediaType === "video" ? (
+                          <video 
+                            src={msg.mediaUrl} 
+                            controls 
+                            className="rounded max-w-full h-auto max-h-64"
+                          />
+                        ) : null}
+                      </div>
+                    )}
+                    {msg.text && <p className="text-xs sm:text-sm">{msg.text}</p>}
                     <p className="text-[10px] sm:text-xs opacity-70 mt-1">
                       {msg.timestamp.toLocaleTimeString()}
                     </p>
@@ -104,7 +179,55 @@ export default function ChatPage() {
 
         {/* Input */}
         <div className="border-t border-amber-500/30 p-2 sm:p-4">
+          {/* File Preview */}
+          {filePreview && (
+            <div className="mb-2 relative inline-block">
+              <div className="relative bg-slate-700 rounded-lg p-2">
+                {selectedFile?.type.startsWith("image/") ? (
+                  <img 
+                    src={filePreview} 
+                    alt="Preview" 
+                    className="max-h-20 rounded"
+                  />
+                ) : (
+                  <video 
+                    src={filePreview} 
+                    className="max-h-20 rounded"
+                  />
+                )}
+                <button
+                  onClick={handleRemoveFile}
+                  className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 rounded-full p-1"
+                >
+                  <X className="h-3 w-3 text-white" />
+                </button>
+              </div>
+            </div>
+          )}
+          
+          {/* Error Message */}
+          {fileError && (
+            <div className="mb-2 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded">
+              {fileError}
+            </div>
+          )}
+
           <div className="flex space-x-1.5 sm:space-x-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,video/*"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isSending}
+              variant="outline"
+              className="bg-slate-700 hover:bg-slate-600 border-slate-600 px-3 sm:px-4"
+            >
+              <Paperclip className="h-3 w-3 sm:h-4 sm:w-4" />
+            </Button>
             <Input
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
@@ -115,7 +238,7 @@ export default function ChatPage() {
             />
             <Button
               onClick={handleSend}
-              disabled={isSending || !inputText.trim()}
+              disabled={isSending || (!inputText.trim() && !selectedFile)}
               className="bg-amber-600 hover:bg-amber-700 px-3 sm:px-4"
             >
               {isSending ? (

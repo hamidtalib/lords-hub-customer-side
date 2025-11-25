@@ -11,7 +11,8 @@ import {
   Timestamp,
   serverTimestamp,
 } from "firebase/firestore";
-import { firestore } from "./firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { firestore, storage } from "./firebase";
 import { getOrCreateVisitorId } from "@/lib/utils/visitorId";
 
 /**
@@ -51,6 +52,8 @@ export interface ChatMessage {
   text: string;
   timestamp: Date;
   read: boolean;
+  mediaUrl?: string;
+  mediaType?: "image" | "video";
 }
 
 /**
@@ -140,6 +143,62 @@ export async function sendMessage(text: string): Promise<ChatMessage> {
 }
 
 /**
+ * Send a message with media (image or video) from visitor to admin
+ * 
+ * @param {string} text - Message text (optional)
+ * @param {File} file - Media file to upload
+ * @returns {Promise<ChatMessage>} The sent message
+ */
+export async function sendMediaMessage(text: string, file: File): Promise<ChatMessage> {
+  const visitorId = getOrCreateVisitorId();
+  
+  // Ensure session exists
+  await createOrGetChatSession();
+
+  // Upload file to Firebase Storage
+  const timestamp = Date.now();
+  const fileName = `${timestamp}_${file.name}`;
+  const storageRef = ref(storage, `chat/${visitorId}/${fileName}`);
+  
+  await uploadBytes(storageRef, file);
+  const mediaUrl = await getDownloadURL(storageRef);
+
+  // Determine media type
+  const mediaType = file.type.startsWith("image/") ? "image" : "video";
+
+  // Add message to subcollection
+  const messagesRef = collection(firestore, "chatSessions", visitorId, "messages");
+  const messageData = {
+    sender: "visitor" as const,
+    text,
+    mediaUrl,
+    mediaType,
+    timestamp: serverTimestamp(),
+    read: false,
+  };
+
+  const docRef = await addDoc(messagesRef, messageData);
+
+  // Update session's lastMessage and updatedAt
+  const sessionRef = doc(firestore, "chatSessions", visitorId);
+  const lastMessage = text || `[${mediaType}]`;
+  await setDoc(sessionRef, {
+    lastMessage,
+    updatedAt: serverTimestamp(),
+  }, { merge: true });
+
+  return {
+    id: docRef.id,
+    sender: "visitor",
+    text,
+    mediaUrl,
+    mediaType,
+    timestamp: new Date(),
+    read: false,
+  };
+}
+
+/**
  * Load all messages for current visitor
  * Loads from chatSessions/{visitorId}/messages subcollection
  * 
@@ -203,6 +262,8 @@ export function subscribeToMessages(
           text: data.text,
           timestamp: data.timestamp?.toDate() || new Date(),
           read: data.read || false,
+          mediaUrl: data.mediaUrl,
+          mediaType: data.mediaType,
         });
       });
 

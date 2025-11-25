@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { initializeChat, sendChatMessage, setMessages } from "@/store/chat/chatSlice.new";
+import { initializeChat, sendChatMessage, sendChatMediaMessage, setMessages } from "@/store/chat/chatSlice.new";
 import { subscribeToMessages } from "@/store/lib/firebaseChat";
 
 /**
@@ -42,6 +42,11 @@ export function useChat() {
     await dispatch(sendChatMessage(text));
   };
 
+  // Send media message function
+  const sendMediaMessage = async (text: string, file: File) => {
+    await dispatch(sendChatMediaMessage({ text, file }));
+  };
+
   return {
     session,
     messages,
@@ -49,5 +54,6 @@ export function useChat() {
     isSending,
     error,
     sendMessage,
+    sendMediaMessage,
   };
 }

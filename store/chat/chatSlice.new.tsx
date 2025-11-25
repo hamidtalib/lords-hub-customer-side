@@ -5,6 +5,7 @@ import {
   createOrGetChatSession,
   loadMessages,
   sendMessage,
+  sendMediaMessage,
   subscribeToMessages,
 } from "@/store/lib/firebaseChat";
 
@@ -38,6 +39,14 @@ export const sendChatMessage = createAsyncThunk(
   "chat/sendMessage",
   async (text: string) => {
     const message = await sendMessage(text);
+    return message;
+  }
+);
+
+export const sendChatMediaMessage = createAsyncThunk(
+  "chat/sendMediaMessage",
+  async ({ text, file }: { text: string; file: File }) => {
+    const message = await sendMediaMessage(text, file);
     return message;
   }
 );
@@ -83,6 +92,19 @@ const chatSlice = createSlice({
     builder.addCase(sendChatMessage.rejected, (state, action) => {
       state.isSending = false;
       state.error = action.error.message || "Failed to send message";
+    });
+
+    // Send media message
+    builder.addCase(sendChatMediaMessage.pending, (state) => {
+      state.isSending = true;
+      state.error = null;
+    });
+    builder.addCase(sendChatMediaMessage.fulfilled, (state) => {
+      state.isSending = false;
+    });
+    builder.addCase(sendChatMediaMessage.rejected, (state, action) => {
+      state.isSending = false;
+      state.error = action.error.message || "Failed to send media message";
     });
   },
 });

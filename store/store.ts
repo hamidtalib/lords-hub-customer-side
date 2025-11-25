@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import chatReducer from "./chat/chatSlice.new";
+import offersReducer from "./offers/offersSlice";
 
 export const store = configureStore({
   reducer: {
     chat: chatReducer,
+    offers: offersReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
