@@ -1,11 +1,45 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Facebook, Instagram, MessageCircle, Send } from "lucide-react";
+import { toast } from "react-toastify";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
+import { subscribeToNewsletter } from "@/store/lib/firebaseNewsletter";
 import logo from "@/public/images/lords-hub-logo.png";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email) {
+      toast.error("Please enter your email");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const result = await subscribeToNewsletter(email);
+      
+      if (result.success) {
+        toast.success(result.message);
+        setEmail("");
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <footer className="border-t-2 border-amber-500/30 bg-gradient-to-b from-slate-800/90 to-slate-900/90">
       <div className="mx-auto max-w-7xl px-3 sm:px-4 pt-12 sm:pt-16 pb-6 sm:pb-8 lg:px-8">
@@ -108,19 +142,28 @@ export default function Footer() {
             <p className="text-xs sm:text-sm text-slate-300 mb-3 sm:mb-4 font-semibold text-center md:text-left max-w-xs">
               Get updates on new accounts and deals.
             </p>
-            <div className="flex flex-col sm:flex-row gap-2 w-full max-w-xs">
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 w-full max-w-xs">
               <Input
                 type="email"
                 placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isSubmitting}
                 className="border-2 border-amber-500/50 focus:border-amber-400 bg-slate-700/50 text-white placeholder:text-slate-400 text-xs sm:text-sm font-semibold transition-all duration-300 flex-1"
               />
               <Button
+                type="submit"
                 size="sm"
+                disabled={isSubmitting}
                 className="btn-secondary font-bold w-full sm:w-auto"
               >
-                <Send className="h-3 w-3 sm:h-4 sm:w-4" />
+                {isSubmitting ? (
+                  <span className="text-xs">...</span>
+                ) : (
+                  <Send className="h-3 w-3 sm:h-4 sm:w-4" />
+                )}
               </Button>
-            </div>
+            </form>
           </div>
         </div>
 

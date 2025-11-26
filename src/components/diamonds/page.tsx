@@ -1,12 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
-import {
-  MarketplaceDataTable,
-  TableColumn,
-} from "@/src/components/marketplace/data-table";
 import { MarketplaceProduct } from "@/store/lib/types/products";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 
@@ -55,49 +50,6 @@ export default function DiamondsPage() {
     },
   ];
 
-  const tableColumns = useMemo<TableColumn<MarketplaceProduct>[]>(
-    () => [
-      {
-        id: "bundle",
-        label: "Bundle",
-        className: "text-center",
-        render: (item) => (
-          <div className="text-center">
-            <p className="text-base font-black text-white whitespace-nowrap">{item.title}</p>
-            <p className="text-xs text-slate-300 whitespace-nowrap">
-              {item.description || item.highlights?.[0] || "Fast top-up"}
-            </p>
-          </div>
-        ),
-      },
-      {
-        id: "price",
-        label: "Price",
-        className: "text-center",
-        render: (item) => (
-          <div className="text-center">
-            <p className="text-2xl font-black gradient-text whitespace-nowrap">${item.price}</p>
-          </div>
-        ),
-      },
-      {
-        id: "action",
-        label: "Action",
-        className: "text-center",
-        render: (item) => (
-          <div className="text-center whitespace-nowrap">
-            <Link href={`/chat?productId=${item.id}`}>
-              <Button size="sm" className="btn-game text-xs cursor-pointer">
-                Order
-              </Button>
-            </Link>
-          </div>
-        ),
-      },
-    ],
-    []
-  );
-
   return (
     <>
       <ScrollAnimation />
@@ -130,19 +82,52 @@ export default function DiamondsPage() {
             </h2>
           </div>
 
-          <MarketplaceDataTable
-            data={diamondProducts}
-            columns={tableColumns}
-            emptyTitle="No diamonds added yet"
-            emptySubtitle="Once your admin uploads products, they will appear here."
-            emptyCta={
+          {diamondProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-xl font-bold text-white mb-2">
+                No diamonds added yet
+              </p>
+              <p className="text-slate-400 mb-4">
+                Once your admin uploads products, they will appear here.
+              </p>
               <Link href="/chat">
                 <Button className="btn-secondary font-bold cursor-pointer">
                   Request Drop
                 </Button>
               </Link>
-            }
-          />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {diamondProducts.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-amber-500/30 overflow-hidden hover:border-amber-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20 p-6 text-center"
+                >
+                  <div className="mb-4">
+                    <div className="text-5xl mb-3">💎</div>
+                    <h3 className="text-xl font-black text-white mb-1">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-slate-400">
+                      {item.description ||
+                        item.highlights?.[0] ||
+                        "Fast top-up"}
+                    </p>
+                  </div>
+                  <div className="pt-4 border-t border-slate-700">
+                    <p className="text-3xl font-black gradient-text mb-4">
+                      ${item.price}
+                    </p>
+                    <Link href={`/chat?productId=${item.id}`}>
+                      <Button size="sm" className="btn-game text-xs w-full">
+                        Order Now
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>

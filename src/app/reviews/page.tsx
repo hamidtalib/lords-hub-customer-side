@@ -7,54 +7,27 @@ import { ReviewsForm } from "@/src/components/reviews/ReviewsForm";
 import { ReviewsList, Review } from "@/src/components/reviews/ReviewsList";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Star } from "lucide-react";
-
-const STORAGE_KEY = "lords-hub-reviews";
+import { subscribeToReviews, calculateAverageRating } from "@/store/lib/firebaseReviews";
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load reviews from localStorage on mount
+  // Subscribe to real-time reviews updates
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        setReviews(JSON.parse(saved));
-      }
-    } catch (error) {
-      console.error("Failed to load reviews:", error);
-    }
+    const unsubscribe = subscribeToReviews((fetchedReviews) => {
+      setReviews(fetchedReviews);
+      setIsLoading(false);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, []);
 
-  // Save reviews to localStorage whenever they change
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
-    } catch (error) {
-      console.error("Failed to save reviews:", error);
-    }
-  }, [reviews]);
-
-  const handleSubmitReview = async (reviewData: {
-    name: string;
-    rating: number;
-    message: string;
-  }) => {
-    const newReview: Review = {
-      id: `review_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-      name: reviewData.name,
-      rating: reviewData.rating,
-      message: reviewData.message,
-      date: new Date().toISOString(),
-    };
-
-    setReviews((prev) => [newReview, ...prev]);
-  };
-
   // Calculate average rating
-  const averageRating =
-    reviews.length > 0
-      ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
-      : "0.0";
+  const averageRating = reviews.length > 0 
+    ? calculateAverageRating(reviews).toFixed(1)
+    : "0.0";
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
@@ -95,14 +68,21 @@ export default function ReviewsPage() {
       {/* Review Form Section */}
       <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8 fade-up">
         <div className="mx-auto max-w-4xl">
-          <ReviewsForm onSubmit={handleSubmitReview} />
+          <ReviewsForm />
         </div>
       </section>
 
       {/* Reviews List Section */}
       <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl">
-          <ReviewsList reviews={reviews} />
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-amber-500 border-t-transparent"></div>
+              <p className="text-slate-400 mt-4">Loading reviews...</p>
+            </div>
+          ) : (
+            <ReviewsList reviews={reviews} />
+          )}
         </div>
       </section>
 

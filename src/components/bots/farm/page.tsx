@@ -1,87 +1,90 @@
 "use client";
 
 import Link from "next/link";
+import Header from "@/src/components/header";
+import Footer from "@/src/components/footer";
 import { Button } from "@/src/components/ui/button";
 import { MarketplaceProduct } from "@/store/lib/types/products";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
-import { Swords } from "lucide-react";
+import { Wheat } from "lucide-react";
 
-export default function WarBotsPage() {
+export default function FarmBots() {
   const botProducts: MarketplaceProduct[] = [
     {
-      id: "wbot1",
-      title: "Basic War Bot",
-      description: "Automated rally participation and troop management",
+      id: "farmbot1",
+      title: "Basic Farm Bot",
+      description: "Automated resource farming for single account",
       tier: "Basic",
-      highlights: ["Auto-rally join", "Troop healing", "Shield management"],
-      price: 8,
-      stock: 15,
+      highlights: ["Auto farming", "Resource collection", "Basic scheduling"],
+      price: 7,
+      stock: 20,
       category: "bots",
     },
     {
-      id: "wbot2",
-      title: "Advanced War Bot",
-      description: "Full KvK automation with strategic targeting",
+      id: "farmbot2",
+      title: "Advanced Farm Bot",
+      description: "Multi-account farm management with smart routing",
       tier: "Premium",
       highlights: [
-        "Smart targeting",
-        "Rally coordination",
-        "Real-time alerts",
-        "Anti-detection",
+        "Multi-account support",
+        "Smart resource routing",
+        "Auto-shielding",
+        "Gathering optimization",
       ],
       price: 12,
-      stock: 8,
+      stock: 10,
       category: "bots",
     },
     {
-      id: "wbot3",
-      title: "Elite War Bot",
-      description: "Professional-grade war automation with AI tactics",
+      id: "farmbot3",
+      title: "Elite Farm Bot",
+      description: "Professional farm empire automation with AI optimization",
       tier: "Elite",
       highlights: [
-        "AI-powered tactics",
-        "Multi-account sync",
-        "Priority support",
-        "Custom strategies",
+        "Unlimited accounts",
+        "AI resource optimization",
+        "Bank account management",
+        "Priority support 24/7",
+        "Custom farm strategies",
       ],
-      price: 15,
-      stock: 5,
+      price: 18,
+      stock: 6,
       category: "bots",
     },
   ];
 
   return (
-    <>
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
       <ScrollAnimation />
 
       <section
-        className="px-3 sm:px-4 py-12 sm:py-20 lg:py-24 lg:px-8 bg-cover bg-center border-b-4 border-blue-500/30 fade-up"
+        className="px-3 sm:px-4 py-12 sm:py-20 lg:py-24 lg:px-8 bg-cover bg-center border-b-4 border-green-500/30 fade-up"
         style={{
           backgroundImage:
-            "linear-gradient(180deg, rgba(6,9,20,0.85), rgba(6,9,20,0.95)), url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1600&q=80')",
+            "linear-gradient(180deg, rgba(6,9,20,0.85), rgba(6,9,20,0.95)), url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1600&q=80')",
         }}
       >
         <div className="mx-auto max-w-6xl text-center">
           <div className="flex flex-col items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <Swords className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 text-red-400" />
+            <Wheat className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 text-green-400" />
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black gradient-text text-center">
-              War Bots
+              Farm/Bank Bots
             </h1>
           </div>
           <p className="text-sm sm:text-lg lg:text-xl text-slate-200 font-semibold max-w-2xl mx-auto px-4">
-            Dominate Kingdom vs Kingdom battles with automated war strategies
-            and rally coordination.
+            Automate your resource farming empire with intelligent multi-account
+            management and bank coordination.
           </p>
         </div>
       </section>
 
       <section className="px-3 sm:px-4 py-4 sm:py-6 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl">
-          <Alert className="border-2 border-red-500/50 bg-gradient-to-r from-red-500/20 to-red-400/10 shadow-lg rounded-xl">
+          <Alert className="border-2 border-green-500/50 bg-gradient-to-r from-green-500/20 to-green-400/10 shadow-lg rounded-xl">
             <AlertDescription className="text-slate-200 text-xs sm:text-sm lg:text-base font-bold">
-              ⚔️ War Bots: Automated rally participation, strategic targeting,
-              and real-time battle coordination!
+              🌾 Farm/Bank Bots: Automated resource gathering, multi-account
+              management, and smart resource routing to your main account!
             </AlertDescription>
           </Alert>
         </div>
@@ -92,10 +95,10 @@ export default function WarBotsPage() {
           {botProducts.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">
-                No war bots available
+                No farm bots available
               </p>
               <p className="text-slate-400">
-                Check back soon for new war bot services.
+                Check back soon for new farm bot services.
               </p>
             </div>
           ) : (
@@ -103,7 +106,7 @@ export default function WarBotsPage() {
               {botProducts.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-red-500/30 overflow-hidden hover:border-red-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-red-500/20 p-6 flex flex-col"
+                  className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-green-500/30 overflow-hidden hover:border-green-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 p-6 flex flex-col"
                 >
                   <div className="flex-grow">
                     <div className="mb-4">
@@ -124,7 +127,7 @@ export default function WarBotsPage() {
                             key={highlight}
                             className="flex items-start gap-2"
                           >
-                            <span className="text-red-400">•</span>
+                            <span className="text-green-400">•</span>
                             <span>{highlight}</span>
                           </li>
                         ))}
@@ -148,6 +151,6 @@ export default function WarBotsPage() {
           )}
         </div>
       </section>
-    </>
+    </main>
   );
 }

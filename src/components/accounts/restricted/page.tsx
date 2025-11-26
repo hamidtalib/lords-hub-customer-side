@@ -3,14 +3,11 @@
 import { useState, useMemo } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Select } from "@/src/components/ui/select";
-import {
-  MarketplaceDataTable,
-  TableColumn,
-} from "@/src/components/marketplace/data-table";
 import { MarketplaceProduct } from "@/store/lib/types/products";
 import Link from "next/link";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Shield } from "lucide-react";
+import { getAccountById } from "@/src/data/accountsData";
 
 export default function RestrictedAccountsPage() {
   const [priceRange, setPriceRange] = useState<string>("");
@@ -77,63 +74,6 @@ export default function RestrictedAccountsPage() {
     return result;
   }, [priceRange, sortBy]);
 
-  const tableColumns = useMemo<TableColumn<MarketplaceProduct>[]>(
-    () => [
-      {
-        id: "image",
-        label: "Image",
-        className: "text-center",
-        render: (item) => (
-          <div className="flex justify-center">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-700 rounded-lg flex items-center justify-center">
-              <span className="text-2xl">🛡️</span>
-            </div>
-          </div>
-        ),
-      },
-      {
-        id: "Accounts",
-        label: "Accounts",
-        render: (item) => (
-          <div>
-            <p className="text-base font-black text-white whitespace-nowrap">{item.title}</p>
-            <p className="text-xs text-slate-400 whitespace-nowrap">{item.description}</p>
-          </div>
-        ),
-      },
-      {
-        id: "price",
-        label: "Price",
-        className: "text-center",
-        render: (item) => (
-          <p className="text-2xl font-black gradient-text text-center whitespace-nowrap">
-            ${item.price}
-          </p>
-        ),
-      },
-      {
-        id: "actions",
-        label: "Action",
-        className: "text-center",
-        render: (item) => (
-          <div className="flex gap-2 justify-center whitespace-nowrap">
-            <Link href={`/chat?productId=${item.id}`}>
-              <Button size="sm" className="btn-game text-xs cursor-pointer">
-                Chat
-              </Button>
-            </Link>
-            <Link href={`/accounts/${item.id}`}>
-              <Button size="sm" className="btn-game text-xs cursor-pointer">
-                View Details
-              </Button>
-            </Link>
-          </div>
-        ),
-      },
-    ],
-    []
-  );
-
   return (
     <>
       <ScrollAnimation />
@@ -158,7 +98,7 @@ export default function RestrictedAccountsPage() {
       </section>
 
       <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8 fade-up">
-        <div className="mx-auto max-w-6xl space-y-8">
+        <div className="mx-auto max-w-7xl space-y-8">
           <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
             <Select
               value={priceRange}
@@ -184,13 +124,76 @@ export default function RestrictedAccountsPage() {
             </Select>
           </div>
 
-          <MarketplaceDataTable
-            data={filteredProducts}
-            columns={tableColumns}
-            isLoading={false}
-            emptyTitle="No restricted accounts found"
-            emptySubtitle="Try adjusting your price filter or check back later for new listings."
-          />
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-xl font-bold text-white mb-2">No restricted accounts found</p>
+              <p className="text-slate-400">Try adjusting your price filter or check back later for new listings.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {filteredProducts.map((item) => {
+                const accountData = getAccountById(item.id);
+                return (
+                  <div
+                    key={item.id}
+                    className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-amber-500/30 overflow-hidden hover:border-amber-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20"
+                  >
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={accountData?.mainImage || "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-2 right-2 bg-amber-500 text-slate-900 px-3 py-1 rounded-full text-xs font-bold">
+                        {item.tier}
+                      </div>
+                    </div>
+                    <div className="p-4 space-y-3">
+                      <div>
+                        <h3 className="text-lg font-black text-white mb-1">{item.title}</h3>
+                        <p className="text-sm text-slate-400">{item.description}</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-slate-400">Might</p>
+                          <p className="text-white font-bold">{(Number(item.might) / 1000000).toFixed(0)}M</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-slate-400">Troops</p>
+                          <p className="text-white font-bold">{item.troops}</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-slate-400">Heroes</p>
+                          <p className="text-white font-bold">{item.heroes}</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-slate-400">Gems</p>
+                          <p className="text-white font-bold">{item.gems}</p>
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t border-slate-700">
+                        <p className="text-2xl font-black gradient-text text-center mb-3">
+                          ${item.price}
+                        </p>
+                        <div className="flex gap-2">
+                          <Link href={`/chat?productId=${item.id}`} className="flex-1">
+                            <Button size="sm" className="btn-game text-xs w-full">
+                              Chat
+                            </Button>
+                          </Link>
+                          <Link href={`/accounts/${item.id}`} className="flex-1">
+                            <Button size="sm" className="btn-game text-xs w-full">
+                              Details
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
     </>

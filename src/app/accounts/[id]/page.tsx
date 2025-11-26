@@ -20,8 +20,6 @@ type PageProps = {
 
 export default async function AccountDetailsPage({ params }: PageProps) {
   const { id } = await params;
-  console.log("id: ", id);
-
   const account = getAccountById(id);
 
   if (!account) {

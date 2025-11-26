@@ -1,21 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
 import { StarRating } from "./StarRating";
+import { toast } from "react-toastify";
+import { submitReview } from "@/store/lib/firebaseReviews";
 import { Send } from "lucide-react";
 
-interface ReviewsFormProps {
-  onSubmit: (review: {
-    name: string;
-    rating: number;
-    message: string;
-  }) => void;
-}
-
-export function ReviewsForm({ onSubmit }: ReviewsFormProps) {
+export function ReviewsForm() {
   const [name, setName] = useState("");
   const [rating, setRating] = useState(0);
   const [message, setMessage] = useState("");
@@ -23,25 +22,28 @@ export function ReviewsForm({ onSubmit }: ReviewsFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name || rating === 0 || !message) {
-      alert("Please fill in all fields and select a rating");
+      toast.error("Please fill in all fields and select a rating");
       return;
     }
 
     setIsSubmitting(true);
-    
+
     try {
-      await onSubmit({ name, rating, message });
-      
-      // Reset form
-      setName("");
-      setRating(0);
-      setMessage("");
-      
-      alert("Thank you for your review!");
+      const result = await submitReview({ name, rating, message });
+
+      if (result.success) {
+        toast.success(result.message);
+        // Reset form on success
+        setName("");
+        setRating(0);
+        setMessage("");
+      } else {
+        toast.error(result.message);
+      }
     } catch (error) {
-      alert("Failed to submit review. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -81,7 +83,11 @@ export function ReviewsForm({ onSubmit }: ReviewsFormProps) {
               Rating
             </label>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-              <StarRating rating={rating} onRatingChange={setRating} size="lg" />
+              <StarRating
+                rating={rating}
+                onRatingChange={setRating}
+                size="lg"
+              />
               <span className="text-slate-400 text-xs sm:text-sm">
                 {rating > 0 ? `${rating} out of 5 stars` : "Select a rating"}
               </span>
