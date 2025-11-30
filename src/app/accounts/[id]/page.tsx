@@ -1,29 +1,48 @@
+"use client";
+
+import { useEffect } from "react";
+import { useParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { fetchAccountById } from "@/store/thunks/accountsThunk";
 import Header from "@/src/components/header";
 import Footer from "@/src/components/footer";
 import { AccountDetailsGallery } from "@/src/components/accounts/AccountDetailsGallery";
 import { AccountDetailsHeader } from "@/src/components/accounts/AccountDetailsHeader";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
-import { getAccountById, getAllAccounts } from "@/store/lib/firebaseAccounts";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export default function AccountDetailsPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const dispatch = useDispatch<AppDispatch>();
+  
+  const { selectedAccount: account, loading } = useSelector(
+    (state: RootState) => state.accounts
+  );
 
-// Generate static paths for all accounts at build time
-export async function generateStaticParams() {
-  const accounts = await getAllAccounts();
-  return accounts.map((account) => ({
-    id: account.id,
-  }));
-}
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchAccountById(id));
+    }
+  }, [id, dispatch]);
 
-type PageProps = {
-  params: Promise<{ id: string }>;
-};
-
-export default async function AccountDetailsPage({ params }: PageProps) {
-  const { id } = await params;
-  const account = await getAccountById(id);
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+        <Header />
+        <div className="flex items-center justify-center min-h-[60vh] px-4">
+          <div className="text-center">
+            <p className="text-xl font-bold text-white mb-2">
+              Loading account details...
+            </p>
+          </div>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
 
   if (!account) {
     return (

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChatMessage, ChatSession, createOrGetChatSession, loadMessages, sendMessage, sendMediaMessage } from "../thunks/chatThunk";
+import { ChatMessage, ChatSession, createOrGetChatSession, loadMessages, sendMessage, sendMediaMessage, sendAdminWelcomeMessage } from "../thunks/chatThunk";
 
 interface ChatState {
   session: ChatSession | null;
@@ -7,6 +7,7 @@ interface ChatState {
   isLoading: boolean;
   isSending: boolean;
   error: string | null;
+  optimisticMessages: ChatMessage[];
 }
 
 const initialState: ChatState = {
@@ -15,6 +16,7 @@ const initialState: ChatState = {
   isLoading: false,
   isSending: false,
   error: null,
+  optimisticMessages: [],
 };
 
 const chatSlice = createSlice({
@@ -41,6 +43,17 @@ const chatSlice = createSlice({
     },
     clearMessages(state) {
       state.messages = [];
+    },
+    addOptimisticMessage(state, action: PayloadAction<ChatMessage>) {
+      state.optimisticMessages.push(action.payload);
+    },
+    removeOptimisticMessage(state, action: PayloadAction<string>) {
+      state.optimisticMessages = state.optimisticMessages.filter(
+        (msg) => msg.id !== action.payload
+      );
+    },
+    clearOptimisticMessages(state) {
+      state.optimisticMessages = [];
     },
   },
   extraReducers: (builder) => {
@@ -80,26 +93,56 @@ const chatSlice = createSlice({
         state.isSending = true;
         state.error = null;
       })
-      .addCase(sendMessage.fulfilled, (state) => {
+      .addCase(sendMessage.fulfilled, (state, action) => {
         state.isSending = false;
+        // Remove optimistic message with matching temp ID
+        const tempId = action.meta.arg; // The text we sent
+        state.optimisticMessages = state.optimisticMessages.filter(
+          (msg) => msg.text !== tempId
+        );
       })
       .addCase(sendMessage.rejected, (state, action) => {
         state.isSending = false;
         state.error = action.payload as string;
+        // Remove failed optimistic message
+        const tempId = action.meta.arg;
+        state.optimisticMessages = state.optimisticMessages.filter(
+          (msg) => msg.text !== tempId
+        );
       });
 
     // Send media message
     builder
-      .addCase(sendMediaMessage.pending, (state) => {
+      .addCase(sendMediaMessage.pending, (state, action) => {
         state.isSending = true;
         state.error = null;
       })
-      .addCase(sendMediaMessage.fulfilled, (state) => {
+      .addCase(sendMediaMessage.fulfilled, (state, action) => {
         state.isSending = false;
+        // Remove optimistic message
+        state.optimisticMessages = state.optimisticMessages.filter(
+          (msg) => msg.status !== "sending"
+        );
       })
       .addCase(sendMediaMessage.rejected, (state, action) => {
         state.isSending = false;
         state.error = action.payload as string;
+        // Remove failed optimistic message
+        state.optimisticMessages = state.optimisticMessages.filter(
+          (msg) => msg.status !== "sending"
+        );
+      });
+
+    // Send admin welcome message
+    builder
+      .addCase(sendAdminWelcomeMessage.pending, (state) => {
+        // Don't set loading state for welcome message
+      })
+      .addCase(sendAdminWelcomeMessage.fulfilled, (state, action) => {
+        // Message will be picked up by real-time listener
+      })
+      .addCase(sendAdminWelcomeMessage.rejected, (state, action) => {
+        // Silently fail - not critical
       });
   },
 });
@@ -112,6 +155,9 @@ export const {
   setSending,
   setError,
   clearMessages,
+  addOptimisticMessage,
+  removeOptimisticMessage,
+  clearOptimisticMessages,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

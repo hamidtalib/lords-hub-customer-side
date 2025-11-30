@@ -4,9 +4,13 @@ import { collection, getDocs } from "firebase/firestore";
 
 export interface GemItem {
   id: string;
-  name: string;
-  gemCost: number;
-  tab: string;
+  itemName: string; // This is what shows in the UI
+  name: string; // Computed from itemName for compatibility
+  quantity: number; // This is the gem cost
+  gemCost: number; // Computed from quantity for compatibility
+  tabName: string; // The tab this item belongs to
+  tab: string; // Computed from tabName for compatibility
+  createdAt?: any;
   order?: number;
 }
 
@@ -22,10 +26,20 @@ export const loadGems = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const snapshot = await getDocs(collection(firestore, "gems"));
-      const items: GemItem[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as GemItem[];
+      const items: GemItem[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          itemName: data.itemName || "",
+          name: data.itemName || "", // Use itemName as name
+          quantity: data.quantity || 0,
+          gemCost: data.quantity || 0, // quantity is the gem cost
+          tabName: data.tabName || "",
+          tab: data.tabName || "", // Use tabName as tab
+          createdAt: data.createdAt,
+          order: data.order,
+        };
+      }) as GemItem[];
 
       return items;
     } catch (error: any) {

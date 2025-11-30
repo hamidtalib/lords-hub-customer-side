@@ -158,10 +158,10 @@ export default function ChatPage() {
                       msg.sender === "visitor"
                         ? "bg-amber-600 text-white"
                         : "bg-slate-700 text-slate-100"
-                    }`}
+                    } ${msg.status === "sending" ? "opacity-60" : ""}`}
                   >
                     {msg.mediaUrl && (
-                      <div className="mb-2">
+                      <div className="mb-2 relative">
                         {msg.mediaType === "image" ? (
                           <img
                             src={msg.mediaUrl}
@@ -175,13 +175,53 @@ export default function ChatPage() {
                             className="rounded max-w-full h-auto max-h-64"
                           />
                         ) : null}
+                        {msg.status === "sending" && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded">
+                            <Loader2 className="h-6 w-6 animate-spin text-white" />
+                          </div>
+                        )}
                       </div>
                     )}
                     {msg.text && (
-                      <p className="text-xs sm:text-sm">{msg.text}</p>
+                      <div className="flex items-center gap-2">
+                        <div className="text-xs sm:text-sm flex-1 whitespace-pre-wrap">
+                          {msg.text.split('\n').map((line, i) => {
+                            // Check if line contains a URL
+                            const urlRegex = /(https?:\/\/[^\s]+)/g;
+                            const parts = line.split(urlRegex);
+                            
+                            return (
+                              <div key={i}>
+                                {parts.map((part, j) => {
+                                  if (part.match(urlRegex)) {
+                                    return (
+                                      <a
+                                        key={j}
+                                        href={part}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-300 hover:text-blue-200 underline break-all"
+                                      >
+                                        {part}
+                                      </a>
+                                    );
+                                  }
+                                  return <span key={j}>{part}</span>;
+                                })}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {msg.status === "sending" && !msg.mediaUrl && (
+                          <Loader2 className="h-3 w-3 animate-spin flex-shrink-0" />
+                        )}
+                      </div>
                     )}
                     <p className="text-[10px] sm:text-xs opacity-70 mt-1">
                       {msg.timestamp.toLocaleTimeString()}
+                      {msg.status === "sending" && (
+                        <span className="ml-1">• Sending...</span>
+                      )}
                     </p>
                   </div>
                 </div>

@@ -40,7 +40,13 @@ const botsSlice = createSlice({
       state.loading = false;
       const { bots, lastDoc, hasMore } = action.payload;
       const type = action.meta.arg.type;
-      state.botsByType[type] = [...(state.botsByType[type] || []), ...bots];
+      // If this is the first load (no lastDoc in the request), replace the array
+      // Otherwise, append to existing data for pagination
+      if (!action.meta.arg.lastDoc) {
+        state.botsByType[type] = bots;
+      } else {
+        state.botsByType[type] = [...(state.botsByType[type] || []), ...bots];
+      }
       state.lastDocs[type] = lastDoc;
       state.hasMore[type] = hasMore;
     });

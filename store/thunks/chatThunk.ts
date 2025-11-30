@@ -208,13 +208,20 @@ export const sendMediaMessage = createAsyncThunk(
   }
 );
 
-let _unsubscribe: (() => void) | null = null;
+// Store subscriptions per visitorId to handle multiple sessions
+const _subscriptions = new Map<string, () => void>();
 
 export function subscribeToMessages(
+  visitorId: string,
   onUpdate: (messages: ChatMessage[]) => void
 ) {
-  const visitorId = getOrCreateVisitorId();
-  if (_unsubscribe) return _unsubscribe;
+  // Clean up existing subscription for this visitor
+  const existingUnsubscribe = _subscriptions.get(visitorId);
+  if (existingUnsubscribe) {
+    existingUnsubscribe();
+    _subscriptions.delete(visitorId);
+  }
+
   const messagesRef = collection(
     firestore,
     "chatSessions",
@@ -222,7 +229,8 @@ export function subscribeToMessages(
     "messages"
   );
   const q = query(messagesRef, orderBy("timestamp", "asc"));
-  _unsubscribe = onSnapshot(
+  
+  const unsubscribe = onSnapshot(
     q,
     (snap) => {
       const messages: ChatMessage[] = [];
@@ -243,16 +251,145 @@ export function subscribeToMessages(
       onUpdate(messages);
     },
     (err) => {
+      console.error("Error subscribing to messages:", err);
       onUpdate([]);
-      console.error(err);
     }
   );
-  return _unsubscribe;
+
+  _subscriptions.set(visitorId, unsubscribe);
+  return unsubscribe;
 }
 
-export function cleanupSubscription() {
-  if (_unsubscribe) {
-    _unsubscribe();
-    _unsubscribe = null;
+export function cleanupSubscription(visitorId?: string) {
+  if (visitorId) {
+    const unsubscribe = _subscriptions.get(visitorId);
+    if (unsubscribe) {
+      unsubscribe();
+      _subscriptions.delete(visitorId);
+    }
+  } else {
+    // Clean up all subscriptions
+    _subscriptions.forEach((unsubscribe) => unsubscribe());
+    _subscriptions.clear();
   }
 }
+
+// Send admin welcome message based on context
+export const sendAdminWelcomeMessage = createAsyncThunk(
+  "chat/sendAdminWelcomeMessage",
+  async (context: {
+    productId?: string;
+    gems?: boolean;
+    wishlist?: string;
+    total?: string;
+    inquiry?: string;
+    formUrl?: string;
+  }, { rejectWithValue }) => {
+    try {
+      const visitorId = getOrCreateVisitorId();
+      
+      console.log("=== sendAdminWelcomeMessage called ===");
+      console.log("Context:", JSON.stringify(context, null, 2));
+      console.log("Visitor ID:", visitorId);
+      
+      // Check if there are already messages
+      const messagesRef = collection(
+        firestore,
+        "chatSessions",
+        visitorId,
+        "messages"
+      );
+      const messagesSnapshot = await getDocs(messagesRef);
+      
+      console.log("Existing messages count:", messagesSnapshot.size);
+      
+      // Determine if we should send a welcome message
+      let shouldSendWelcome = false;
+      
+      if (messagesSnapshot.empty) {
+        // Always send welcome if no messages exist
+        shouldSendWelcome = true;
+        console.log("No messages exist, will send welcome");
+      } else if (context.gems || context.productId || context.inquiry) {
+        // If there's a specific context, always send the welcome message
+        shouldSendWelcome = true;
+        console.log("Context provided, will send welcome message");
+      }
+      
+      if (shouldSendWelcome) {
+        let welcomeText = "Hello! Welcome to Lords Hub. How can I assist you today?";
+        
+        console.log("Preparing welcome message...");
+        
+        // Customize message based on context
+        // Check inquiry first (more specific)
+        if (context.inquiry === "bot-subscription") {
+          const formLink = context.formUrl 
+            ? decodeURIComponent(context.formUrl)
+            : "https://docs.google.com/forms/d/e/1FAIpQLSfgSHUoSSFxxQ9HJKtUGhcocqAtf0a7VJy8gXgYHm20BFCjeQ/viewform?usp=dialog";
+          
+          console.log("Bot subscription detected! Form link:", formLink);
+          
+          welcomeText = `Hello! I see you're interested in our bot services. Please fill out the form first to help us understand your requirements better, then we can proceed with your subscription.\n\n📋 Form Link: ${formLink}\n\nOnce completed, feel free to message me here with any questions!`;
+        } else if (context.inquiry === "sell-account") {
+          welcomeText = `Hello! I understand you're interested in selling your Lords Mobile account. I'd be happy to help you with that! Please share some details about your account:\n\n• Account might and power level\n• Troop levels (T4, T5, etc.)\n• Heroes and gear collection\n• Research progress\n• Kingdom type (restricted/open)\n• Screenshots if available\n\nThis will help me provide you with a fair valuation.`;
+        } else if (context.gems && context.wishlist) {
+          try {
+            const wishlist = JSON.parse(decodeURIComponent(context.wishlist));
+            const itemsList = wishlist.map((item: any) => 
+              `• ${item.name} (${item.tab}): ${item.quantity}x = ${item.gemCost * item.quantity} gems`
+            ).join('\n');
+            
+            welcomeText = `Hello! I see you're interested in purchasing gems. Here's your wishlist:\n\n${itemsList}\n\nTotal: ${context.total} gems\n\nHow would you like to proceed with this order?`;
+          } catch (e) {
+            welcomeText = `Hello! I see you're interested in purchasing gems (Total: ${context.total} gems). How can I help you complete this order?`;
+          }
+        } else if (context.productId) {
+          welcomeText = `Hello! I see you're interested in one of our products (ID: ${context.productId}). I'd be happy to help you with this purchase. Do you have any questions?`;
+        }
+        
+        console.log("Welcome message prepared:", welcomeText.substring(0, 100) + "...");
+        
+        // Send the admin message
+        const data = {
+          sender: "admin" as const,
+          text: welcomeText,
+          timestamp: serverTimestamp(),
+          read: false,
+        };
+        
+        console.log("Adding message to Firestore...");
+        const docRef = await addDoc(messagesRef, data);
+        console.log("Message added with ID:", docRef.id);
+        
+        // Update session
+        const sessionRef = doc(firestore, "chatSessions", visitorId);
+        await setDoc(
+          sessionRef,
+          {
+            lastMessage: welcomeText.substring(0, 50) + "...",
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true }
+        );
+        
+        console.log("Admin welcome message sent successfully");
+        
+        return {
+          id: docRef.id,
+          sender: "admin",
+          text: welcomeText,
+          timestamp: new Date(),
+          read: false,
+        } as ChatMessage;
+      } else {
+        console.log("Chat already has messages, skipping welcome message");
+      }
+      
+      return null;
+    } catch (err) {
+      console.error("Error sending admin welcome message:", err);
+      return rejectWithValue(err);
+    }
+  }
+);

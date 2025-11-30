@@ -86,7 +86,16 @@ export const fetchAllAccounts = createAsyncThunk<
       id: doc.id,
       ...doc.data(),
     })) as Account[];
-    return accounts;
+    
+    // Deduplicate by ID just in case
+    const uniqueAccounts = accounts.reduce((acc, account) => {
+      if (!acc.find((a) => a.id === account.id)) {
+        acc.push(account);
+      }
+      return acc;
+    }, [] as Account[]);
+    
+    return uniqueAccounts;
   } catch (error: any) {
     return rejectWithValue(error.message || "Failed to fetch all accounts");
   }

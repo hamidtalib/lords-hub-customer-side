@@ -39,22 +39,14 @@ export function ReviewsForm() {
 
       // Check the dispatched action's requestStatus to determine success
       if (resultAction?.meta?.requestStatus === "fulfilled") {
-        // payload shape based on thunk return type
-        const payload = resultAction.payload as {
-          date: string;
-          name: string;
-          rating: number;
-          message: string;
-          id: string;
-        };
-        toast.success(payload?.message || "Review submitted successfully");
+        toast.success("Review submitted successfully! Thank you for your feedback.");
         // Reset form on success
         setName("");
         setRating(0);
         setMessage("");
       } else {
         const errorMessage =
-          resultAction?.payload?.message ||
+          resultAction?.payload ||
           resultAction?.error?.message ||
           "Failed to submit review";
         toast.error(errorMessage);

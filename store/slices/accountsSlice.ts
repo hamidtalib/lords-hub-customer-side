@@ -39,6 +39,15 @@ const accountsSlice = createSlice({
     clearSelectedAccount: (state) => {
       state.selectedAccount = null;
     },
+    clearAllAccounts: (state) => {
+      state.allAccounts = [];
+    },
+    clearAccountsByType: (state, action: { payload: "restricted" | "open" }) => {
+      const type = action.payload;
+      state.accountsByType[type] = [];
+      state.lastDocs[type] = null;
+      state.hasMore[type] = false;
+    },
   },
   extraReducers: (builder) => {
     // fetchAccountsByType
@@ -50,10 +59,16 @@ const accountsSlice = createSlice({
       state.loading = false;
       const { accounts, lastDoc, hasMore } = action.payload;
       const type = action.meta.arg.type;
-      state.accountsByType[type] = [
-        ...(state.accountsByType[type] || []),
-        ...accounts,
-      ];
+      // If this is the first load (no lastDoc in the request), replace the array
+      // Otherwise, append to existing data for pagination
+      if (!action.meta.arg.lastDoc) {
+        state.accountsByType[type] = accounts;
+      } else {
+        state.accountsByType[type] = [
+          ...(state.accountsByType[type] || []),
+          ...accounts,
+        ];
+      }
       state.lastDocs[type] = lastDoc;
       state.hasMore[type] = hasMore;
     });
@@ -92,5 +107,5 @@ const accountsSlice = createSlice({
   },
 });
 
-export const { clearError, clearSelectedAccount } = accountsSlice.actions;
+export const { clearError, clearSelectedAccount, clearAllAccounts, clearAccountsByType } = accountsSlice.actions;
 export default accountsSlice.reducer;

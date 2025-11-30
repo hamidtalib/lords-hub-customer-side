@@ -78,26 +78,30 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b-2 border-amber-500/30 bg-gradient-to-r from-slate-800/95 via-slate-800/95 to-slate-800/95 backdrop-blur-xl shadow-2xl">
       <nav className="mx-auto max-w-7xl px-2 py-2 sm:px-4 lg:px-8">
-        <div className="flex items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 group hover:opacity-80 transition-all duration-300"
-          >
-            <div className="relative h-14 w-14 sm:h-20 sm:w-20">
-              <Image
-                src={logo}
-                alt="Lords Hub"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <span className="text-sm sm:text-base lg:text-xl font-black gradient-text inline">
-              LORDS HUB
-            </span>
-          </Link>
+        {/* NEW FIXED 3-COLUMN LAYOUT */}
+        <div className="grid grid-cols-3 items-center relative">
+          {/* LEFT — LOGO */}
+          <div className="flex items-center">
+            <Link
+              href="/"
+              className="flex items-center gap-2 group hover:opacity-80 transition-all duration-300"
+            >
+              <div className="relative h-14 w-14 sm:h-20 sm:w-20">
+                <Image
+                  src={logo}
+                  alt="Lords Hub"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <span className="text-sm sm:text-base lg:text-xl font-black gradient-text inline">
+                LORDS HUB
+              </span>
+            </Link>
+          </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-0.5 lg:gap-1">
+          {/* CENTER — NAV LINKS */}
+          <div className="hidden md:flex items-center justify-center gap-1 lg:gap-2">
             {navLinks.map((link, index) => (
               <div key={link.label + index} className="relative group">
                 {link.dropdown ? (
@@ -110,9 +114,11 @@ export default function Header() {
                           : ""
                       }`}
                     >
-                      {link.label}{" "}
+                      {link.label}
                       <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4" />
                     </Button>
+
+                    {/* Dropdown */}
                     <div className="absolute left-0 top-full mt-1 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                       <div className="bg-slate-800/95 backdrop-blur-xl border-2 border-amber-500/30 rounded-lg shadow-2xl py-2">
                         {link.dropdown.map((item) => (
@@ -131,7 +137,7 @@ export default function Header() {
                       </div>
                     </div>
                   </>
-                ) : link.href ? (
+                ) : (
                   <Link href={link.href}>
                     <Button
                       variant="ghost"
@@ -144,11 +150,13 @@ export default function Header() {
                       {link.label}
                     </Button>
                   </Link>
-                ) : null}
+                )}
               </div>
             ))}
+          </div>
 
-            {/* Telegram & Chat */}
+          {/* RIGHT — TELEGRAM + CHAT */}
+          <div className="hidden md:flex justify-end items-center gap-2">
             <a
               href={telegramUrl || "#"}
               target="_blank"
@@ -163,6 +171,7 @@ export default function Header() {
                 <span className="hidden sm:inline">Telegram</span>
               </Button>
             </a>
+
             <Link href="/chat">
               <Button
                 size="sm"
@@ -174,10 +183,10 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* MOBILE MENU TOGGLE (absolute to avoid layout shift) */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-1.5 sm:p-2 rounded-lg hover:bg-amber-100 transition-all duration-300 cursor-pointer"
+            className="md:hidden absolute right-2 p-1.5 sm:p-2 rounded-lg hover:bg-amber-100 transition-all duration-300 cursor-pointer"
           >
             {isOpen ? (
               <X className="h-5 w-5 sm:h-6 sm:w-6 text-amber-400 font-bold" />
@@ -187,13 +196,13 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* MOBILE MENU */}
         {isOpen && (
           <div className="mt-4 space-y-3 md:hidden animate-in fade-in duration-300">
             {navLinks.map((link, index) => (
               <div key={link.label + index}>
                 {link.dropdown ? (
-                  <div>
+                  <>
                     <button
                       onClick={() => {
                         if (link.label === "Accounts")
@@ -217,6 +226,7 @@ export default function Header() {
                         }`}
                       />
                     </button>
+
                     {((link.label === "Accounts" && accountsDropdown) ||
                       (link.label === "Bot Services" && botsDropdown)) && (
                       <div className="ml-4 mt-1 space-y-1">
@@ -236,8 +246,8 @@ export default function Header() {
                         ))}
                       </div>
                     )}
-                  </div>
-                ) : link.href ? (
+                  </>
+                ) : (
                   <Link href={link.href}>
                     <Button
                       variant="ghost"
@@ -251,11 +261,11 @@ export default function Header() {
                       {link.label}
                     </Button>
                   </Link>
-                ) : null}
+                )}
               </div>
             ))}
 
-            {/* Telegram & Chat - Mobile */}
+            {/* MOBILE BUTTONS */}
             <a
               href={telegramUrl || "#"}
               target="_blank"
@@ -271,6 +281,7 @@ export default function Header() {
                 <span>Telegram</span>
               </Button>
             </a>
+
             <Link href="/chat" className="w-full">
               <Button
                 size="sm"

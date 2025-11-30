@@ -23,10 +23,9 @@ export default function RestrictedAccountsPage() {
   const [sortBy, setSortBy] = useState("newest");
 
   useEffect(() => {
-    if (!accounts.length) {
-      dispatch(fetchAccountsByType({ type: "restricted" }));
-    }
-  }, []);
+    // Always fetch fresh data on mount
+    dispatch(fetchAccountsByType({ type: "restricted" }));
+  }, [dispatch]);
 
   function loadMore() {
     if (!hasMore["restricted"] || loading) return;
@@ -40,7 +39,15 @@ export default function RestrictedAccountsPage() {
   }
 
   const filteredProducts = useMemo(() => {
-    let result = [...accounts];
+    // Deduplicate accounts by ID
+    const uniqueAccounts = accounts.reduce((acc, account) => {
+      if (!acc.find((a) => a.id === account.id)) {
+        acc.push(account);
+      }
+      return acc;
+    }, [] as typeof accounts);
+    
+    let result = [...uniqueAccounts];
 
     if (priceRange === "1-99")
       result = result.filter((p) => p.price >= 1 && p.price <= 99);

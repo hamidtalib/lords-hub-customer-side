@@ -57,7 +57,13 @@ const diamondsSlice = createSlice({
             updatedAt: d.updatedAt ?? null,
           })
         );
-        state.diamonds.push(...newDiamonds);
+        // If this is the first load (no lastDoc in the request), replace the array
+        // Otherwise, append to existing data for pagination
+        if (action.meta.arg === null) {
+          state.diamonds = newDiamonds;
+        } else {
+          state.diamonds.push(...newDiamonds);
+        }
         state.lastDoc = action.payload.lastDoc;
         state.hasMore = action.payload.hasMore;
       })

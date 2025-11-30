@@ -1,16 +1,28 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { loadApprovedReviews } from "@/store/thunks/reviewThunk";
 import Header from "@/src/components/header";
 import Footer from "@/src/components/footer";
 import { ReviewsForm } from "@/src/components/reviews/ReviewsForm";
-import { ReviewsList, Review } from "@/src/components/reviews/ReviewsList";
+import { ReviewsList } from "@/src/components/reviews/ReviewsList";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Star } from "lucide-react";
 
 export default function ReviewsPage() {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
+  const { reviews, loading } = useSelector((state: RootState) => state.reviews);
+
+  useEffect(() => {
+    dispatch(loadApprovedReviews(50));
+  }, [dispatch]);
+
+  // Calculate average rating
+  const averageRating = reviews.length > 0
+    ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
+    : "0.0";
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
@@ -40,7 +52,7 @@ export default function ReviewsPage() {
           <div className="mt-6 sm:mt-8 flex items-center justify-center gap-6 sm:gap-8">
             <div className="text-center">
               <div className="text-3xl sm:text-4xl font-black text-amber-400">
-                {"averageRating"}
+                {averageRating}
               </div>
               <div className="text-xs sm:text-sm text-slate-400">
                 Average Rating
@@ -68,7 +80,7 @@ export default function ReviewsPage() {
       {/* Reviews List Section */}
       <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl">
-          {isLoading ? (
+          {loading ? (
             <div className="text-center py-12">
               <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-amber-500 border-t-transparent"></div>
               <p className="text-slate-400 mt-4">Loading reviews...</p>

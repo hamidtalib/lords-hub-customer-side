@@ -1,19 +1,38 @@
-import { getAllAccounts } from "@/store/lib/firebaseAccounts";
+"use client";
+
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { fetchAllAccounts } from "@/store/thunks/accountsThunk";
 import AccountsDisplay from "@/src/components/accounts/AccountsDisplay";
 import Header from "@/src/components/header";
 import Footer from "@/src/components/footer";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { ShoppingBag } from "lucide-react";
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export default function BrowseAccountsPage() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { allAccounts, loading } = useSelector(
+    (state: RootState) => state.accounts
+  );
 
-export default async function BrowseAccountsPage() {
-  const allAccounts = await getAllAccounts();
-  
-  const restrictedAccounts = allAccounts.filter(
+  useEffect(() => {
+    // Always fetch fresh data on mount
+    dispatch(fetchAllAccounts());
+  }, [dispatch]);
+
+  // Deduplicate accounts by ID to prevent duplicates
+  const uniqueAccounts = allAccounts.reduce((acc, account) => {
+    if (!acc.find((a) => a.id === account.id)) {
+      acc.push(account);
+    }
+    return acc;
+  }, [] as typeof allAccounts);
+
+  const restrictedAccounts = uniqueAccounts.filter(
     (account) => account.type === "restricted"
   );
-  const openAccounts = allAccounts.filter(
+  const openAccounts = uniqueAccounts.filter(
     (account) => account.type === "open"
   );
 
@@ -44,10 +63,18 @@ export default async function BrowseAccountsPage() {
       {/* Accounts Display */}
       <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <AccountsDisplay
-            restrictedAccounts={restrictedAccounts}
-            openAccounts={openAccounts}
-          />
+          {loading && allAccounts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-xl font-bold text-white mb-2">
+                Loading accounts...
+              </p>
+            </div>
+          ) : (
+            <AccountsDisplay
+              restrictedAccounts={restrictedAccounts}
+              openAccounts={openAccounts}
+            />
+          )}
         </div>
       </section>
 
