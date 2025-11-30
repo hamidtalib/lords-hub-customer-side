@@ -7,27 +7,10 @@ import { ReviewsForm } from "@/src/components/reviews/ReviewsForm";
 import { ReviewsList, Review } from "@/src/components/reviews/ReviewsList";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Star } from "lucide-react";
-import { subscribeToReviews, calculateAverageRating } from "@/store/lib/firebaseReviews";
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Subscribe to real-time reviews updates
-  useEffect(() => {
-    const unsubscribe = subscribeToReviews((fetchedReviews) => {
-      setReviews(fetchedReviews);
-      setIsLoading(false);
-    });
-
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
-  }, []);
-
-  // Calculate average rating
-  const averageRating = reviews.length > 0 
-    ? calculateAverageRating(reviews).toFixed(1)
-    : "0.0";
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
@@ -44,7 +27,9 @@ export default function ReviewsPage() {
       >
         <div className="flex flex-col items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
           <Star className="h-10 w-10 sm:h-12 sm:w-12 lg:h-14 lg:w-14 text-amber-400 fill-amber-400" />
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black gradient-text text-center">Customer Reviews</h1>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black gradient-text text-center">
+            Customer Reviews
+          </h1>
         </div>
         <p className="text-sm sm:text-lg lg:text-xl text-slate-200 font-semibold max-w-2xl mx-auto px-4">
           See what our customers are saying about Lords Hub
@@ -54,12 +39,20 @@ export default function ReviewsPage() {
         {reviews.length > 0 && (
           <div className="mt-6 sm:mt-8 flex items-center justify-center gap-6 sm:gap-8">
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-black text-amber-400">{averageRating}</div>
-              <div className="text-xs sm:text-sm text-slate-400">Average Rating</div>
+              <div className="text-3xl sm:text-4xl font-black text-amber-400">
+                {"averageRating"}
+              </div>
+              <div className="text-xs sm:text-sm text-slate-400">
+                Average Rating
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-black text-amber-400">{reviews.length}</div>
-              <div className="text-xs sm:text-sm text-slate-400">Total Reviews</div>
+              <div className="text-3xl sm:text-4xl font-black text-amber-400">
+                {reviews.length}
+              </div>
+              <div className="text-xs sm:text-sm text-slate-400">
+                Total Reviews
+              </div>
             </div>
           </div>
         )}

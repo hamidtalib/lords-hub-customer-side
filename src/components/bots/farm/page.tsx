@@ -1,53 +1,39 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { fetchBotsByType } from "@/store/thunks/botsThunk";
+
 import Header from "@/src/components/header";
 import Footer from "@/src/components/footer";
 import { Button } from "@/src/components/ui/button";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Wheat } from "lucide-react";
-import { getBotsByType, subscribeToBotsByType, Bot } from "@/store/lib/firebaseBots";
-import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 
 export default function FarmBots() {
-  const [bots, setBots] = useState<Bot[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
-  const [hasMore, setHasMore] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { botsByType, lastDocs, hasMore, loading } = useSelector(
+    (state: RootState) => state.bots
+  );
+
+  const bots = botsByType["farm"] || [];
+  const lastDoc = lastDocs["farm"] || null;
+  const moreAvailable = hasMore["farm"] || false;
 
   useEffect(() => {
-    setLoading(true);
-    
-    // Subscribe to realtime updates
-    const unsubscribe = subscribeToBotsByType(
-      "farm",
-      (data) => {
-        setBots(data);
-        setHasMore(data.length === 10);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Error subscribing to bots:", error);
-        setLoading(false);
-      }
-    );
-
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
+    // Load first page only once
+    if (!bots.length) {
+      dispatch(fetchBotsByType({ type: "farm" }));
+    }
   }, []);
 
-  async function loadMore() {
-    if (!hasMore || loadingMore) return;
-    
-    setLoadingMore(true);
-    const { bots: newBots, lastDoc: newLastDoc, hasMore: more } = await getBotsByType("farm", lastDoc);
-    setBots([...bots, ...newBots]);
-    setLastDoc(newLastDoc);
-    setHasMore(more);
-    setLoadingMore(false);
+  function loadMore() {
+    if (!moreAvailable || loading) return;
+    dispatch(fetchBotsByType({ type: "farm", lastDoc }));
   }
 
   return (
@@ -79,8 +65,8 @@ export default function FarmBots() {
         <div className="mx-auto max-w-6xl">
           <Alert className="border-2 border-green-500/50 bg-gradient-to-r from-green-500/20 to-green-400/10 shadow-lg rounded-xl">
             <AlertDescription className="text-slate-200 text-xs sm:text-sm lg:text-base font-bold">
-              🌾 Farm/Bank Bots: Automated resource gathering, multi-account
-              management, and smart resource routing to your main account!
+              Farm/Bank Bots: Automated resource gathering, multi-account
+              management, and smart resource routing to your main account.
             </AlertDescription>
           </Alert>
         </div>
@@ -88,7 +74,7 @@ export default function FarmBots() {
 
       <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8 fade-up">
         <div className="mx-auto max-w-7xl">
-          {loading ? (
+          {loading && bots.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">
                 Loading farm bots...
@@ -120,16 +106,15 @@ export default function FarmBots() {
                           {item.description}
                         </p>
                       </div>
+
                       <div className="mb-4">
                         <p className="text-xs text-slate-500 font-semibold mb-2">
                           Features:
                         </p>
+
                         <ul className="text-xs text-slate-300 space-y-1">
                           {item.features?.map((feature, idx) => (
-                            <li
-                              key={idx}
-                              className="flex items-start gap-2"
-                            >
+                            <li key={idx} className="flex items-start gap-2">
                               <span className="text-green-400">•</span>
                               <span>{feature}</span>
                             </li>
@@ -137,11 +122,13 @@ export default function FarmBots() {
                         </ul>
                       </div>
                     </div>
+
                     <div className="pt-4 border-t border-slate-700 mt-auto">
                       <p className="text-2xl font-black gradient-text text-center mb-3">
                         ${item.price}
                         <span className="text-sm text-slate-400">/month</span>
                       </p>
+
                       <Link href={`/chat?productId=${item.productId}`}>
                         <Button size="sm" className="btn-game text-xs w-full">
                           Subscribe
@@ -151,15 +138,15 @@ export default function FarmBots() {
                   </div>
                 ))}
               </div>
-              
-              {hasMore && (
+
+              {moreAvailable && (
                 <div className="text-center mt-8">
                   <Button
                     onClick={loadMore}
-                    disabled={loadingMore}
+                    disabled={loading}
                     className="btn-secondary font-bold"
                   >
-                    {loadingMore ? "Loading..." : "Load More"}
+                    {loading ? "Loading..." : "Load More"}
                   </Button>
                 </div>
               )}

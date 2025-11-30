@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
-import { StoreProvider } from "@/src/components/providers/store-provider";
-import { ToastProvider } from "@/src/components/providers/toast-provider";
+import { StoreProvider } from "@/store/providers/store-provider";
+import { ToastProvider } from "@/store/providers/toast-provider";
 import { FloatingChatButton } from "@/src/components/floating-chat-button";
 import { FloatingOffersButton } from "@/src/components/floating-offers-button";
-import SocialSidebar from "@/src/components/shared/SocialSidebar";
+import SocialSidebar from "@/src/components/SocialSidebar";
 import OffersModal from "@/src/components/offers/OffersModal";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });

@@ -1,8 +1,8 @@
 "use client";
 
 import { Loader2, CheckCircle2, CheckCheck } from "lucide-react";
-import { ChatMessage } from "@/store/lib/types/products";
-import { getVisitorId } from "@/lib/utils/visitorId";
+import { ChatMessage } from "@/store/thunks/chatThunk";
+import { getVisitorId } from "@/store/lib/utils/visitorId";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -22,7 +22,9 @@ export function MessageList({
     return (
       <div className="flex flex-col items-center justify-center h-full text-slate-300 font-semibold space-y-2">
         <p className="text-lg">No messages yet</p>
-        <p className="text-sm text-slate-400">Start chatting with support below</p>
+        <p className="text-sm text-slate-400">
+          Start chatting with support below
+        </p>
       </div>
     );
   }
@@ -30,7 +32,7 @@ export function MessageList({
   return (
     <>
       {messages.map((msg) => {
-        const isUser = msg.senderType === "customer" && msg.senderId === currentUserId;
+        const isUser = msg.sender === "visitor" && msg.id === currentUserId;
         return (
           <div
             key={msg.id}
@@ -55,7 +57,7 @@ export function MessageList({
                   />
                 </button>
               )}
-              <p className="text-base">{msg.message}</p>
+              <p className="text-base">{msg.text}</p>
               <div
                 className={`mt-2 text-xs flex items-center gap-1 ${
                   isUser ? "text-white/80" : "text-slate-600"
@@ -63,17 +65,6 @@ export function MessageList({
               >
                 {msg.timestamp?.toLocaleTimeString?.() ||
                   new Date(msg.timestamp as Date).toLocaleTimeString()}
-                {isUser && (
-                  <>
-                    {msg.status === "sending" ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                    ) : msg.read || msg.status === "read" ? (
-                      <CheckCheck className="h-3 w-3 text-emerald-300" />
-                    ) : (
-                      <CheckCircle2 className="h-3 w-3" />
-                    )}
-                  </>
-                )}
               </div>
             </div>
           </div>

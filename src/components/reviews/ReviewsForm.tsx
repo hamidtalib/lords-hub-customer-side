@@ -11,10 +11,12 @@ import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
 import { StarRating } from "./StarRating";
 import { toast } from "react-toastify";
-import { submitReview } from "@/store/lib/firebaseReviews";
 import { Send } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { submitReviewThunk } from "@/store/thunks/reviewThunk";
 
 export function ReviewsForm() {
+  const dispatch = useDispatch<any>();
   const [name, setName] = useState("");
   const [rating, setRating] = useState(0);
   const [message, setMessage] = useState("");
@@ -31,16 +33,31 @@ export function ReviewsForm() {
     setIsSubmitting(true);
 
     try {
-      const result = await submitReview({ name, rating, message });
+      const resultAction = await dispatch(
+        submitReviewThunk({ name, rating, message })
+      );
 
-      if (result.success) {
-        toast.success(result.message);
+      // Check the dispatched action's requestStatus to determine success
+      if (resultAction?.meta?.requestStatus === "fulfilled") {
+        // payload shape based on thunk return type
+        const payload = resultAction.payload as {
+          date: string;
+          name: string;
+          rating: number;
+          message: string;
+          id: string;
+        };
+        toast.success(payload?.message || "Review submitted successfully");
         // Reset form on success
         setName("");
         setRating(0);
         setMessage("");
       } else {
-        toast.error(result.message);
+        const errorMessage =
+          resultAction?.payload?.message ||
+          resultAction?.error?.message ||
+          "Failed to submit review";
+        toast.error(errorMessage);
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");

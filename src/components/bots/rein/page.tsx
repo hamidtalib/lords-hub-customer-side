@@ -6,46 +6,32 @@ import { Button } from "@/src/components/ui/button";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Users } from "lucide-react";
-import { getBotsByType, subscribeToBotsByType, Bot } from "@/store/lib/firebaseBots";
 import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { fetchBotsByType } from "@/store/thunks/botsThunk";
 
 export default function ReinBotsPage() {
-  const [bots, setBots] = useState<Bot[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
-  const [hasMore, setHasMore] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { botsByType, lastDocs, hasMore, loading } = useSelector(
+    (state: RootState) => state.bots
+  );
+
+  const bots = botsByType["rein"] || [];
+  const lastDoc = lastDocs["rein"] || null;
+  const moreAvailable = hasMore["rein"] || false;
 
   useEffect(() => {
-    setLoading(true);
-    
-    // Subscribe to realtime updates
-    const unsubscribe = subscribeToBotsByType(
-      "rein",
-      (data) => {
-        setBots(data);
-        setHasMore(data.length === 10);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Error subscribing to bots:", error);
-        setLoading(false);
-      }
-    );
-
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
+    // Load first page only once
+    if (!bots.length) {
+      dispatch(fetchBotsByType({ type: "rein" }));
+    }
   }, []);
 
-  async function loadMore() {
-    if (!hasMore || loadingMore) return;
-    
-    setLoadingMore(true);
-    const { bots: newBots, lastDoc: newLastDoc, hasMore: more } = await getBotsByType("rein", lastDoc);
-    setBots([...bots, ...newBots]);
-    setLastDoc(newLastDoc);
-    setHasMore(more);
-    setLoadingMore(false);
+  function loadMore() {
+    if (!moreAvailable || loading) return;
+    dispatch(fetchBotsByType({ type: "rein", lastDoc }));
   }
 
   return (
@@ -124,10 +110,7 @@ export default function ReinBotsPage() {
                         </p>
                         <ul className="text-xs text-slate-300 space-y-1">
                           {item.features?.map((feature, idx) => (
-                            <li
-                              key={idx}
-                              className="flex items-start gap-2"
-                            >
+                            <li key={idx} className="flex items-start gap-2">
                               <span className="text-green-400">•</span>
                               <span>{feature}</span>
                             </li>
@@ -149,15 +132,15 @@ export default function ReinBotsPage() {
                   </div>
                 ))}
               </div>
-              
+
               {hasMore && (
                 <div className="text-center mt-8">
                   <Button
                     onClick={loadMore}
-                    disabled={loadingMore}
+                    disabled={loading}
                     className="btn-secondary font-bold"
                   >
-                    {loadingMore ? "Loading..." : "Load More"}
+                    {loading ? "Loading..." : "Load More"}
                   </Button>
                 </div>
               )}

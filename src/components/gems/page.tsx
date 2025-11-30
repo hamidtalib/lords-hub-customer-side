@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ShoppingCart, Calculator } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import {
@@ -15,51 +15,36 @@ import {
   MarketplaceDataTable,
   TableColumn,
 } from "@/src/components/marketplace/data-table";
-import { MarketplaceProduct } from "@/store/lib/types/products";
+import { MarketplaceProduct } from "@/store/types/products";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 
 export default function GemsPage() {
+  const [products, setProducts] = useState<MarketplaceProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [showCalculator, setShowCalculator] = useState(false);
   const [quantity, setQuantity] = useState(50);
 
-  const gemProducts: MarketplaceProduct[] = [
-    {
-      id: "gem1",
-      title: "Starter Pack",
-      description: "1000 Gems",
-      tier: "Basic",
-      highlights: ["Instant delivery", "Safe purchase"],
-      price: 10,
-      stock: 100,
-      category: "gems",
-      gems: 1000,
-    },
-    {
-      id: "gem2",
-      title: "Pro Pack",
-      description: "5000 Gems",
-      tier: "Premium",
-      highlights: ["Best value", "Fast delivery"],
-      price: 45,
-      stock: 50,
-      category: "gems",
-      gems: 5000,
-    },
-    {
-      id: "gem3",
-      title: "Elite Pack",
-      description: "10000 Gems",
-      tier: "Elite",
-      highlights: ["Huge savings", "Priority support"],
-      price: 80,
-      stock: 20,
-      category: "gems",
-      gems: 10000,
-    },
-  ];
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        // Replace this with your real API / Firestore call
+        const res = await fetch("/api/marketplace/gems");
+        const data = await res.json();
 
-  const basePackSize = gemProducts[0]?.gems ?? 1000;
-  const basePackPrice = gemProducts[0]?.price ?? 10;
+        setProducts(data || []);
+      } catch (error) {
+        console.error("Failed to load gem products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  const basePackSize = products[0]?.gems ?? 1;
+  const basePackPrice = products[0]?.price ?? 1;
   const unitPrice = basePackPrice / basePackSize;
 
   const calculatePrice = (qty: number) => {
@@ -115,16 +100,16 @@ export default function GemsPage() {
             <Link href={`/chat?productId=${item.id}`}>
               <Button
                 size="sm"
-                className="btn-game text-xs flex items-center gap-1 cursor-pointer"
+                className="btn-game text-xs flex items-center gap-1"
               >
                 <ShoppingCart className="h-4 w-4" /> Buy
               </Button>
             </Link>
             <Button
               size="sm"
-              className="btn-secondary text-xs flex items-center gap-1 cursor-pointer"
+              className="btn-secondary text-xs flex items-center gap-1"
               onClick={() => {
-                setQuantity(item.gems ?? 50);
+                setQuantity(item.gems ?? 1);
                 setShowCalculator(true);
               }}
             >
@@ -141,11 +126,12 @@ export default function GemsPage() {
     <>
       <ScrollAnimation />
 
+      {/* Main Header */}
       <section
         className="px-4 py-24 text-center bg-cover bg-center border-b-4 border-amber-500/30 fade-up"
         style={{
           backgroundImage:
-            "linear-gradient(180deg, rgba(8,10,25,0.92), rgba(8,10,25,0.96)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80')",
+            "linear-gradient(180deg, rgba(8,10,25,0.92), rgba(8,10,25,0.96)), url('/gems-bg.jpg')",
         }}
       >
         <h1 className="text-5xl font-black gradient-text mb-4">Premium Gems</h1>
@@ -154,18 +140,20 @@ export default function GemsPage() {
         </p>
       </section>
 
+      {/* Table */}
       <section className="px-4 py-16 sm:px-6 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl bg-slate-800/60 backdrop-blur-sm rounded-xl p-6 shadow-2xl">
           <MarketplaceDataTable
-            data={gemProducts}
+            data={products}
             columns={tableColumns}
-            isLoading={false}
+            isLoading={loading}
             emptyTitle="No gem packs available"
             emptySubtitle="Add some gem packs to display them here."
           />
         </div>
       </section>
 
+      {/* Calculator Modal */}
       {showCalculator && (
         <section className="fixed inset-0 flex items-center justify-center bg-black/60 z-50 p-4">
           <Card className="w-full max-w-md p-6 rounded-xl shadow-2xl bg-gradient-to-br from-slate-800/90 to-slate-700/90">
@@ -174,6 +162,7 @@ export default function GemsPage() {
                 <Calculator className="h-6 w-6" /> Gem Calculator
               </CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-4">
               <div>
                 <label className="text-sm font-bold text-slate-200">
@@ -187,23 +176,26 @@ export default function GemsPage() {
                   className="mt-1 w-full h-12 text-lg font-bold text-white rounded-xl bg-slate-700/50 border-2 border-amber-500/50"
                 />
               </div>
+
               <div className="flex justify-between items-center">
                 <span className="font-bold text-slate-200">Total Price:</span>
                 <span className="text-2xl font-black gradient-text">
                   ${calculatePrice(quantity)}
                 </span>
               </div>
+
               <Link
                 href={`/chat?productId=calculator&quantity=${quantity}&price=${calculatePrice(
                   quantity
                 )}`}
               >
-                <Button className="w-full btn-game font-bold py-3 flex items-center justify-center gap-2 cursor-pointer">
+                <Button className="w-full btn-game font-bold py-3 flex items-center justify-center gap-2">
                   <ShoppingCart className="h-5 w-5" /> Purchase Gems
                 </Button>
               </Link>
+
               <Button
-                className="w-full btn-secondary mt-2 cursor-pointer"
+                className="w-full btn-secondary mt-2"
                 onClick={() => setShowCalculator(false)}
               >
                 Close

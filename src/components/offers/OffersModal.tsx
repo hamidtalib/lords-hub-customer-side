@@ -1,39 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { hideOffersModal, checkIfSeenOffers } from "@/store/offers/offersSlice";
-import { subscribeToOffers, FirestoreOffer } from "@/store/lib/firebaseOffers";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { hideOffersModal, checkIfSeenOffers } from "@/store/slices/offerSlice";
+import { loadOffers, Offer } from "@/store/thunks/offerThunk";
 
 export default function OffersModal() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { showModal } = useAppSelector((state) => state.offers);
-  const [firestoreOffers, setFirestoreOffers] = useState<FirestoreOffer[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    showModal,
+    offers: firestoreOffers,
+    loading,
+  } = useAppSelector((state) => state.offers);
 
-  // Subscribe to realtime offers updates
   useEffect(() => {
-    setLoading(true);
-    
-    const unsubscribe = subscribeToOffers(
-      (offers) => {
-        setFirestoreOffers(offers);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Error subscribing to offers:", error);
-        setLoading(false);
-      }
-    );
+    dispatch(loadOffers());
+  }, [dispatch]);
 
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
-  }, []);
-
-  // Check if user has seen offers on mount
   useEffect(() => {
     dispatch(checkIfSeenOffers());
   }, [dispatch]);
@@ -99,7 +85,7 @@ export default function OffersModal() {
                 {offer.mediaType === "image" ? (
                   <img
                     src={offer.mediaUrl}
-                    alt={offer.name}
+                    alt={offer.title}
                     className="w-full h-full object-cover"
                   />
                 ) : offer.mediaType === "video" ? (
@@ -117,11 +103,11 @@ export default function OffersModal() {
               {/* Content */}
               <div className="p-5">
                 <h3 className="text-xl font-bold text-white mb-2">
-                  {offer.name}
+                  {offer.title}
                 </h3>
                 <p className="text-slate-300 mb-4">{offer.description}</p>
                 <button
-                  onClick={() => handleOfferClick(offer.productId)}
+                  onClick={() => handleOfferClick(offer.productId || offer.id)}
                   className="w-full sm:w-auto px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors"
                 >
                   Chat Us

@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { MarketplaceProduct } from "@/store/lib/types/products";
+import { MarketplaceProduct } from "@/store/types/products";
 
 type ColumnRenderer<T> = (item: T) => ReactNode;
 
@@ -56,7 +56,9 @@ export function MarketplaceDataTable<T extends MarketplaceProduct>({
             <h3 className="text-2xl sm:text-3xl font-black gradient-text mb-2">
               {emptyTitle}
             </h3>
-            <p className="text-slate-200 font-semibold mb-4 sm:mb-6 text-sm sm:text-base">{emptySubtitle}</p>
+            <p className="text-slate-200 font-semibold mb-4 sm:mb-6 text-sm sm:text-base">
+              {emptySubtitle}
+            </p>
             {emptyCta}
           </div>
           <div className="relative h-40 sm:h-48 lg:h-56 w-full rounded-xl sm:rounded-2xl overflow-hidden border border-amber-500/40">

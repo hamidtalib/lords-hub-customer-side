@@ -1,7 +1,7 @@
 "use client";
 
 import { Gift } from "lucide-react";
-import { useOffers } from "@/lib/hooks/useOffers";
+import { useOffers } from "@/store/lib/hooks/useOffers";
 
 export function FloatingOffersButton() {
   const { openOffersModal, offers } = useOffers();

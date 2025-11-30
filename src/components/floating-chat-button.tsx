@@ -3,11 +3,14 @@
 import { MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { storePageOriginContext, detectPageOrigin } from "@/lib/utils/pageOrigin";
+import {
+  storePageOriginContext,
+  detectPageOrigin,
+} from "@/store/lib/utils/pageOrigin";
 
 export function FloatingChatButton() {
   const pathname = usePathname();
-  
+
   // Don't show on chat page
   if (pathname === "/chat") {
     return null;

@@ -13,12 +13,12 @@ import {
 } from "lucide-react";
 import { toast } from "react-toastify";
 import { Button } from "@/src/components/ui/button";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { loadSocialMediaLinks } from "@/store/socialMedia/socialMediaSlice";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { loadSocialMediaLinks } from "@/store/thunks/socialMediaThunk";
 import {
   getSocialMediaUrl,
   SOCIAL_PLATFORMS,
-} from "@/lib/utils/socialMediaUtils";
+} from "@/store/lib/utils/socialMediaUtils";
 import logo from "@/public/images/lords-hub-logo.png";
 
 export default function Header() {

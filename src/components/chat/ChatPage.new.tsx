@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Loader2, Send, Paperclip, X } from "lucide-react";
-import { useChat } from "@/lib/hooks/useChat";
+import { useChat } from "@/store/lib/hooks/useChat";
 import { Card, CardHeader, CardContent } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
@@ -10,7 +10,14 @@ import { Input } from "@/src/components/ui/input";
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 
 export default function ChatPage() {
-  const { session, messages, isLoading, isSending, sendMessage, sendMediaMessage } = useChat();
+  const {
+    session,
+    messages,
+    isLoading,
+    isSending,
+    sendMessage,
+    sendMediaMessage,
+  } = useChat();
   const [inputText, setInputText] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
@@ -22,7 +29,8 @@ export default function ChatPage() {
   // Auto-scroll to bottom when messages change - scroll the container, not the page
   useEffect(() => {
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
@@ -42,7 +50,7 @@ export default function ChatPage() {
     // Check file type
     const isImage = file.type.startsWith("image/");
     const isVideo = file.type.startsWith("video/");
-    
+
     if (!isImage && !isVideo) {
       setFileError("Only images and videos are allowed");
       return;
@@ -69,7 +77,7 @@ export default function ChatPage() {
 
   const handleSend = async () => {
     if ((!inputText.trim() && !selectedFile) || isSending) return;
-    
+
     if (selectedFile) {
       await sendMediaMessage(inputText || "", selectedFile);
       handleRemoveFile();
@@ -112,7 +120,9 @@ export default function ChatPage() {
         <CardHeader className="border-b border-amber-500/30 p-3 sm:p-6">
           <div className="flex items-start sm:items-center justify-between gap-2">
             <div className="flex-1 min-w-0">
-              <h2 className="text-base sm:text-xl font-bold text-white truncate">Customer Support</h2>
+              <h2 className="text-base sm:text-xl font-bold text-white truncate">
+                Customer Support
+              </h2>
               <p className="text-xs sm:text-sm text-slate-400 truncate">
                 Chat with our support team
               </p>
@@ -124,13 +134,15 @@ export default function ChatPage() {
         </CardHeader>
 
         {/* Messages */}
-        <CardContent 
+        <CardContent
           ref={messagesContainerRef}
           className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-3 sm:space-y-4"
         >
           {!messages || messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">
-              <p className="text-slate-400 text-xs sm:text-sm text-center px-4">No messages yet. Start the conversation!</p>
+              <p className="text-slate-400 text-xs sm:text-sm text-center px-4">
+                No messages yet. Start the conversation!
+              </p>
             </div>
           ) : (
             <>
@@ -151,21 +163,23 @@ export default function ChatPage() {
                     {msg.mediaUrl && (
                       <div className="mb-2">
                         {msg.mediaType === "image" ? (
-                          <img 
-                            src={msg.mediaUrl} 
-                            alt="Shared media" 
+                          <img
+                            src={msg.mediaUrl}
+                            alt="Shared media"
                             className="rounded max-w-full h-auto max-h-64 object-contain"
                           />
                         ) : msg.mediaType === "video" ? (
-                          <video 
-                            src={msg.mediaUrl} 
-                            controls 
+                          <video
+                            src={msg.mediaUrl}
+                            controls
                             className="rounded max-w-full h-auto max-h-64"
                           />
                         ) : null}
                       </div>
                     )}
-                    {msg.text && <p className="text-xs sm:text-sm">{msg.text}</p>}
+                    {msg.text && (
+                      <p className="text-xs sm:text-sm">{msg.text}</p>
+                    )}
                     <p className="text-[10px] sm:text-xs opacity-70 mt-1">
                       {msg.timestamp.toLocaleTimeString()}
                     </p>
@@ -184,16 +198,13 @@ export default function ChatPage() {
             <div className="mb-2 relative inline-block">
               <div className="relative bg-slate-700 rounded-lg p-2">
                 {selectedFile?.type.startsWith("image/") ? (
-                  <img 
-                    src={filePreview} 
-                    alt="Preview" 
+                  <img
+                    src={filePreview}
+                    alt="Preview"
                     className="max-h-20 rounded"
                   />
                 ) : (
-                  <video 
-                    src={filePreview} 
-                    className="max-h-20 rounded"
-                  />
+                  <video src={filePreview} className="max-h-20 rounded" />
                 )}
                 <button
                   onClick={handleRemoveFile}
@@ -204,7 +215,7 @@ export default function ChatPage() {
               </div>
             </div>
           )}
-          
+
           {/* Error Message */}
           {fileError && (
             <div className="mb-2 text-xs text-red-400 bg-red-900/20 px-2 py-1 rounded">

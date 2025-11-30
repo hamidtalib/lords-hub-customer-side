@@ -7,13 +7,13 @@ import { Facebook, Instagram, MessageCircle, Send } from "lucide-react";
 import { toast } from "react-toastify";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { subscribeToNewsletter } from "@/store/lib/firebaseNewsletter";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { loadSocialMediaLinks } from "@/store/socialMedia/socialMediaSlice";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { subscribeNewsletter } from "@/store/thunks/newsletterThunk";
+import { loadSocialMediaLinks } from "@/store/thunks/socialMediaThunk";
 import {
   getSocialMediaUrl,
   SOCIAL_PLATFORMS,
-} from "@/lib/utils/socialMediaUtils";
+} from "@/store/lib/utils/socialMediaUtils";
 
 import logo from "@/public/images/lords-hub-logo.png";
 
@@ -46,15 +46,11 @@ export default function Footer() {
     setIsSubmitting(true);
 
     try {
-      const result = await subscribeToNewsletter(email);
-      if (result.success) {
-        toast.success(result.message);
-        setEmail("");
-      } else {
-        toast.error(result.message);
-      }
-    } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      const result = await dispatch(subscribeNewsletter(email)).unwrap();
+      toast.success(result);
+      setEmail("");
+    } catch (error: any) {
+      toast.error(error || "An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

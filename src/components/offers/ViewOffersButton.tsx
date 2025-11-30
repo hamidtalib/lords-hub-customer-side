@@ -1,7 +1,7 @@
 "use client";
 
 import { Gift } from "lucide-react";
-import { useOffers } from "@/lib/hooks/useOffers";
+import { useOffers } from "@/store/lib/hooks/useOffers";
 import { Button } from "@/src/components/ui/button";
 
 interface ViewOffersButtonProps {
@@ -15,11 +15,11 @@ interface ViewOffersButtonProps {
 /**
  * Button to manually open the offers modal
  * Can be placed anywhere in the app (header, footer, sidebar, etc.)
- * 
+ *
  * @example
  * // In header
  * <ViewOffersButton variant="outline" text="Special Offers" />
- * 
+ *
  * // Icon only
  * <ViewOffersButton size="icon" showIcon />
  */

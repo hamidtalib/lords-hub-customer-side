@@ -1,7 +1,7 @@
-import { Account } from "@/store/lib/firebaseAccounts";
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
 import { Shield, Globe } from "lucide-react";
+import { Account } from "@/store/thunks/accountsThunk";
 
 interface AccountsDisplayProps {
   restrictedAccounts: Account[];
@@ -70,15 +70,13 @@ export default function AccountsDisplay({
             Restricted Accounts
           </h2>
         </div>
-        
+
         {restrictedAccounts.length === 0 ? (
           <div className="text-center py-12 bg-slate-800/50 rounded-xl border-2 border-slate-700">
             <p className="text-xl font-bold text-white mb-2">
               No restricted accounts available
             </p>
-            <p className="text-slate-400">
-              Check back later for new listings.
-            </p>
+            <p className="text-slate-400">Check back later for new listings.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -93,15 +91,13 @@ export default function AccountsDisplay({
           <Globe className="h-8 w-8 text-blue-400" />
           <h2 className="text-3xl font-black gradient-text">Open Accounts</h2>
         </div>
-        
+
         {openAccounts.length === 0 ? (
           <div className="text-center py-12 bg-slate-800/50 rounded-xl border-2 border-slate-700">
             <p className="text-xl font-bold text-white mb-2">
               No open accounts available
             </p>
-            <p className="text-slate-400">
-              Check back later for new listings.
-            </p>
+            <p className="text-slate-400">Check back later for new listings.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

@@ -1,7 +1,7 @@
 "use client";
 
+import { ChatSession } from "@/store/thunks/chatThunk";
 import { Loader2 } from "lucide-react";
-import { ChatSession } from "@/store/lib/types/products";
 
 interface ChatSidebarProps {
   chats: ChatSession[];
@@ -33,26 +33,18 @@ export function ChatSidebar({
         <div className="space-y-2">
           {chats.map((chat) => (
             <button
-              key={chat.id}
+              key={chat.visitorId}
               onClick={() => onChatSelect(chat)}
               className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-300 font-semibold ${
-                activeChat?.id === chat.id
+                activeChat?.visitorId === chat.visitorId
                   ? "border-amber-500 bg-gradient-to-r from-amber-500/30 to-amber-400/20 shadow-lg text-white"
                   : "border-amber-500/30 hover:border-amber-400 hover:bg-slate-700/50 text-slate-200"
               }`}
             >
               <p className="font-bold text-sm line-clamp-1">
-                {chat.productTitle}
+                {chat.visitorName || "Guest User"}
               </p>
-              <div className="mt-2 flex items-center justify-between">
-                <span
-                  className={`text-xs px-2 py-1 rounded-full font-bold border-2 ${getStatusColor(
-                    chat.status
-                  )}`}
-                >
-                  {getStatusLabel(chat.status)}
-                </span>
-              </div>
+              <div className="mt-2 flex items-center justify-between"></div>
             </button>
           ))}
         </div>

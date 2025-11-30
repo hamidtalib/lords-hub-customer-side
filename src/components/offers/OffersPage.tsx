@@ -5,29 +5,17 @@ import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Tag } from "lucide-react";
-import { subscribeToOffers, FirestoreOffer } from "@/store/lib/firebaseOffers";
+import { loadOffers, Offer } from "@/store/thunks/offerThunk";
+import { useAppDispatch } from "@/store/store";
 
 export default function OffersPage() {
-  const [offers, setOffers] = useState<FirestoreOffer[]>([]);
+  const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    setLoading(true);
-    
-    const unsubscribe = subscribeToOffers(
-      (data) => {
-        setOffers(data);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Error subscribing to offers:", error);
-        setLoading(false);
-      }
-    );
-
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
-  }, []);
+    dispatch(loadOffers());
+  }, [dispatch]);
 
   return (
     <>
@@ -84,7 +72,7 @@ export default function OffersPage() {
                     {offer.mediaType === "image" ? (
                       <img
                         src={offer.mediaUrl}
-                        alt={offer.name}
+                        alt={offer.title}
                         className="w-full h-full object-cover"
                       />
                     ) : offer.mediaType === "video" ? (
@@ -102,12 +90,12 @@ export default function OffersPage() {
                   {/* Content Section */}
                   <div className="p-6 flex-grow flex flex-col">
                     <h3 className="text-xl font-black text-white mb-2">
-                      {offer.name}
+                      {offer.title}
                     </h3>
                     <p className="text-sm text-slate-400 mb-4 flex-grow">
                       {offer.description}
                     </p>
-                    
+
                     {/* CTA Button */}
                     <Link href={`/chat?productId=${offer.productId}`}>
                       <Button className="w-full btn-game text-sm">

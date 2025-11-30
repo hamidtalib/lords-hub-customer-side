@@ -1,7 +1,7 @@
 "use client";
 
 import { CardDescription, CardTitle } from "@/src/components/ui/card";
-import { ChatSession } from "@/store/lib/types/products";
+import { ChatSession } from "@/store/thunks/chatThunk";
 
 interface ChatHeaderProps {
   activeChat: ChatSession;
@@ -18,7 +18,7 @@ export function ChatHeader({
     <div className="flex items-start justify-between">
       <div>
         <CardTitle className="text-2xl gradient-text">
-          {activeChat.productTitle}
+          {activeChat.visitorName || "Guest User"}
         </CardTitle>
         <CardDescription className="text-base font-semibold text-slate-300">
           Started{" "}
@@ -26,13 +26,6 @@ export function ChatHeader({
             new Date(activeChat.createdAt as Date).toLocaleDateString()}
         </CardDescription>
       </div>
-      <span
-        className={`text-xs px-3 py-1 rounded-full font-bold border-2 ${getStatusColor(
-          activeChat.status
-        )}`}
-      >
-        {getStatusLabel(activeChat.status)}
-      </span>
     </div>
   );
 }
