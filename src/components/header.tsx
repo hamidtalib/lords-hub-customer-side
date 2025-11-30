@@ -1,11 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, MessageCircle, ExternalLink, ChevronDown } from "lucide-react";
+import {
+  Menu,
+  X,
+  MessageCircle,
+  ExternalLink,
+  ChevronDown,
+} from "lucide-react";
+import { toast } from "react-toastify";
 import { Button } from "@/src/components/ui/button";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { loadSocialMediaLinks } from "@/store/socialMedia/socialMediaSlice";
+import {
+  getSocialMediaUrl,
+  SOCIAL_PLATFORMS,
+} from "@/lib/utils/socialMediaUtils";
 import logo from "@/public/images/lords-hub-logo.png";
 
 export default function Header() {
@@ -14,41 +27,51 @@ export default function Header() {
   const [botsDropdown, setBotsDropdown] = useState(false);
   const pathname = usePathname();
 
+  const dispatch = useAppDispatch();
+  const { links } = useAppSelector((state) => state.socialMedia);
+
+  useEffect(() => {
+    dispatch(loadSocialMediaLinks());
+  }, [dispatch]);
+
+  const telegramUrl = getSocialMediaUrl(links, SOCIAL_PLATFORMS.TELEGRAM);
+
+  const handleTelegramClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!telegramUrl) {
+      e.preventDefault();
+      toast.error("Telegram link not added by admin yet");
+    }
+  };
+
   const navLinks = [
     { label: "Home", href: "/" },
-    { 
+    {
       label: "Accounts",
       dropdown: [
         { label: "Restricted Kingdom Accounts", href: "/accounts/restricted" },
         { label: "Open Kingdom Accounts", href: "/accounts/open" },
         { label: "Selling Accounts", href: "/accounts/selling" },
-      ]
+      ],
     },
     { label: "Gems", href: "/gems" },
     { label: "Diamonds", href: "/diamonds" },
-    { 
+    {
       label: "Bot Services",
       dropdown: [
         { label: "War Bots", href: "/bots/war" },
         { label: "Rein Bots", href: "/bots/rein" },
         { label: "KVK Bots", href: "/bots/kvk" },
         { label: "Farm/Bank Bots", href: "/bots/farm" },
-      ]
+      ],
     },
     { label: "Reviews", href: "/reviews" },
     { label: "About", href: "/about" },
   ];
 
   const isActive = (href?: string, dropdown?: any[]) => {
-    if (href === "/") {
-      return pathname === "/";
-    }
-    if (dropdown) {
-      return dropdown.some(item => pathname === item.href);
-    }
-    if (href) {
-      return pathname === href;
-    }
+    if (href === "/") return pathname === "/";
+    if (dropdown) return dropdown.some((item) => pathname === item.href);
+    if (href) return pathname === href;
     return false;
   };
 
@@ -73,6 +96,7 @@ export default function Header() {
             </span>
           </Link>
 
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-0.5 lg:gap-1">
             {navLinks.map((link, index) => (
               <div key={link.label + index} className="relative group">
@@ -86,7 +110,7 @@ export default function Header() {
                           : ""
                       }`}
                     >
-                      {link.label}
+                      {link.label}{" "}
                       <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4" />
                     </Button>
                     <div className="absolute left-0 top-full mt-1 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
@@ -123,14 +147,13 @@ export default function Header() {
                 ) : null}
               </div>
             ))}
-          </div>
 
-          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Telegram & Chat */}
             <a
-              href="https://t.me/lordshub"
+              href={telegramUrl || "#"}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden lg:flex"
+              onClick={handleTelegramClick}
             >
               <Button
                 size="sm"
@@ -140,7 +163,7 @@ export default function Header() {
                 <span className="hidden sm:inline">Telegram</span>
               </Button>
             </a>
-            <Link href="/chat" className="hidden sm:block">
+            <Link href="/chat">
               <Button
                 size="sm"
                 className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm"
@@ -149,20 +172,22 @@ export default function Header() {
                 <span className="hidden md:inline">Chat</span>
               </Button>
             </Link>
-
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-1.5 sm:p-2 rounded-lg hover:bg-amber-100 transition-all duration-300 cursor-pointer"
-            >
-              {isOpen ? (
-                <X className="h-5 w-5 sm:h-6 sm:w-6 text-amber-400 font-bold" />
-              ) : (
-                <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-slate-200" />
-              )}
-            </button>
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-1.5 sm:p-2 rounded-lg hover:bg-amber-100 transition-all duration-300 cursor-pointer"
+          >
+            {isOpen ? (
+              <X className="h-5 w-5 sm:h-6 sm:w-6 text-amber-400 font-bold" />
+            ) : (
+              <Menu className="h-5 w-5 sm:h-6 sm:w-6 text-slate-200" />
+            )}
+          </button>
         </div>
 
+        {/* Mobile Menu */}
         {isOpen && (
           <div className="mt-4 space-y-3 md:hidden animate-in fade-in duration-300">
             {navLinks.map((link, index) => (
@@ -171,11 +196,10 @@ export default function Header() {
                   <div>
                     <button
                       onClick={() => {
-                        if (link.label === "Accounts") {
+                        if (link.label === "Accounts")
                           setAccountsDropdown(!accountsDropdown);
-                        } else if (link.label === "Bot Services") {
+                        if (link.label === "Bot Services")
                           setBotsDropdown(!botsDropdown);
-                        }
                       }}
                       className={`w-full flex items-center justify-between px-4 py-2 text-slate-200 font-bold hover:text-amber-400 hover:bg-amber-500/20 transition-all duration-300 rounded-lg cursor-pointer ${
                         isActive(undefined, link.dropdown)
@@ -184,14 +208,16 @@ export default function Header() {
                       }`}
                     >
                       {link.label}
-                      <ChevronDown className={`h-4 w-4 transition-transform ${
-                        (link.label === "Accounts" && accountsDropdown) || 
-                        (link.label === "Bot Services" && botsDropdown)
-                          ? "rotate-180"
-                          : ""
-                      }`} />
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform ${
+                          (link.label === "Accounts" && accountsDropdown) ||
+                          (link.label === "Bot Services" && botsDropdown)
+                            ? "rotate-180"
+                            : ""
+                        }`}
+                      />
                     </button>
-                    {((link.label === "Accounts" && accountsDropdown) || 
+                    {((link.label === "Accounts" && accountsDropdown) ||
                       (link.label === "Bot Services" && botsDropdown)) && (
                       <div className="ml-4 mt-1 space-y-1">
                         {link.dropdown.map((item) => (
@@ -228,25 +254,32 @@ export default function Header() {
                 ) : null}
               </div>
             ))}
-            <div className="space-y-3">
-              <a
-                href="https://t.me/lordshub"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full block"
+
+            {/* Telegram & Chat - Mobile */}
+            <a
+              href={telegramUrl || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleTelegramClick}
+              className="w-full block"
+            >
+              <Button
+                size="sm"
+                className="w-full gap-2 btn-secondary font-bold cursor-pointer justify-start"
               >
-                <Button className="w-full gap-2 btn-secondary font-bold cursor-pointer">
-                  <ExternalLink className="h-4 w-4" />
-                  Telegram
-                </Button>
-              </a>
-              <Link href="/chat" className="w-full">
-                <Button className="w-full gap-2 btn-game font-bold cursor-pointer">
-                  <MessageCircle className="h-4 w-4" />
-                  Chat with Us
-                </Button>
-              </Link>
-            </div>
+                <ExternalLink className="h-4 w-4" />
+                <span>Telegram</span>
+              </Button>
+            </a>
+            <Link href="/chat" className="w-full">
+              <Button
+                size="sm"
+                className="w-full gap-2 btn-game font-bold cursor-pointer justify-start"
+              >
+                <MessageCircle className="h-4 w-4" />
+                <span>Chat with Us</span>
+              </Button>
+            </Link>
           </div>
         )}
       </nav>
