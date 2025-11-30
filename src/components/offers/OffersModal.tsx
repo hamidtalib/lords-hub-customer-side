@@ -1,15 +1,37 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { hideOffersModal, checkIfSeenOffers } from "@/store/offers/offersSlice";
+import { subscribeToOffers, FirestoreOffer } from "@/store/lib/firebaseOffers";
 
 export default function OffersModal() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { offers, showModal } = useAppSelector((state) => state.offers);
+  const { showModal } = useAppSelector((state) => state.offers);
+  const [firestoreOffers, setFirestoreOffers] = useState<FirestoreOffer[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Subscribe to realtime offers updates
+  useEffect(() => {
+    setLoading(true);
+    
+    const unsubscribe = subscribeToOffers(
+      (offers) => {
+        setFirestoreOffers(offers);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error subscribing to offers:", error);
+        setLoading(false);
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
 
   // Check if user has seen offers on mount
   useEffect(() => {
@@ -20,12 +42,26 @@ export default function OffersModal() {
     dispatch(hideOffersModal());
   };
 
-  const handleOfferClick = (link: string) => {
+  const handleOfferClick = (productId: string) => {
     dispatch(hideOffersModal());
-    router.push(link);
+    router.push(`/chat?productId=${productId}`);
   };
 
-  if (!showModal || offers.length === 0) {
+  if (!showModal) {
+    return null;
+  }
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-8 border-2 border-amber-500/30">
+          <p className="text-white text-lg">Loading offers...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (firestoreOffers.length === 0) {
     return null;
   }
 
@@ -53,33 +89,44 @@ export default function OffersModal() {
 
         {/* Offers List */}
         <div className="p-6 space-y-4">
-          {offers.map((offer) => (
+          {firestoreOffers.map((offer) => (
             <div
               key={offer.id}
-              className="bg-slate-700/50 rounded-lg p-5 border border-amber-500/20 hover:border-amber-500/40 transition-all"
+              className="bg-slate-700/50 rounded-lg overflow-hidden border border-amber-500/20 hover:border-amber-500/40 transition-all"
             >
-              {offer.imageUrl && (
-                <img
-                  src={offer.imageUrl}
-                  alt={offer.title}
-                  className="w-full h-48 object-cover rounded-lg mb-4"
-                />
-              )}
-              <h3 className="text-xl font-bold text-white mb-2">
-                {offer.title}
-              </h3>
-              <p className="text-slate-300 mb-4">{offer.description}</p>
-              {offer.validUntil && (
-                <p className="text-xs text-amber-400 mb-3">
-                  Valid until: {new Date(offer.validUntil).toLocaleDateString()}
-                </p>
-              )}
-              <button
-                onClick={() => handleOfferClick(offer.ctaLink)}
-                className="w-full sm:w-auto px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors"
-              >
-                {offer.ctaText}
-              </button>
+              {/* Media Display */}
+              <div className="relative w-full h-64 bg-slate-800">
+                {offer.mediaType === "image" ? (
+                  <img
+                    src={offer.mediaUrl}
+                    alt={offer.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : offer.mediaType === "video" ? (
+                  <video
+                    controls
+                    className="w-full h-full object-contain"
+                    preload="metadata"
+                  >
+                    <source src={offer.mediaUrl} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                ) : null}
+              </div>
+
+              {/* Content */}
+              <div className="p-5">
+                <h3 className="text-xl font-bold text-white mb-2">
+                  {offer.name}
+                </h3>
+                <p className="text-slate-300 mb-4">{offer.description}</p>
+                <button
+                  onClick={() => handleOfferClick(offer.productId)}
+                  className="w-full sm:w-auto px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors"
+                >
+                  Chat Us
+                </button>
+              </div>
             </div>
           ))}
         </div>

@@ -1,61 +1,56 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Select } from "@/src/components/ui/select";
-import { MarketplaceProduct } from "@/store/lib/types/products";
 import Link from "next/link";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Globe } from "lucide-react";
-import { getAccountById } from "@/src/data/accountsData";
+import { getAccountsByType, subscribeToAccountsByType, Account } from "@/store/lib/firebaseAccounts";
 
 export default function OpenAccountsPage() {
   const [priceRange, setPriceRange] = useState<string>("");
   const [sortBy, setSortBy] = useState("newest");
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [lastDoc, setLastDoc] = useState<any>(null);
+  const [hasMore, setHasMore] = useState(false);
 
-  const products: MarketplaceProduct[] = [
-    {
-      id: "oacc1",
-      title: "Starter Open Kingdom",
-      description: "K890 - Castle 18, 8M Might",
-      tier: "Basic",
-      price: 45,
-      originalPrice: 60,
-      might: "8000000",
-      troops: "3000",
-      heroes: "5",
-      gems: 500,
-      category: "accounts",
-    },
-    {
-      id: "oacc2",
-      title: "Mid-Tier Open Kingdom",
-      description: "K750 - Castle 21, 18M Might",
-      tier: "Premium",
-      price: 95,
-      originalPrice: 120,
-      might: "18000000",
-      troops: "6000",
-      heroes: "8",
-      gems: 1500,
-      category: "accounts",
-    },
-    {
-      id: "oacc3",
-      title: "Advanced Open Kingdom",
-      description: "K620 - Castle 23, 30M Might",
-      tier: "Elite",
-      price: 150,
-      might: "30000000",
-      troops: "9000",
-      heroes: "12",
-      gems: 2500,
-      category: "accounts",
-    },
-  ];
+  useEffect(() => {
+    setLoading(true);
+    
+    // Subscribe to realtime updates
+    const unsubscribe = subscribeToAccountsByType(
+      "open",
+      (data) => {
+        setAccounts(data);
+        setHasMore(data.length === 10);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error subscribing to accounts:", error);
+        setLoading(false);
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  async function loadMore() {
+    if (!hasMore || loadingMore) return;
+    
+    setLoadingMore(true);
+    const { accounts: newAccounts, lastDoc: newLastDoc, hasMore: more } = await getAccountsByType("open", lastDoc);
+    setAccounts([...accounts, ...newAccounts]);
+    setLastDoc(newLastDoc);
+    setHasMore(more);
+    setLoadingMore(false);
+  }
 
   const filteredProducts = useMemo(() => {
-    let result = [...products];
+    let result = [...accounts];
 
     if (priceRange === "1-99")
       result = result.filter((p) => p.price >= 1 && p.price <= 99);
@@ -68,11 +63,9 @@ export default function OpenAccountsPage() {
 
     if (sortBy === "price-low") result.sort((a, b) => a.price - b.price);
     else if (sortBy === "price-high") result.sort((a, b) => b.price - a.price);
-    else if (sortBy === "mighty")
-      result.sort((a, b) => Number(b.might) - Number(a.might));
 
     return result;
-  }, [priceRange, sortBy]);
+  }, [accounts, priceRange, sortBy]);
 
   return (
     <>
@@ -124,7 +117,13 @@ export default function OpenAccountsPage() {
             </Select>
           </div>
 
-          {filteredProducts.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-xl font-bold text-white mb-2">
+                Loading accounts...
+              </p>
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">
                 No open kingdom accounts found
@@ -136,65 +135,74 @@ export default function OpenAccountsPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {filteredProducts.map((item) => {
-                const accountData = getAccountById(item.id);
-                return (
-                  <div
-                    key={item.id}
-                    className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-amber-500/30 overflow-hidden hover:border-amber-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20"
-                  >
-                    <div className="relative h-48 overflow-hidden">
-                      <img
-                        src={
-                          accountData?.mainImage ||
-                          "https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=800&q=80"
-                        }
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                      />
+              {filteredProducts.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-amber-500/30 overflow-hidden hover:border-amber-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={
+                        item.images?.[0] ||
+                        "https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=800&q=80"
+                      }
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div>
+                      <h3 className="text-lg font-black text-white mb-1">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-slate-400 line-clamp-2">
+                        {item.description}
+                      </p>
                     </div>
-                    <div className="p-4 space-y-3">
-                      <div>
-                        <h3 className="text-lg font-black text-white mb-1">
-                          {item.title}
-                        </h3>
-                        <p className="text-sm text-slate-400">
-                          {item.description}
-                        </p>
-                      </div>
-                      <div className="pt-2 border-t border-slate-700">
-                        <p className="text-2xl font-black gradient-text text-center mb-3">
-                          ${item.price}
-                        </p>
-                        <div className="flex gap-2">
-                          <Link
-                            href={`/chat?productId=${item.id}`}
-                            className="flex-1"
+                    <div className="pt-2 border-t border-slate-700">
+                      <p className="text-2xl font-black gradient-text text-center mb-3">
+                        ${item.price}
+                      </p>
+                      <div className="flex gap-2">
+                        <Link
+                          href={`/chat?productId=${item.productId || item.id}`}
+                          className="flex-1"
+                        >
+                          <Button
+                            size="sm"
+                            className="btn-game text-xs w-full"
                           >
-                            <Button
-                              size="sm"
-                              className="btn-game text-xs w-full"
-                            >
-                              Chat
-                            </Button>
-                          </Link>
-                          <Link
-                            href={`/accounts/${item.id}`}
-                            className="flex-1"
+                            Chat
+                          </Button>
+                        </Link>
+                        <Link
+                          href={`/accounts/${item.id}`}
+                          className="flex-1"
+                        >
+                          <Button
+                            size="sm"
+                            className="btn-game text-xs w-full"
                           >
-                            <Button
-                              size="sm"
-                              className="btn-game text-xs w-full"
-                            >
-                              Details
-                            </Button>
-                          </Link>
-                        </div>
+                            Details
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {hasMore && !priceRange && sortBy === "newest" && (
+            <div className="text-center mt-8">
+              <Button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="btn-secondary font-bold"
+              >
+                {loadingMore ? "Loading..." : "Load More"}
+              </Button>
             </div>
           )}
         </div>

@@ -22,11 +22,73 @@ import {
   query,
   where,
   orderBy,
+  onSnapshot,
   Timestamp,
+  Unsubscribe
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firestore, storage } from "./firebase";
 import { Offer } from "../offers/offersSlice";
+
+export interface FirestoreOffer {
+  id: string;
+  name: string;
+  description: string;
+  mediaType: "image" | "video";
+  mediaUrl: string;
+  productId: string;
+  createdAt: any;
+  updatedAt: any;
+}
+
+/**
+ * Fetch all offers from Firestore
+ * 
+ * @returns {Promise<FirestoreOffer[]>} Array of all offers
+ */
+export async function fetchAllOffers(): Promise<FirestoreOffer[]> {
+  try {
+    const offersRef = collection(firestore, "offers");
+    const snapshot = await getDocs(offersRef);
+    
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as FirestoreOffer[];
+  } catch (error) {
+    console.error("Error fetching offers:", error);
+    return [];
+  }
+}
+
+/**
+ * Realtime listener for all offers
+ * 
+ * @param callback - Function to call with updated offers
+ * @param onError - Optional error handler
+ * @returns Unsubscribe function
+ */
+export function subscribeToOffers(
+  callback: (offers: FirestoreOffer[]) => void,
+  onError?: (error: Error) => void
+): Unsubscribe {
+  const offersRef = collection(firestore, "offers");
+
+  return onSnapshot(
+    offersRef,
+    (snapshot) => {
+      const offers = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as FirestoreOffer[];
+      callback(offers);
+    },
+    (error) => {
+      console.error("Error in offers realtime listener:", error);
+      if (onError) onError(error);
+    }
+  );
+}
 
 /**
  * Fetch all active offers from Firestore

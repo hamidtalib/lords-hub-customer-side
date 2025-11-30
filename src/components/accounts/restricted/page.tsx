@@ -1,61 +1,56 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Select } from "@/src/components/ui/select";
-import { MarketplaceProduct } from "@/store/lib/types/products";
 import Link from "next/link";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Shield } from "lucide-react";
-import { getAccountById } from "@/src/data/accountsData";
+import { getAccountsByType, subscribeToAccountsByType, Account } from "@/store/lib/firebaseAccounts";
 
 export default function RestrictedAccountsPage() {
   const [priceRange, setPriceRange] = useState<string>("");
   const [sortBy, setSortBy] = useState("newest");
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [lastDoc, setLastDoc] = useState<any>(null);
+  const [hasMore, setHasMore] = useState(false);
 
-  const products: MarketplaceProduct[] = [
-    {
-      id: "racc1",
-      title: "Elite Restricted Account",
-      description: "K450 - Castle 25, 50M Might",
-      tier: "Elite",
-      price: 250,
-      originalPrice: 300,
-      might: "50000000",
-      troops: "15000",
-      heroes: "15",
-      gems: 5000,
-      category: "accounts",
-    },
-    {
-      id: "racc2",
-      title: "Premium Restricted Account",
-      description: "K320 - Castle 24, 35M Might",
-      tier: "Premium",
-      price: 180,
-      originalPrice: 220,
-      might: "35000000",
-      troops: "10000",
-      heroes: "12",
-      gems: 3000,
-      category: "accounts",
-    },
-    {
-      id: "racc3",
-      title: "Advanced Restricted Account",
-      description: "K280 - Castle 23, 25M Might",
-      tier: "Premium",
-      price: 120,
-      might: "25000000",
-      troops: "8000",
-      heroes: "10",
-      gems: 2000,
-      category: "accounts",
-    },
-  ];
+  useEffect(() => {
+    setLoading(true);
+    
+    // Subscribe to realtime updates
+    const unsubscribe = subscribeToAccountsByType(
+      "restricted",
+      (data) => {
+        setAccounts(data);
+        setHasMore(data.length === 10); // Assuming 10 per page
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error subscribing to accounts:", error);
+        setLoading(false);
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  async function loadMore() {
+    if (!hasMore || loadingMore) return;
+    
+    setLoadingMore(true);
+    const { accounts: newAccounts, lastDoc: newLastDoc, hasMore: more } = await getAccountsByType("restricted", lastDoc);
+    setAccounts([...accounts, ...newAccounts]);
+    setLastDoc(newLastDoc);
+    setHasMore(more);
+    setLoadingMore(false);
+  }
 
   const filteredProducts = useMemo(() => {
-    let result = [...products];
+    let result = [...accounts];
 
     if (priceRange === "1-99")
       result = result.filter((p) => p.price >= 1 && p.price <= 99);
@@ -68,11 +63,9 @@ export default function RestrictedAccountsPage() {
 
     if (sortBy === "price-low") result.sort((a, b) => a.price - b.price);
     else if (sortBy === "price-high") result.sort((a, b) => b.price - a.price);
-    else if (sortBy === "mighty")
-      result.sort((a, b) => Number(b.might) - Number(a.might));
 
     return result;
-  }, [priceRange, sortBy]);
+  }, [accounts, priceRange, sortBy]);
 
   return (
     <>
@@ -124,74 +117,92 @@ export default function RestrictedAccountsPage() {
             </Select>
           </div>
 
-          {filteredProducts.length === 0 ? (
+          {loading ? (
             <div className="text-center py-12">
-              <p className="text-xl font-bold text-white mb-2">No restricted accounts found</p>
-              <p className="text-slate-400">Try adjusting your price filter or check back later for new listings.</p>
+              <p className="text-xl font-bold text-white mb-2">
+                Loading accounts...
+              </p>
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-xl font-bold text-white mb-2">
+                No restricted accounts found
+              </p>
+              <p className="text-slate-400">
+                Try adjusting your price filter or check back later for new
+                listings.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {filteredProducts.map((item) => {
-                const accountData = getAccountById(item.id);
-                return (
-                  <div
-                    key={item.id}
-                    className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-amber-500/30 overflow-hidden hover:border-amber-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20"
-                  >
-                    <div className="relative h-48 overflow-hidden">
-                      <img
-                        src={accountData?.mainImage || "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"}
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute top-2 right-2 bg-amber-500 text-slate-900 px-3 py-1 rounded-full text-xs font-bold">
-                        {item.tier}
-                      </div>
+              {filteredProducts.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-amber-500/30 overflow-hidden hover:border-amber-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20"
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={
+                        item.images?.[0] ||
+                        "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
+                      }
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div>
+                      <h3 className="text-lg font-black text-white mb-1">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-slate-400 line-clamp-2">
+                        {item.description}
+                      </p>
                     </div>
-                    <div className="p-4 space-y-3">
-                      <div>
-                        <h3 className="text-lg font-black text-white mb-1">{item.title}</h3>
-                        <p className="text-sm text-slate-400">{item.description}</p>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="bg-slate-800/50 rounded p-2">
-                          <p className="text-slate-400">Might</p>
-                          <p className="text-white font-bold">{(Number(item.might) / 1000000).toFixed(0)}M</p>
-                        </div>
-                        <div className="bg-slate-800/50 rounded p-2">
-                          <p className="text-slate-400">Troops</p>
-                          <p className="text-white font-bold">{item.troops}</p>
-                        </div>
-                        <div className="bg-slate-800/50 rounded p-2">
-                          <p className="text-slate-400">Heroes</p>
-                          <p className="text-white font-bold">{item.heroes}</p>
-                        </div>
-                        <div className="bg-slate-800/50 rounded p-2">
-                          <p className="text-slate-400">Gems</p>
-                          <p className="text-white font-bold">{item.gems}</p>
-                        </div>
-                      </div>
-                      <div className="pt-2 border-t border-slate-700">
-                        <p className="text-2xl font-black gradient-text text-center mb-3">
-                          ${item.price}
-                        </p>
-                        <div className="flex gap-2">
-                          <Link href={`/chat?productId=${item.id}`} className="flex-1">
-                            <Button size="sm" className="btn-game text-xs w-full">
-                              Chat
-                            </Button>
-                          </Link>
-                          <Link href={`/accounts/${item.id}`} className="flex-1">
-                            <Button size="sm" className="btn-game text-xs w-full">
-                              Details
-                            </Button>
-                          </Link>
-                        </div>
+                    <div className="pt-2 border-t border-slate-700">
+                      <p className="text-2xl font-black gradient-text text-center mb-3">
+                        ${item.price}
+                      </p>
+                      <div className="flex gap-2">
+                        <Link
+                          href={`/chat?productId=${item.productId || item.id}`}
+                          className="flex-1"
+                        >
+                          <Button
+                            size="sm"
+                            className="btn-game text-xs w-full"
+                          >
+                            Chat
+                          </Button>
+                        </Link>
+                        <Link
+                          href={`/accounts/${item.id}`}
+                          className="flex-1"
+                        >
+                          <Button
+                            size="sm"
+                            className="btn-game text-xs w-full"
+                          >
+                            Details
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {hasMore && !priceRange && sortBy === "newest" && (
+            <div className="text-center mt-8">
+              <Button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="btn-secondary font-bold"
+              >
+                {loadingMore ? "Loading..." : "Load More"}
+              </Button>
             </div>
           )}
         </div>

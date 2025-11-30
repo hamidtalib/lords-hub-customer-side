@@ -1,55 +1,52 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
-import { MarketplaceProduct } from "@/store/lib/types/products";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Users } from "lucide-react";
+import { getBotsByType, subscribeToBotsByType, Bot } from "@/store/lib/firebaseBots";
+import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 
 export default function ReinBotsPage() {
-  const botProducts: MarketplaceProduct[] = [
-    {
-      id: "rbot1",
-      title: "Basic Rein Bot",
-      description: "Automated reinforcement sending and management",
-      tier: "Basic",
-      highlights: ["Auto-send reins", "Troop recall", "Alliance coordination"],
-      price: 10,
-      stock: 12,
-      category: "bots",
-    },
-    {
-      id: "rbot2",
-      title: "Pro Rein Bot",
-      description: "Advanced reinforcement with smart troop allocation",
-      tier: "Premium",
-      highlights: [
-        "Smart allocation",
-        "Multi-target support",
-        "Priority system",
-        "24/7 monitoring",
-      ],
-      price: 15,
-      stock: 7,
-      category: "bots",
-    },
-    {
-      id: "rbot3",
-      title: "Elite Rein Bot",
-      description: "Professional reinforcement bot with AI optimization",
-      tier: "Elite",
-      highlights: [
-        "AI optimization",
-        "Guild coordination",
-        "Custom rules",
-        "Instant alerts",
-      ],
-      price: 20,
-      stock: 4,
-      category: "bots",
-    },
-  ];
+  const [bots, setBots] = useState<Bot[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [hasMore, setHasMore] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    
+    // Subscribe to realtime updates
+    const unsubscribe = subscribeToBotsByType(
+      "rein",
+      (data) => {
+        setBots(data);
+        setHasMore(data.length === 10);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error subscribing to bots:", error);
+        setLoading(false);
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  async function loadMore() {
+    if (!hasMore || loadingMore) return;
+    
+    setLoadingMore(true);
+    const { bots: newBots, lastDoc: newLastDoc, hasMore: more } = await getBotsByType("rein", lastDoc);
+    setBots([...bots, ...newBots]);
+    setLastDoc(newLastDoc);
+    setHasMore(more);
+    setLoadingMore(false);
+  }
 
   return (
     <>
@@ -89,7 +86,13 @@ export default function ReinBotsPage() {
 
       <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8 fade-up">
         <div className="mx-auto max-w-7xl">
-          {botProducts.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-xl font-bold text-white mb-2">
+                Loading rein bots...
+              </p>
+            </div>
+          ) : bots.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">
                 No rein bots available
@@ -99,52 +102,66 @@ export default function ReinBotsPage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {botProducts.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-green-500/30 overflow-hidden hover:border-green-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 p-6 flex flex-col"
-                >
-                  <div className="flex-grow">
-                    <div className="mb-4">
-                      <h3 className="text-xl font-black text-white mb-2">
-                        {item.title}
-                      </h3>
-                      <p className="text-sm text-slate-400">
-                        {item.description}
-                      </p>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {bots.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-green-500/30 overflow-hidden hover:border-green-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 p-6 flex flex-col"
+                  >
+                    <div className="flex-grow">
+                      <div className="mb-4">
+                        <h3 className="text-xl font-black text-white mb-2">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-slate-400">
+                          {item.description}
+                        </p>
+                      </div>
+                      <div className="mb-4">
+                        <p className="text-xs text-slate-500 font-semibold mb-2">
+                          Features:
+                        </p>
+                        <ul className="text-xs text-slate-300 space-y-1">
+                          {item.features?.map((feature, idx) => (
+                            <li
+                              key={idx}
+                              className="flex items-start gap-2"
+                            >
+                              <span className="text-green-400">•</span>
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                    <div className="mb-4">
-                      <p className="text-xs text-slate-500 font-semibold mb-2">
-                        Features:
+                    <div className="pt-4 border-t border-slate-700 mt-auto">
+                      <p className="text-2xl font-black gradient-text text-center mb-3">
+                        ${item.price}
+                        <span className="text-sm text-slate-400">/month</span>
                       </p>
-                      <ul className="text-xs text-slate-300 space-y-1">
-                        {item.highlights?.map((highlight) => (
-                          <li
-                            key={highlight}
-                            className="flex items-start gap-2"
-                          >
-                            <span className="text-green-400">•</span>
-                            <span>{highlight}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <Link href={`/chat?productId=${item.productId}`}>
+                        <Button size="sm" className="btn-game text-xs w-full">
+                          Subscribe
+                        </Button>
+                      </Link>
                     </div>
                   </div>
-                  <div className="pt-4 border-t border-slate-700 mt-auto">
-                    <p className="text-2xl font-black gradient-text text-center mb-3">
-                      ${item.price}
-                      <span className="text-sm text-slate-400">/month</span>
-                    </p>
-                    <Link href={`/chat?productId=${item.id}`}>
-                      <Button size="sm" className="btn-game text-xs w-full">
-                        Subscribe
-                      </Button>
-                    </Link>
-                  </div>
+                ))}
+              </div>
+              
+              {hasMore && (
+                <div className="text-center mt-8">
+                  <Button
+                    onClick={loadMore}
+                    disabled={loadingMore}
+                    className="btn-secondary font-bold"
+                  >
+                    {loadingMore ? "Loading..." : "Load More"}
+                  </Button>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </section>

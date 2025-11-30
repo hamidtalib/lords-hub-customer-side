@@ -1,54 +1,48 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
-import { MarketplaceProduct } from "@/store/lib/types/products";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
+import { getAllDiamonds, subscribeToDiamonds, Diamond } from "@/store/lib/firebaseDiamonds";
 
 export default function DiamondsPage() {
-  const diamondProducts: MarketplaceProduct[] = [
-    {
-      id: "d1",
-      title: "86 Diamonds",
-      description: "Fast top-up direct to game ID",
-      highlights: ["Instant", "0% fee"],
-      tier: "Basic",
-      category: "diamonds",
-      stock: 12,
-      price: 0.99,
-    },
-    {
-      id: "d2",
-      title: "172 Diamonds",
-      description: "Best selling package",
-      highlights: ["Top seller"],
-      tier: "Standard",
-      category: "diamonds",
-      stock: 5,
-      price: 1.89,
-      originalPrice: 2.2,
-    },
-    {
-      id: "d3",
-      title: "344 Diamonds",
-      description: "Great value bundle",
-      highlights: ["5% bonus"],
-      tier: "Pro",
-      category: "diamonds",
-      stock: 9,
-      price: 3.59,
-    },
-    {
-      id: "d4",
-      title: "706 Diamonds",
-      description: "High-tier purchase",
-      highlights: ["7% bonus"],
-      tier: "Elite",
-      category: "diamonds",
-      stock: 2,
-      price: 7.19,
-    },
-  ];
+  const [diamonds, setDiamonds] = useState<Diamond[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [lastDoc, setLastDoc] = useState<any>(null);
+  const [hasMore, setHasMore] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    
+    // Subscribe to realtime updates
+    const unsubscribe = subscribeToDiamonds(
+      (data) => {
+        setDiamonds(data);
+        setHasMore(data.length === 10);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error subscribing to diamonds:", error);
+        setLoading(false);
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  async function loadMore() {
+    if (!hasMore || loadingMore) return;
+    
+    setLoadingMore(true);
+    const { diamonds: newDiamonds, lastDoc: newLastDoc, hasMore: more } = await getAllDiamonds(lastDoc);
+    setDiamonds([...diamonds, ...newDiamonds]);
+    setLastDoc(newLastDoc);
+    setHasMore(more);
+    setLoadingMore(false);
+  }
 
   return (
     <>
@@ -82,23 +76,29 @@ export default function DiamondsPage() {
             </h2>
           </div>
 
-          {diamondProducts.length === 0 ? (
+          {loading ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">
-                No diamonds added yet
+                Loading diamonds...
+              </p>
+            </div>
+          ) : diamonds.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-xl font-bold text-white mb-2">
+                No diamonds available
               </p>
               <p className="text-slate-400 mb-4">
-                Once your admin uploads products, they will appear here.
+                Check back later for new diamond packages.
               </p>
               <Link href="/chat">
                 <Button className="btn-secondary font-bold cursor-pointer">
-                  Request Drop
+                  Contact Us
                 </Button>
               </Link>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {diamondProducts.map((item) => (
+              {diamonds.map((item) => (
                 <div
                   key={item.id}
                   className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-amber-500/30 overflow-hidden hover:border-amber-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20 p-6 text-center"
@@ -106,19 +106,17 @@ export default function DiamondsPage() {
                   <div className="mb-4">
                     <div className="text-5xl mb-3">💎</div>
                     <h3 className="text-xl font-black text-white mb-1">
-                      {item.title}
+                      {item.name}
                     </h3>
                     <p className="text-sm text-slate-400">
-                      {item.description ||
-                        item.highlights?.[0] ||
-                        "Fast top-up"}
+                      {item.description}
                     </p>
                   </div>
                   <div className="pt-4 border-t border-slate-700">
                     <p className="text-3xl font-black gradient-text mb-4">
                       ${item.price}
                     </p>
-                    <Link href={`/chat?productId=${item.id}`}>
+                    <Link href={`/chat?productId=${item.productId}`}>
                       <Button size="sm" className="btn-game text-xs w-full">
                         Order Now
                       </Button>
@@ -126,6 +124,18 @@ export default function DiamondsPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+          
+          {hasMore && (
+            <div className="text-center mt-8">
+              <Button
+                onClick={loadMore}
+                disabled={loadingMore}
+                className="btn-secondary font-bold"
+              >
+                {loadingMore ? "Loading..." : "Load More"}
+              </Button>
             </div>
           )}
         </div>

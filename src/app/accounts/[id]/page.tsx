@@ -3,13 +3,16 @@ import Footer from "@/src/components/footer";
 import { AccountDetailsGallery } from "@/src/components/accounts/AccountDetailsGallery";
 import { AccountDetailsHeader } from "@/src/components/accounts/AccountDetailsHeader";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
-import { getAccountById, accountsData } from "@/src/data/accountsData";
+import { getAccountById, getAllAccounts } from "@/store/lib/firebaseAccounts";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
+export const revalidate = 60; // Revalidate every 60 seconds
+
 // Generate static paths for all accounts at build time
-export function generateStaticParams() {
-  return accountsData.map((account) => ({
+export async function generateStaticParams() {
+  const accounts = await getAllAccounts();
+  return accounts.map((account) => ({
     id: account.id,
   }));
 }
@@ -20,7 +23,7 @@ type PageProps = {
 
 export default async function AccountDetailsPage({ params }: PageProps) {
   const { id } = await params;
-  const account = getAccountById(id);
+  const account = await getAccountById(id);
 
   if (!account) {
     return (
@@ -32,11 +35,7 @@ export default async function AccountDetailsPage({ params }: PageProps) {
               Account Not Found
             </h1>
             <p className="text-slate-400 mb-4">
-              The account ID "{id}" doesn't exist in our database.
-            </p>
-            <p className="text-slate-500 text-sm mb-6">
-              Available IDs: acc1, acc2, acc3, racc1, racc2, racc3, oacc1,
-              oacc2, oacc3
+              The account you're looking for doesn't exist in our database.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link
@@ -68,11 +67,11 @@ export default async function AccountDetailsPage({ params }: PageProps) {
       <section className="px-3 sm:px-4 py-4 sm:py-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <Link
-            href={`/accounts/${account.category}`}
+            href={`/accounts/${account.type}`}
             className="flex items-center gap-2 text-amber-400 hover:text-amber-300 font-bold transition-colors text-sm sm:text-base"
           >
             <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
-            Back to {account.category === "restricted"
+            Back to {account.type === "restricted"
               ? "Restricted"
               : "Open"}{" "}
             Kingdom Accounts
@@ -87,19 +86,19 @@ export default async function AccountDetailsPage({ params }: PageProps) {
             {/* Left: Image Gallery */}
             <div>
               <AccountDetailsGallery
-                mainImage={account.mainImage}
-                galleryImages={account.galleryImages}
-                accountName={account.name}
+                mainImage={account.images?.[0] || "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"}
+                galleryImages={account.images || []}
+                accountName={account.title}
               />
             </div>
 
             {/* Right: Account Details */}
             <div>
               <AccountDetailsHeader
-                name={account.name}
+                name={account.title}
                 description={account.description}
                 price={account.price}
-                accountId={account.id}
+                accountId={account.productId || account.id}
               />
             </div>
           </div>
