@@ -165,30 +165,34 @@ export default function AboutPage() {
 
       {/* Team Section */}
       <section className="border-t-4 border-amber-500/30 px-4 py-16 sm:px-6 lg:px-8 section-gradient fade-up">
-        <h2 className="mb-6 text-4xl font-black text-center gradient-text">
+        <h2 className="mb-12 text-4xl font-black text-center gradient-text">
           Our Team
         </h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {team.map((member) => (
-            <div key={member.name} className="fade-up">
-              <Card className="card-lift border-2 border-amber-500/30 hover:border-amber-400 text-center group bg-gradient-to-br from-slate-800/90 to-slate-700/90 shadow-2xl backdrop-blur-sm">
-                <CardContent className="pt-6">
-                  <div className="h-20 w-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-amber-600 to-amber-500 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300">
-                    👤
-                  </div>
-                  <CardTitle className="text-lg group-hover:text-amber-400 transition-colors duration-300 text-slate-200">
-                    {member.name}
-                  </CardTitle>
-                  <CardDescription className="mt-1 font-bold text-base text-slate-300">
-                    {member.role}
-                  </CardDescription>
-                  <p className="mt-2 text-sm text-slate-400 font-semibold">
-                    {member.expertise}
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
+        <div className="mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {team.map((member) => (
+              <div key={member.name} className="fade-up">
+                <Card className="card-lift border-2 border-amber-500/30 hover:border-amber-400 text-center group bg-gradient-to-br from-slate-800/90 to-slate-700/90 shadow-2xl backdrop-blur-sm h-full flex flex-col">
+                  <CardContent className="pt-6 flex flex-col items-center flex-grow">
+                    <div className="h-20 w-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-amber-600 to-amber-500 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                      👤
+                    </div>
+                    <div className="flex-grow flex flex-col justify-center">
+                      <CardTitle className="text-lg group-hover:text-amber-400 transition-colors duration-300 text-slate-200 mb-2 min-h-[3rem] flex items-center justify-center">
+                        {member.name}
+                      </CardTitle>
+                      <CardDescription className="font-bold text-base text-slate-300 mb-2 min-h-[3rem] flex items-center justify-center">
+                        {member.role}
+                      </CardDescription>
+                      <p className="text-sm text-slate-400 font-semibold">
+                        {member.expertise}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

@@ -46,7 +46,7 @@ export default function RestrictedAccountsPage() {
       }
       return acc;
     }, [] as typeof accounts);
-    
+
     let result = [...uniqueAccounts];
 
     if (priceRange === "1-99")
@@ -87,7 +87,7 @@ export default function RestrictedAccountsPage() {
       </section>
 
       <section className="px-3 sm:px-4 py-10 lg:px-8 fade-up">
-        <div className="mx-auto max-w-7xl space-y-8">
+        <div className="mx-auto max-w-6xl space-y-8">
           <div className="flex flex-col sm:flex-row justify-end gap-4">
             <Select
               value={priceRange}
@@ -127,41 +127,43 @@ export default function RestrictedAccountsPage() {
               {filteredProducts.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-slate-800/90 rounded-xl border-2 border-amber-500/30 hover:border-amber-400/50 transition-all"
+                  className="bg-slate-800/90 rounded-xl border-2 border-amber-500/30 hover:border-amber-400/50 transition-all flex flex-col"
                 >
                   <img
                     src={item.images?.[0] || "/placeholder.jpg"}
-                    className="h-48 w-full object-cover"
+                    className="h-48 w-full object-cover rounded-t-xl"
                   />
 
-                  <div className="p-4">
+                  <div className="p-4 flex flex-col flex-grow">
                     <h3 className="text-lg font-black text-white mb-1">
                       {item.title}
                     </h3>
 
-                    <p className="text-slate-400 text-sm line-clamp-2">
+                    <p className="text-slate-400 text-sm line-clamp-2 mb-4">
                       {item.description}
                     </p>
 
-                    <p className="text-2xl font-black gradient-text text-center my-4">
-                      ${item.price}
-                    </p>
+                    <div className="mt-auto">
+                      <p className="text-2xl font-black gradient-text text-center my-4">
+                        ${item.price}
+                      </p>
 
-                    <div className="flex gap-2">
-                      <Link
-                        href={`/chat?productId=${item.productId || item.id}`}
-                        className="flex-1"
-                      >
-                        <Button size="sm" className="btn-game text-xs w-full">
-                          Chat
-                        </Button>
-                      </Link>
+                      <div className="flex gap-2">
+                        <Link
+                          href={`/chat?productId=${item.productId || item.id}`}
+                          className="flex-1"
+                        >
+                          <Button size="sm" className="btn-game text-xs w-full">
+                            Chat
+                          </Button>
+                        </Link>
 
-                      <Link href={`/accounts/${item.id}`} className="flex-1">
-                        <Button size="sm" className="btn-game text-xs w-full">
-                          Details
-                        </Button>
-                      </Link>
+                        <Link href={`/accounts/${item.id}`} className="flex-1">
+                          <Button size="sm" className="btn-game text-xs w-full">
+                            Details
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>

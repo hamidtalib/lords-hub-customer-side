@@ -59,7 +59,7 @@ export default function ReinBotsPage() {
         </div>
       </section>
 
-      <section className="px-3 sm:px-4 py-4 sm:py-6 lg:px-8 fade-up">
+      <section className="px-4 py-4 sm:py-6 sm:px-6 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl">
           <Alert className="border-2 border-green-500/50 bg-gradient-to-r from-green-500/20 to-green-400/10 shadow-lg rounded-xl">
             <AlertDescription className="text-slate-200 text-xs sm:text-sm lg:text-base font-bold">
@@ -70,8 +70,8 @@ export default function ReinBotsPage() {
         </div>
       </section>
 
-      <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8 fade-up">
-        <div className="mx-auto max-w-7xl">
+      <section className="px-4 py-8 sm:py-12 sm:px-6 lg:px-8 fade-up">
+        <div className="mx-auto max-w-6xl">
           {loading ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">
@@ -93,25 +93,25 @@ export default function ReinBotsPage() {
                 {bots.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-green-500/30 overflow-hidden hover:border-green-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 p-6 flex flex-col"
+                    className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-green-500/30 overflow-hidden hover:border-green-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20 p-6 flex flex-col h-full"
                   >
-                    <div className="flex-grow">
+                    <div className="flex-grow flex flex-col">
                       <div className="mb-4">
-                        <h3 className="text-xl font-black text-white mb-2">
+                        <h3 className="text-xl font-black text-white mb-2 min-h-[3.5rem] flex items-center">
                           {item.name}
                         </h3>
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-slate-400 min-h-[2.5rem]">
                           {item.description}
                         </p>
                       </div>
-                      <div className="mb-4">
+                      <div className="mb-4 flex-grow">
                         <p className="text-xs text-slate-500 font-semibold mb-2">
                           Features:
                         </p>
                         <ul className="text-xs text-slate-300 space-y-1">
                           {item.features?.map((feature, idx) => (
                             <li key={idx} className="flex items-start gap-2">
-                              <span className="text-green-400">•</span>
+                              <span className="text-green-400 flex-shrink-0">•</span>
                               <span>{feature}</span>
                             </li>
                           ))}
