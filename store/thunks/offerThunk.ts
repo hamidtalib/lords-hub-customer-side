@@ -40,8 +40,8 @@ export const loadOffers = createAsyncThunk(
             id: doc.id,
             title: data.title,
             description: data.description,
-            mediaUrl: data.imageUrl,
-            mediaType: data.mediaType,
+            mediaUrl: data.mediaUrl || data.imageUrl,
+            mediaType: data.mediaType || "image",
           });
         }
       });

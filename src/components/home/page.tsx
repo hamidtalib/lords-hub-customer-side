@@ -39,13 +39,19 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:justify-center fade-up px-4">
-            <Link href="/accounts" className="w-full sm:w-auto">
-              <Button size="lg" className="text-base sm:text-lg btn-sweep w-full sm:w-auto">
-                Browse Accounts <ChevronRight className="ml-2 sm:ml-3" />
+            <Link href="/chat" className="w-full sm:w-auto">
+              <Button
+                size="lg"
+                className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm"
+              >
+                Chat Us <ChevronRight className="ml-2 sm:ml-3" />
               </Button>
             </Link>
             <Link href="/about" className="w-full sm:w-auto">
-              <Button size="lg" className="font-bold btn-sweep w-full sm:w-auto text-base sm:text-lg">
+              <Button
+                size="lg"
+                className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm"
+              >
                 Learn More 🌟
               </Button>
             </Link>
@@ -84,7 +90,9 @@ export default function HomePage() {
                 className="w-full h-40 sm:h-48 lg:h-52 object-cover"
               />
               <div className="p-4 sm:p-6 text-center">
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-hover">{item.title}</h3>
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-hover">
+                  {item.title}
+                </h3>
               </div>
             </div>
           ))}
@@ -113,11 +121,15 @@ export default function HomePage() {
               className="bg-slate-800/80 border border-amber-500/30 rounded-2xl card-hover"
             >
               <CardContent className="p-4 sm:p-6 lg:p-8 text-center">
-                <p className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">{item.emoji}</p>
+                <p className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">
+                  {item.emoji}
+                </p>
                 <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 sm:mb-2 text-hover">
                   {item.title}
                 </h3>
-                <p className="text-slate-300 text-sm sm:text-base">{item.desc}</p>
+                <p className="text-slate-300 text-sm sm:text-base">
+                  {item.desc}
+                </p>
               </CardContent>
             </Card>
           ))}
@@ -145,7 +157,9 @@ export default function HomePage() {
                 {s.num}
                 {s.suffix}
               </h3>
-              <p className="text-slate-300 text-xs sm:text-base lg:text-lg px-2">{s.label}</p>
+              <p className="text-slate-300 text-xs sm:text-base lg:text-lg px-2">
+                {s.label}
+              </p>
             </div>
           ))}
         </div>
@@ -182,7 +196,9 @@ export default function HomePage() {
               <p className="text-4xl sm:text-5xl lg:text-6xl font-black text-amber-300 mb-3 sm:mb-4">
                 {item.step}
               </p>
-              <h3 className="text-xl sm:text-2xl mb-2 text-hover">{item.title}</h3>
+              <h3 className="text-xl sm:text-2xl mb-2 text-hover">
+                {item.title}
+              </h3>
               <p className="text-slate-300 text-sm sm:text-base">{item.desc}</p>
             </div>
           ))}
@@ -225,7 +241,9 @@ export default function HomePage() {
               <h3 className="text-lg sm:text-xl font-bold text-center text-hover">
                 {item.name}
               </h3>
-              <p className="text-slate-300 text-center text-sm sm:text-base">{item.comment}</p>
+              <p className="text-slate-300 text-center text-sm sm:text-base">
+                {item.comment}
+              </p>
             </div>
           ))}
         </div>
@@ -247,8 +265,11 @@ export default function HomePage() {
           Join the marketplace today!
         </p>
 
-        <Link href="/accounts" className="inline-block">
-          <Button size="lg" className="text-base sm:text-lg lg:text-xl px-6 sm:px-8 btn-sweep">
+        <Link href="/accounts/open" className="inline-block">
+          <Button
+            size="lg"
+            className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm"
+          >
             Start Shopping <ChevronRight className="ml-2 sm:ml-3" />
           </Button>
         </Link>

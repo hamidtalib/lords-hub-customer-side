@@ -44,7 +44,6 @@ export default function Header() {
   };
 
   const navLinks = [
-    { label: "Home", href: "/" },
     {
       label: "Accounts",
       dropdown: [
@@ -65,7 +64,6 @@ export default function Header() {
       ],
     },
     { label: "Reviews", href: "/reviews" },
-    { label: "About", href: "/about" },
   ];
 
   const isActive = (href?: string, dropdown?: any[]) => {
@@ -101,7 +99,7 @@ export default function Header() {
           </div>
 
           {/* CENTER — NAV LINKS */}
-          <div className="hidden md:flex items-center justify-center gap-1 lg:gap-2">
+          <div className="hidden lg:flex items-center justify-center gap-1 lg:gap-2">
             {navLinks.map((link, index) => (
               <div key={link.label + index} className="relative group">
                 {link.dropdown ? (
@@ -156,7 +154,7 @@ export default function Header() {
           </div>
 
           {/* RIGHT — TELEGRAM + CHAT */}
-          <div className="hidden md:flex justify-end items-center gap-2">
+          <div className="hidden lg:flex justify-end items-center gap-2">
             <a
               href={telegramUrl || "#"}
               target="_blank"
@@ -178,7 +176,7 @@ export default function Header() {
                 className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm"
               >
                 <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden md:inline">Chat</span>
+                <span className="hidden lg:inline">Chat</span>
               </Button>
             </Link>
           </div>
@@ -186,7 +184,7 @@ export default function Header() {
           {/* MOBILE MENU TOGGLE (absolute to avoid layout shift) */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden absolute right-2 p-1.5 sm:p-2 rounded-lg hover:bg-amber-100 transition-all duration-300 cursor-pointer"
+            className="lg:hidden absolute right-2 p-1.5 sm:p-2 rounded-lg hover:bg-amber-100 transition-all duration-300 cursor-pointer"
           >
             {isOpen ? (
               <X className="h-5 w-5 sm:h-6 sm:w-6 text-amber-400 font-bold" />
@@ -198,7 +196,7 @@ export default function Header() {
 
         {/* MOBILE MENU */}
         {isOpen && (
-          <div className="mt-4 space-y-3 md:hidden animate-in fade-in duration-300">
+          <div className="mt-4 space-y-3 lg:hidden animate-in fade-in duration-300">
             {navLinks.map((link, index) => (
               <div key={link.label + index}>
                 {link.dropdown ? (

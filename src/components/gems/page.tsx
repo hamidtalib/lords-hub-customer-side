@@ -9,6 +9,7 @@ import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 interface WishlistItem {
   id: string;
@@ -18,17 +19,6 @@ interface WishlistItem {
   tab: string;
 }
 
-const TAB_NAMES = [
-  "Speedups",
-  "War Material",
-  "Boosts",
-  "Resources",
-  "Chests",
-  "Building Materials",
-  "Familiar",
-  "Energy",
-];
-
 export default function GemsPage() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -36,15 +26,16 @@ export default function GemsPage() {
     (state: RootState) => state.gems
   );
 
-  const [activeTab, setActiveTab] = useState("Speedups");
+  const [activeTab, setActiveTab] = useState<string>("");
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  
   useEffect(() => {
     dispatch(loadGems());
   }, [dispatch]);
 
   useEffect(() => {
-    if (tabs.length > 0 && !tabs.includes(activeTab)) {
+    if (tabs.length > 0 && !activeTab) {
       setActiveTab(tabs[0]);
     }
   }, [tabs, activeTab]);
@@ -61,7 +52,10 @@ export default function GemsPage() {
     tab: string
   ) => {
     const quantity = quantities[itemId] || 0;
-    if (quantity <= 0) return;
+    if (quantity <= 0) {
+      toast.error("Please enter a quantity");
+      return;
+    }
 
     const existingIndex = wishlist.findIndex((item) => item.id === itemId);
 
@@ -70,12 +64,14 @@ export default function GemsPage() {
       const updated = [...wishlist];
       updated[existingIndex].quantity = quantity;
       setWishlist(updated);
+      toast.success(`Updated ${itemName} quantity to ${quantity}`);
     } else {
       // Add new item
       setWishlist([
         ...wishlist,
         { id: itemId, name: itemName, gemCost, quantity, tab },
       ]);
+      toast.success(`Added ${itemName} to wishlist`);
     }
 
     // Reset quantity input
@@ -83,7 +79,11 @@ export default function GemsPage() {
   };
 
   const handleRemoveFromWishlist = (itemId: string) => {
+    const item = wishlist.find((i) => i.id === itemId);
     setWishlist(wishlist.filter((item) => item.id !== itemId));
+    if (item) {
+      toast.info(`Removed ${item.name} from wishlist`);
+    }
   };
 
   const totalGems = wishlist.reduce(
@@ -92,7 +92,12 @@ export default function GemsPage() {
   );
 
   const handlePurchase = () => {
+    if (wishlist.length === 0) {
+      toast.error("Your wishlist is empty");
+      return;
+    }
     const wishlistData = encodeURIComponent(JSON.stringify(wishlist));
+    toast.success("Redirecting to chat...");
     router.push(`/chat?gems=true&wishlist=${wishlistData}&total=${totalGems}`);
   };
 
@@ -152,11 +157,15 @@ export default function GemsPage() {
           {/* Tabs Navigation */}
           <div className="overflow-x-auto">
             <div className="flex gap-2 min-w-max pb-2 justify-center">
-              {TAB_NAMES.map((tab) => (
+              {tabs.map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                  type="button"
+                  onClick={() => {
+                    console.log("Tab clicked:", tab);
+                    setActiveTab(tab);
+                  }}
+                  className={`px-4 py-2 rounded-lg font-bold text-sm transition-all cursor-pointer ${
                     activeTab === tab
                       ? "bg-amber-600 text-white shadow-lg shadow-amber-500/20"
                       : "bg-slate-700 text-slate-300 hover:bg-slate-600"
@@ -219,7 +228,7 @@ export default function GemsPage() {
                         )
                       }
                       disabled={!quantities[item.id] || quantities[item.id] <= 0}
-                      className="w-full btn-game text-xs"
+                      className="w-full btn-game text-xs cursor-pointer"
                       size="sm"
                     >
                       Add to Wishlist
@@ -280,7 +289,8 @@ export default function GemsPage() {
                       </p>
                       <button
                         onClick={() => handleRemoveFromWishlist(item.id)}
-                        className="text-red-400 hover:text-red-300 transition-colors p-2 hover:bg-red-900/20 rounded-lg"
+                        className="text-red-400 hover:text-red-300 transition-colors p-2 hover:bg-red-900/20 rounded-lg cursor-pointer"
+                        aria-label="Remove from wishlist"
                       >
                         <Trash2 className="h-5 w-5" />
                       </button>
@@ -301,7 +311,7 @@ export default function GemsPage() {
                 </div>
                 <Button
                   onClick={handlePurchase}
-                  className="w-full btn-game font-bold py-4 text-lg"
+                  className="w-full btn-game font-bold py-4 text-lg cursor-pointer"
                 >
                   <ShoppingCart className="h-5 w-5 mr-2" />
                   Purchase Now ({totalGems.toLocaleString()} Gems)

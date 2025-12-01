@@ -160,11 +160,14 @@ export default function SocialSidebar({
                 <div
                   className={`absolute ${
                     position === "left" ? "left-full ml-2" : "right-full mr-2"
-                  } top-1/2 -translate-y-1/2 bg-slate-800 text-white px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap shadow-lg transition-all duration-200 pointer-events-none ${
+                  } top-1/2 -translate-y-1/2 bg-slate-800 text-white px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap shadow-lg transition-all duration-200 pointer-events-none ${
                     hoveredIndex === index
                       ? "opacity-100 visible"
                       : "opacity-0 invisible"
                   }`}
+                  style={{
+                    minWidth: "fit-content",
+                  }}
                 >
                   {social.name}
                   <div

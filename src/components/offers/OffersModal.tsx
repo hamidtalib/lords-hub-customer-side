@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { hideOffersModal, checkIfSeenOffers } from "@/store/slices/offerSlice";
 import { loadOffers, Offer } from "@/store/thunks/offerThunk";
+import { toast } from "react-toastify";
 
 export default function OffersModal() {
   const dispatch = useAppDispatch();
@@ -30,6 +31,7 @@ export default function OffersModal() {
 
   const handleOfferClick = (productId: string) => {
     dispatch(hideOffersModal());
+    toast.success("Redirecting to chat...");
     router.push(`/chat?productId=${productId}`);
   };
 
@@ -57,7 +59,7 @@ export default function OffersModal() {
         {/* Close Button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-slate-700/80 hover:bg-slate-600 transition-colors"
+          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-slate-700/80 hover:bg-slate-600 transition-colors cursor-pointer"
           aria-label="Close"
         >
           <X className="h-5 w-5 text-white" />
@@ -81,24 +83,31 @@ export default function OffersModal() {
               className="bg-slate-700/50 rounded-lg overflow-hidden border border-amber-500/20 hover:border-amber-500/40 transition-all"
             >
               {/* Media Display */}
-              <div className="relative w-full h-64 bg-slate-800">
-                {offer.mediaType === "image" ? (
-                  <img
-                    src={offer.mediaUrl}
-                    alt={offer.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : offer.mediaType === "video" ? (
-                  <video
-                    controls
-                    className="w-full h-full object-contain"
-                    preload="metadata"
-                  >
-                    <source src={offer.mediaUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                ) : null}
-              </div>
+              {offer.mediaUrl && (
+                <div className="relative w-full h-64 bg-slate-800">
+                  {offer.mediaType === "video" ? (
+                    <video
+                      controls
+                      className="w-full h-full object-contain"
+                      preload="metadata"
+                      src={offer.mediaUrl}
+                    >
+                      <source src={offer.mediaUrl} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <img
+                      src={offer.mediaUrl}
+                      alt={offer.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        console.error("Image failed to load:", offer.mediaUrl);
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  )}
+                </div>
+              )}
 
               {/* Content */}
               <div className="p-5">
@@ -108,7 +117,7 @@ export default function OffersModal() {
                 <p className="text-slate-300 mb-4">{offer.description}</p>
                 <button
                   onClick={() => handleOfferClick(offer.productId || offer.id)}
-                  className="w-full sm:w-auto px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors"
+                  className="w-full sm:w-auto px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg transition-colors cursor-pointer"
                 >
                   Chat Us
                 </button>
