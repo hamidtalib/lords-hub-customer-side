@@ -52,31 +52,46 @@ export function useChat() {
 
     const productId = searchParams.get("productId");
     const gems = searchParams.get("gems");
+    const diamonds = searchParams.get("diamonds");
+    const accounts = searchParams.get("accounts");
     const wishlist = searchParams.get("wishlist");
     const total = searchParams.get("total");
     const inquiry = searchParams.get("inquiry");
     const formUrl = searchParams.get("formUrl");
+    const source = searchParams.get("source");
 
     // Only send welcome if there's a context parameter and we haven't sent it yet
-    if ((productId || gems || inquiry) && !welcomeSentRef.current) {
+    if ((productId || gems || diamonds || accounts || inquiry || source) && !welcomeSentRef.current) {
       welcomeSentRef.current = true;
       
       console.log("Sending admin welcome message with context:", {
         productId,
         gems,
+        diamonds,
+        accounts,
         wishlist: wishlist ? "present" : "none",
         total,
         inquiry,
         formUrl: formUrl ? "present" : "none",
+        source,
       });
       
       dispatch(sendAdminWelcomeMessage({
         productId: productId || undefined,
         gems: gems === "true",
+        diamonds: diamonds === "true",
+        accounts: accounts === "true",
         wishlist: wishlist || undefined,
         total: total || undefined,
         inquiry: inquiry || undefined,
         formUrl: formUrl || undefined,
+        source: source as any || undefined,
+      }));
+    } else if (!welcomeSentRef.current) {
+      // No specific context, send default welcome
+      welcomeSentRef.current = true;
+      dispatch(sendAdminWelcomeMessage({
+        source: "navbar",
       }));
     }
   }, [session, searchParams, dispatch]);

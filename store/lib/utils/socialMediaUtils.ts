@@ -30,4 +30,5 @@ export const SOCIAL_PLATFORMS = {
   WHATSAPP: "Whatsapp",
   TELEGRAM: "Telegram",
   EMAIL: "Email",
+  LINE: "Line",
 } as const;

@@ -123,7 +123,7 @@ export default function ReinBotsPage() {
                         ${item.price}
                         <span className="text-sm text-slate-400">/month</span>
                       </p>
-                      <Link href={`/chat?inquiry=bot-subscription&productId=${item.productId}&formUrl=${encodeURIComponent("https://docs.google.com/forms/d/e/1FAIpQLSfgSHUoSSFxxQ9HJKtUGhcocqAtf0a7VJy8gXgYHm20BFCjeQ/viewform?usp=dialog")}`}>
+                      <Link href={`/chat?source=rein-bots&productId=${item.productId}`}>
                         <Button size="sm" className="btn-game text-xs w-full">
                           Subscribe
                         </Button>

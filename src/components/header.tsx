@@ -170,7 +170,7 @@ export default function Header() {
               </Button>
             </a>
 
-            <Link href="/chat">
+            <Link href="/chat?source=navbar">
               <Button
                 size="sm"
                 className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm"
@@ -280,7 +280,7 @@ export default function Header() {
               </Button>
             </a>
 
-            <Link href="/chat" className="w-full">
+            <Link href="/chat?source=navbar" className="w-full">
               <Button
                 size="sm"
                 className="w-full gap-2 btn-game font-bold cursor-pointer justify-start"

@@ -8,6 +8,7 @@ import {
   Send,
   Mail,
   Instagram,
+  LineChart,
 } from "lucide-react";
 import { toast } from "react-toastify";
 import {
@@ -66,6 +67,11 @@ const defaultIcons: SocialLink[] = [
     icon: <Mail className="w-full h-full" />,
     color: "#EA4335",
   },
+  {
+    name: "Line",
+    icon: <LineChart className="w-full h-full" />,
+    color: "#8f11e9ff",
+  },
 ];
 
 export default function SocialSidebar({
@@ -95,6 +101,7 @@ export default function SocialSidebar({
       Discord: SOCIAL_PLATFORMS.DISCORD,
       WhatsApp: SOCIAL_PLATFORMS.WHATSAPP,
       Email: SOCIAL_PLATFORMS.EMAIL,
+      Line: SOCIAL_PLATFORMS.LINE,
     };
 
     const platform = platformMap[socialName];
@@ -181,6 +188,7 @@ export default function SocialSidebar({
           })}
         </div>
       </div>
+         
     </div>
   );
 }

@@ -104,7 +104,7 @@ export default function SellingAccountsPage() {
 
               {/* CTA Button */}
               <div className="text-center">
-                <Link href="/chat?inquiry=sell-account" className="block">
+                <Link href="/chat?source=accounts&inquiry=sell-account" className="block">
                   <Button className="w-full sm:w-auto bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 text-base sm:text-lg">
                     <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     <span className="hidden sm:inline">Chat with Us to Sell Your Account</span>

@@ -305,8 +305,29 @@
 
   /* Smooth transitions for all interactive elements */
   button,
-  a {
+  a,
+  img,
+  video {
     @apply transition-all duration-300 ease-out;
+  }
+
+  /* Enhanced page transitions */
+  section {
+    @apply transition-all duration-700 ease-out;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  p,
+  span {
+    @apply transition-all duration-200 ease-out;
   }
 
   /* Neon text effect - Royal Gold */
@@ -355,7 +376,11 @@
 }
 
 .Toastify__toast {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.95),
+    rgba(15, 23, 42, 0.95)
+  ) !important;
   border: 2px solid rgba(251, 191, 36, 0.3) !important;
   border-radius: 12px !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;

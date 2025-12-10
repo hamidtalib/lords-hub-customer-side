@@ -70,7 +70,7 @@ export default function DiamondsPage() {
               <p className="text-slate-400 mb-4">
                 Check back later for new diamond packages.
               </p>
-              <Link href="/chat">
+              <Link href="/chat?source=diamonds">
                 <Button className="btn-secondary font-bold cursor-pointer">
                   Contact Us
                 </Button>
@@ -94,7 +94,7 @@ export default function DiamondsPage() {
                     <p className="text-3xl font-black gradient-text mb-4">
                       ${item.price}
                     </p>
-                    <Link href={`/chat?productId=${item.productId}`}>
+                    <Link href={`/chat?source=diamonds&productId=${item.productId}`}>
                       <Button size="sm" className="btn-game text-xs w-full">
                         Order Now
                       </Button>

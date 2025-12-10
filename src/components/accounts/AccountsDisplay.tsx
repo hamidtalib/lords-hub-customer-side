@@ -42,7 +42,7 @@ export default function AccountsDisplay({
           </p>
           <div className="flex gap-2">
             <Link
-              href={`/chat?productId=${account.productId || account.id}`}
+              href={`/chat?source=accounts&productId=${account.productId || account.id}`}
               className="flex-1"
             >
               <Button size="sm" className="btn-game text-xs w-full">

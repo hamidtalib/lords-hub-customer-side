@@ -269,7 +269,7 @@ export default function FAQPage() {
           <p className="mb-8 text-slate-200 text-lg leading-relaxed">
             Our support team is available 24/7 to help you with any questions.
           </p>
-          <Link href="/chat">
+          <Link href="/chat?source=faq">
             <Button size="lg" className="btn-game font-semibold text-lg cursor-pointer">
               Contact Support
             </Button>

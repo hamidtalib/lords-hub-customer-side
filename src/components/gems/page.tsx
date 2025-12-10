@@ -98,7 +98,7 @@ export default function GemsPage() {
     }
     const wishlistData = encodeURIComponent(JSON.stringify(wishlist));
     toast.success("Redirecting to chat...");
-    router.push(`/chat?gems=true&wishlist=${wishlistData}&total=${totalGems}`);
+    router.push(`/chat?source=gems&gems=true&wishlist=${wishlistData}&total=${totalGems}`);
   };
 
   const currentItems = itemsByTab[activeTab] || [];

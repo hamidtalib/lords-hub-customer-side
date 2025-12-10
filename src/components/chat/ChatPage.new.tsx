@@ -217,6 +217,25 @@ export default function ChatPage() {
                         )}
                       </div>
                     )}
+                    {msg.buttons && msg.buttons.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {msg.buttons.map((button, idx) => (
+                          <a
+                            key={idx}
+                            href={button.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 ${
+                              button.type === "primary"
+                                ? "bg-green-600 hover:bg-green-700 text-white"
+                                : "bg-blue-600 hover:bg-blue-700 text-white"
+                            }`}
+                          >
+                            {button.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                     <p className="text-[10px] sm:text-xs opacity-70 mt-1">
                       {msg.timestamp.toLocaleTimeString()}
                       {msg.status === "sending" && (

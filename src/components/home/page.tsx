@@ -10,24 +10,39 @@ export default function HomePage() {
   return (
     <>
       <ScrollAnimation />
+      {/* HERO with VIDEO BACKGROUND */}
+      <section className="relative px-3 py-20 sm:px-4 sm:py-32 lg:px-8 lg:py-40 fade-up overflow-hidden">
+        {/* Blurred Background Video (Full Width) */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-40"
+        >
+          <source src="/202512040143 (1).mp4" type="video/mp4" />
+        </video>
 
-      {/* HERO with FIXED BACKGROUND */}
-      <section
-        className="px-3 py-20 sm:px-4 sm:py-32 lg:px-8 lg:py-40 bg-cover bg-center fade-up"
-        style={{
-          backgroundAttachment: "fixed",
-          backgroundImage:
-            "linear-gradient(180deg, rgba(4,6,15,0.85), rgba(4,6,15,0.9)), url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1600&q=80')",
-        }}
-      >
-        <div className="text-center max-w-6xl mx-auto">
-          <div className="mb-6 sm:mb-8 inline-flex items-center rounded-full border-2 border-amber-500/50 bg-amber-400/10 px-3 py-2 sm:px-6 sm:py-3 fade-up">
-            <Zap className="h-4 w-4 sm:h-6 sm:w-6 text-amber-300 mr-2 sm:mr-3" />
-            <span className="text-xs sm:text-sm font-bold text-amber-300 text-hover">
-              Premium Gaming Marketplace ⚡
-            </span>
-          </div>
+        {/* Center Video (Contained) */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-contain scale-[2]"
+        >
+          <source src="/202512040143 (1).mp4" type="video/mp4" />
+        </video>
 
+        {/* Glassy Side Overlays */}
+        <div className="absolute inset-y-0 left-0 w-[5%] bg-gradient-to-r from-slate-900/95 via-slate-900/60 to-transparent backdrop-blur-xl"></div>
+        <div className="absolute inset-y-0 right-0 w-[5%] bg-gradient-to-l from-slate-900/95 via-slate-900/60 to-transparent backdrop-blur-xl"></div>
+
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-slate-900/30 to-slate-900/50"></div>
+
+        {/* Content */}
+        <div className="relative z-10 text-center max-w-6xl mx-auto">
           <h1 className="mb-6 sm:mb-8 text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight leading-tight fade-up text-hover px-2">
             <span className="block mb-2 sm:mb-3">🎮 Lords Hub</span>
             Level Up Your Game 🚀
@@ -58,7 +73,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
       {/* POPULAR CATEGORIES */}
       <section className="px-3 sm:px-4 py-12 sm:py-20 lg:py-24 border-t border-blue-500/30 fade-up">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-center mb-6 sm:mb-10 text-hover px-2">
@@ -69,28 +83,28 @@ export default function HomePage() {
           {[
             {
               title: "🔥 High-End Accounts",
-              img: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800",
+              img: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&q=80",
             },
             {
               title: "💎 Gems & Boosts",
-              img: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800",
+              img: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800&q=80",
             },
             {
               title: "🤖 Bot Services",
-              img: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800",
+              img: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&q=80",
             },
           ].map((item, i) => (
             <div
               key={i}
-              className="rounded-xl overflow-hidden bg-slate-800/70 border border-amber-500/30 card-hover"
+              className="rounded-xl overflow-hidden bg-slate-800/70 border border-amber-500/30 card-hover transition-all duration-500"
             >
               <img
                 src={item.img}
                 alt={item.title}
-                className="w-full h-40 sm:h-48 lg:h-52 object-cover"
+                className="w-full h-40 sm:h-48 lg:h-52 object-cover transition-transform duration-500 hover:scale-110"
               />
               <div className="p-4 sm:p-6 text-center">
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-hover">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-hover transition-all duration-300">
                   {item.title}
                 </h3>
               </div>
@@ -98,44 +112,58 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
       {/* WHY CHOOSE US */}
-      <section className="px-3 sm:px-4 py-12 sm:py-20 lg:py-24 border-t border-blue-500/30 bg-slate-950 fade-up">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-center mb-8 sm:mb-12 text-hover px-2">
-          Why Gamers Love Us 💛
-        </h2>
+      <section className="relative px-3 sm:px-4 py-12 sm:py-20 lg:py-24 border-t border-blue-500/30 fade-up overflow-hidden">
+        {/* Gaming Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1600&q=80')",
+          }}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/95 via-slate-900/90 to-slate-950/95"></div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto fade-up">
-          {[
-            { emoji: "⚡", title: "Fast Delivery", desc: "Instant orders!" },
-            {
-              emoji: "🛡️",
-              title: "Secure Payments",
-              desc: "You're protected.",
-            },
-            { emoji: "💬", title: "24/7 Support", desc: "Real humans." },
-            { emoji: "🌟", title: "Top Rated", desc: "Trusted by thousands." },
-          ].map((item, i) => (
-            <Card
-              key={i}
-              className="bg-slate-800/80 border border-amber-500/30 rounded-2xl card-hover"
-            >
-              <CardContent className="p-4 sm:p-6 lg:p-8 text-center">
-                <p className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">
-                  {item.emoji}
-                </p>
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 sm:mb-2 text-hover">
-                  {item.title}
-                </h3>
-                <p className="text-slate-300 text-sm sm:text-base">
-                  {item.desc}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="relative z-10">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-center mb-8 sm:mb-12 text-hover px-2">
+            Why Gamers Love Us 💛
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 max-w-6xl mx-auto fade-up">
+            {[
+              { emoji: "⚡", title: "Fast Delivery", desc: "Instant orders!" },
+              {
+                emoji: "🛡",
+                title: "Secure Payments",
+                desc: "You're protected.",
+              },
+              { emoji: "💬", title: "24/7 Support", desc: "Real humans." },
+              {
+                emoji: "🌟",
+                title: "Top Rated",
+                desc: "Trusted by thousands.",
+              },
+            ].map((item, i) => (
+              <Card
+                key={i}
+                className="bg-slate-800/80 border border-amber-500/30 rounded-2xl card-hover transition-all duration-500 backdrop-blur-sm"
+              >
+                <CardContent className="p-4 sm:p-6 lg:p-8 text-center">
+                  <p className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4 transition-transform duration-300 hover:scale-125 inline-block">
+                    {item.emoji}
+                  </p>
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 sm:mb-2 text-hover transition-all duration-300">
+                    {item.title}
+                  </h3>
+                  <p className="text-slate-300 text-sm sm:text-base transition-all duration-300">
+                    {item.desc}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
-
       {/* STATS */}
       <section className="px-3 sm:px-4 py-12 sm:py-20 lg:py-24 border-t border-blue-500/30 fade-up">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-center mb-8 sm:mb-14 text-hover px-2">
@@ -164,47 +192,59 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
       {/* HOW IT WORKS */}
-      <section className="px-3 sm:px-4 py-12 sm:py-20 lg:py-24 border-t border-blue-500/30 bg-slate-950 fade-up">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-center mb-8 sm:mb-14 text-hover px-2">
-          How It Works ⚙️
-        </h2>
+      <section className="relative px-3 sm:px-4 py-12 sm:py-20 lg:py-24 border-t border-blue-500/30 fade-up overflow-hidden">
+        {/* Gaming Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-15"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=1600&q=80')",
+          }}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/95 via-slate-900/90 to-slate-950/95"></div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 max-w-5xl mx-auto fade-up">
-          {[
-            {
-              step: "1",
-              title: "Browse",
-              desc: "Pick the perfect account or service.",
-            },
-            {
-              step: "2",
-              title: "Secure Payment",
-              desc: "Encrypted, safe, no stress.",
-            },
-            {
-              step: "3",
-              title: "Delivered Fast",
-              desc: "Your items arrive instantly.",
-            },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="bg-slate-800/80 border border-amber-500/30 rounded-xl p-6 sm:p-8 lg:p-10 text-center card-hover"
-            >
-              <p className="text-4xl sm:text-5xl lg:text-6xl font-black text-amber-300 mb-3 sm:mb-4">
-                {item.step}
-              </p>
-              <h3 className="text-xl sm:text-2xl mb-2 text-hover">
-                {item.title}
-              </h3>
-              <p className="text-slate-300 text-sm sm:text-base">{item.desc}</p>
-            </div>
-          ))}
+        <div className="relative z-10">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-center mb-8 sm:mb-14 text-hover px-2">
+            How It Works ⚙
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 lg:gap-12 max-w-5xl mx-auto fade-up">
+            {[
+              {
+                icon: "🔍",
+                title: "Browse",
+                desc: "Pick the perfect account or service.",
+              },
+              {
+                icon: "🔒",
+                title: "Secure Payment",
+                desc: "Encrypted, safe, no stress.",
+              },
+              {
+                icon: "⚡",
+                title: "Delivered Fast",
+                desc: "Your items arrive instantly.",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="bg-slate-800/80 border border-amber-500/30 rounded-xl p-6 sm:p-8 lg:p-10 text-center card-hover transition-all duration-500 backdrop-blur-sm"
+              >
+                <p className="text-5xl sm:text-6xl lg:text-7xl mb-3 sm:mb-4 transition-transform duration-300 hover:scale-125 inline-block">
+                  {item.icon}
+                </p>
+                <h3 className="text-xl sm:text-2xl mb-2 text-hover font-bold transition-all duration-300">
+                  {item.title}
+                </h3>
+                <p className="text-slate-300 text-sm sm:text-base transition-all duration-300">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
-
       {/* TESTIMONIALS */}
       <section className="px-3 sm:px-4 py-12 sm:py-20 lg:py-24 border-t border-blue-500/30 bg-slate-900 fade-up">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-center mb-6 sm:mb-10 text-hover px-2">
@@ -248,32 +288,37 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+      {/* CTA with GAMING BACKGROUND */}
+      <section className="relative px-3 sm:px-4 py-16 sm:py-24 lg:py-32 border-t border-blue-500/30 text-center fade-up overflow-hidden">
+        {/* Gaming Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1600&q=80')",
+          }}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-slate-900/85 to-slate-900/90"></div>
 
-      {/* CTA with FIXED BACKGROUND */}
-      <section
-        className="px-3 sm:px-4 py-16 sm:py-24 lg:py-32 border-t border-blue-500/30 text-center bg-cover bg-center fade-up"
-        style={{
-          backgroundAttachment: "fixed",
-          backgroundImage:
-            "linear-gradient(180deg, rgba(2,6,23,0.9), rgba(2,6,23,0.95)), url('https://images.unsplash.com/photo-1516117172878-fd2c41f4a759?auto=format&fit=crop&w=1600&q=80')",
-        }}
-      >
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4 sm:mb-6 text-hover px-2">
-          Ready to Level Up? 🚀
-        </h2>
-        <p className="text-base sm:text-lg lg:text-xl text-slate-200 mb-6 sm:mb-10 text-hover px-4">
-          Join the marketplace today!
-        </p>
+        <div className="relative z-10">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4 sm:mb-6 text-hover px-2 transition-all duration-300">
+            Ready to Level Up? 🚀
+          </h2>
+          <p className="text-base sm:text-lg lg:text-xl text-slate-200 mb-6 sm:mb-10 text-hover px-4 transition-all duration-300">
+            Join the marketplace today!
+          </p>
 
-        <Link href="/accounts/open" className="inline-block">
-          <Button
-            size="lg"
-            className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm"
-          >
-            Start Shopping <ChevronRight className="ml-2 sm:ml-3" />
-          </Button>
-        </Link>
+          <Link href="/accounts/open" className="inline-block">
+            <Button
+              size="lg"
+              className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm transition-all duration-500"
+            >
+              Start Shopping <ChevronRight className="ml-2 sm:ml-3" />
+            </Button>
+          </Link>
+        </div>
       </section>
+          
     </>
   );
 }

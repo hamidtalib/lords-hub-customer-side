@@ -97,7 +97,7 @@ export default function OffersPage() {
                     </p>
 
                     {/* CTA Button */}
-                    <Link href={`/chat?productId=${offer.productId}`}>
+                    <Link href={`/chat?source=offers&productId=${offer.productId}`}>
                       <Button className="w-full btn-game text-sm">
                         View Offer
                       </Button>

@@ -216,7 +216,7 @@ export function GemCalculator() {
             <Button
               className="mt-4 w-full bg-amber-600"
               onClick={() =>
-                (window.location.href = `/chat?productId=gems&gems=${getTotalGems()}`)
+                (window.location.href = `/chat?source=gems&productId=gems&gems=${getTotalGems()}`)
               }
             >
               Purchase

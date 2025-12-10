@@ -56,7 +56,7 @@ export function AccountDetailsHeader({
 
       {/* Buy Button */}
       <Link
-        href={`/chat?productId=${accountId}&price=${price}`}
+        href={`/chat?source=accounts&productId=${accountId}&price=${price}`}
         className="block"
       >
         <Button className="w-full bg-gradient-to-r cursor-pointer from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white font-bold py-3 sm:py-4 text-base sm:text-lg">

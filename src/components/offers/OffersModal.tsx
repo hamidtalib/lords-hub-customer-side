@@ -32,7 +32,7 @@ export default function OffersModal() {
   const handleOfferClick = (productId: string) => {
     dispatch(hideOffersModal());
     toast.success("Redirecting to chat...");
-    router.push(`/chat?productId=${productId}`);
+    router.push(`/chat?source=offers&productId=${productId}`);
   };
 
   if (!showModal) {

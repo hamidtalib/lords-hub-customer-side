@@ -150,7 +150,7 @@ export default function RestrictedAccountsPage() {
 
                       <div className="flex gap-2">
                         <Link
-                          href={`/chat?productId=${item.productId || item.id}`}
+                          href={`/chat?source=accounts&productId=${item.productId || item.id}`}
                           className="flex-1"
                         >
                           <Button size="sm" className="btn-game text-xs w-full">

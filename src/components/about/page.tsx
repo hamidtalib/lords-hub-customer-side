@@ -211,7 +211,7 @@ export default function AboutPage() {
                 Browse Accounts
               </Button>
             </Link>
-            <Link href="/chat">
+            <Link href="/chat?source=about">
               <Button
                 size="lg"
                 variant="outline"
