@@ -85,9 +85,9 @@ export default function Footer() {
             <Image
               src={logo}
               alt="Lords Hub Logo"
-              width={60}
-              height={60}
-              className="mb-2 sm:w-[70px] sm:h-[70px]"
+              width={80}
+              height={80}
+              className="mb-2 sm:w-[90px] sm:h-[90px]"
             />
             <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed font-semibold max-w-xs">
               Your trusted marketplace for premium Lords Mobile accounts and
@@ -223,6 +223,7 @@ export default function Footer() {
                 { label: "FAQ", href: "/faq" },
                 { label: "Blog", href: "/blog" },
                 { label: "Reviews", href: "/reviews" },
+                { label: "Privacy Policy", href: "/privacy" },
               ].map((item) => (
                 <li key={item.label}>
                   <Link
@@ -272,8 +273,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 sm:mt-12 border-t border-amber-500/30 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-slate-400 font-semibold">
-          <p className="px-2">
+        <div className="mt-8 sm:mt-12 border-t border-amber-500/30 pt-4 sm:pt-6 text-center text-xs sm:text-sm text-slate-400 font-semibold">
+          <p className="px-1">
             &copy; 2025 Lords Hub. All rights reserved. | Premium Gaming
             Marketplace
           </p>
