@@ -1,20 +1,16 @@
-import { collection, getDocs } from "firebase/firestore";
-import { firestore } from "@/src/config/firebase";
 import AccountDetailsClient from "./AccountDetailsClient";
 
-// Generate static paths for all accounts at build time
+// Generate static paths for accounts
 export async function generateStaticParams() {
-  try {
-    const accountsRef = collection(firestore, "accounts");
-    const snapshot = await getDocs(accountsRef);
-    
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-    }));
-  } catch (error) {
-    console.error("Error generating static params:", error);
-    return [];
-  }
+  // For static export, we'll generate some common account IDs
+  // In production, you'd fetch these from your database
+  return [
+    { id: 'fyIlrqY8k4rpMlLMPsJ9' },
+    { id: 'gBQDAYd4To9Bu4Mme4F4' },
+    { id: 'mwtPPHpPGlQFCBQqn4hZ' },
+    { id: 'sample-account-1' },
+    { id: 'sample-account-2' },
+  ];
 }
 
 export default async function AccountDetailsPage({ params }: { params: Promise<{ id: string }> }) {

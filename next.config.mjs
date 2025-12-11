@@ -6,6 +6,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  turbopack: {
+    root: process.cwd(),
+  },
+  output: 'export',
+  trailingSlash: true,
 };
 
 export default nextConfig;

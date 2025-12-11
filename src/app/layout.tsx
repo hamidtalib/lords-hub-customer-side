@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { StoreProvider } from "@/store/providers/store-provider";
@@ -9,7 +8,7 @@ import { FloatingOffersButton } from "@/src/components/floating-offers-button";
 import SocialSidebar from "@/src/components/SocialSidebar";
 import OffersModal from "@/src/components/offers/OffersModal";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
+const fontClass = "font-sans";
 
 export const metadata: Metadata = {
   title: "Lords Hub - Premium Lords Mobile Accounts & Services",
@@ -42,7 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body className={`${geist.variable} font-sans antialiased`} suppressHydrationWarning>
+      <body className={`${fontClass} antialiased`} suppressHydrationWarning>
         <StoreProvider>
           {children}
           <SocialSidebar position="left" iconColor="#F6A600" />
