@@ -12,6 +12,7 @@ import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Button } from "@/src/components/ui/button";
 import { Calendar, User, ArrowLeft, Share2, BookOpen } from "lucide-react";
 import { toast } from "react-toastify";
+import { BlogArticleSkeleton } from "@/src/components/loaders";
 
 export default function BlogPostPage() {
   const params = useParams();
@@ -67,16 +68,11 @@ export default function BlogPostPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+      <>
         <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-amber-500 border-t-transparent mb-4"></div>
-            <p className="text-slate-400 text-lg">Loading article...</p>
-          </div>
-        </div>
+        <BlogArticleSkeleton />
         <Footer />
-      </main>
+      </>
     );
   }
 

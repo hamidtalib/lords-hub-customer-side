@@ -6,6 +6,7 @@ import { Button } from "@/src/components/ui/button";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Swords } from "lucide-react";
+import { BotCardSkeleton } from "@/src/components/loaders";
 import { AppDispatch, RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBotsByType } from "@/store/thunks/botsThunk";
@@ -71,12 +72,8 @@ export default function WarBotsPage() {
 
       <section className="px-4 py-8 sm:py-12 sm:px-6 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl">
-          {loading ? (
-            <div className="text-center py-12">
-              <p className="text-xl font-bold text-white mb-2">
-                Loading war bots...
-              </p>
-            </div>
+          {loading && bots.length === 0 ? (
+            <BotCardSkeleton count={6} />
           ) : bots.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">

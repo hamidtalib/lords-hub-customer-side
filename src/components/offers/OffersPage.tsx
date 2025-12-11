@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Tag } from "lucide-react";
+import { OfferCardSkeleton } from "@/src/components/loaders";
 import { loadOffers, Offer } from "@/store/thunks/offerThunk";
 import { useAppDispatch } from "@/store/store";
 
@@ -46,11 +47,7 @@ export default function OffersPage() {
       <section className="px-4 py-16 sm:px-6 lg:px-8 fade-up">
         <div className="mx-auto max-w-7xl">
           {loading ? (
-            <div className="text-center py-12">
-              <p className="text-xl font-bold text-white mb-2">
-                Loading offers...
-              </p>
-            </div>
+            <OfferCardSkeleton count={6} />
           ) : offers.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">

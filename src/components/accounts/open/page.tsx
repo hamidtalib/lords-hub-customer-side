@@ -10,6 +10,7 @@ import { Select } from "@/src/components/ui/select";
 import Link from "next/link";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Globe } from "lucide-react";
+import { AccountCardSkeleton } from "@/src/components/loaders";
 
 export default function OpenAccountsPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -112,11 +113,7 @@ export default function OpenAccountsPage() {
           </div>
 
           {loading && accounts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-xl font-bold text-white mb-2">
-                Loading accounts...
-              </p>
-            </div>
+            <AccountCardSkeleton count={6} />
           ) : filteredProducts.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">

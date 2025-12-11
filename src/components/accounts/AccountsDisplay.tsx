@@ -2,15 +2,18 @@ import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
 import { Shield, Globe } from "lucide-react";
 import { Account } from "@/store/thunks/accountsThunk";
+import { AccountCardSkeleton } from "@/src/components/loaders";
 
 interface AccountsDisplayProps {
   restrictedAccounts: Account[];
   openAccounts: Account[];
+  loading?: boolean;
 }
 
 export default function AccountsDisplay({
   restrictedAccounts,
   openAccounts,
+  loading = false,
 }: AccountsDisplayProps) {
   const renderAccountCard = (account: Account) => (
     <div
@@ -71,7 +74,9 @@ export default function AccountsDisplay({
           </h2>
         </div>
 
-        {restrictedAccounts.length === 0 ? (
+        {loading ? (
+          <AccountCardSkeleton count={6} />
+        ) : restrictedAccounts.length === 0 ? (
           <div className="text-center py-12 bg-slate-800/50 rounded-xl border-2 border-slate-700">
             <p className="text-xl font-bold text-white mb-2">
               No restricted accounts available
@@ -92,7 +97,9 @@ export default function AccountsDisplay({
           <h2 className="text-3xl font-black gradient-text">Open Accounts</h2>
         </div>
 
-        {openAccounts.length === 0 ? (
+        {loading ? (
+          <AccountCardSkeleton count={6} />
+        ) : openAccounts.length === 0 ? (
           <div className="text-center py-12 bg-slate-800/50 rounded-xl border-2 border-slate-700">
             <p className="text-xl font-bold text-white mb-2">
               No open accounts available

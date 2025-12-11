@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/src/components/ui/card";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
+import { BlogCardSkeleton } from "@/src/components/loaders";
 
 export default function BlogPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -75,10 +76,7 @@ console.log(posts)
           </div>
 
           {loading ? (
-            <div className="text-center py-20">
-              <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-amber-500 border-t-transparent mb-4"></div>
-              <p className="text-slate-400 text-lg">Loading Blogs...</p>
-            </div>
+            <BlogCardSkeleton count={6} />
           ) : posts.length === 0 ? (
             <div className="text-center py-20">
               <BookOpen className="h-16 w-16 text-slate-500 mx-auto mb-4" />

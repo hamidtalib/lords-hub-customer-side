@@ -107,14 +107,7 @@ export default function ReviewsPage() {
       {/* Reviews List Section */}
       <section className="px-3 sm:px-4 py-8 sm:py-12 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl">
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-amber-500 border-t-transparent"></div>
-              <p className="text-slate-400 mt-4">Loading reviews...</p>
-            </div>
-          ) : (
-            <ReviewsList reviews={reviews} />
-          )}
+          <ReviewsList reviews={reviews} loading={loading} />
         </div>
       </section>
 

@@ -3,20 +3,27 @@
 import { Loader2, CheckCircle2, CheckCheck } from "lucide-react";
 import { ChatMessage } from "@/store/thunks/chatThunk";
 import { getVisitorId } from "@/store/lib/utils/visitorId";
+import { MessageSkeleton } from "@/src/components/loaders";
 
 interface MessageListProps {
   messages: ChatMessage[];
   userId: string;
   onImageClick: (url: string) => void;
+  loading?: boolean;
 }
 
 export function MessageList({
   messages,
   userId,
   onImageClick,
+  loading = false,
 }: MessageListProps) {
   // Use visitor ID to identify user's messages
   const currentUserId = getVisitorId();
+
+  if (loading) {
+    return <MessageSkeleton count={5} />;
+  }
 
   if (messages.length === 0) {
     return (

@@ -42,8 +42,27 @@ export default function OffersModal() {
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-8 border-2 border-amber-500/30">
-          <p className="text-white text-lg">Loading offers...</p>
+        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-8 border-2 border-amber-500/30 max-w-4xl w-full max-h-[80vh] overflow-hidden">
+          <div className="space-y-6 animate-pulse">
+            {/* Header */}
+            <div className="h-8 bg-gradient-to-r from-slate-600/50 via-slate-500/50 to-slate-600/50 bg-[length:200%_100%] animate-shimmer rounded-lg w-64" />
+            
+            {/* Offers Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-slate-700/50 rounded-lg p-4 space-y-3"
+                  style={{ animationDelay: `${i * 100}ms` }}
+                >
+                  <div className="h-32 bg-gradient-to-r from-slate-600/50 via-slate-500/50 to-slate-600/50 bg-[length:200%_100%] animate-shimmer rounded-md" />
+                  <div className="h-5 bg-gradient-to-r from-slate-600/50 via-slate-500/50 to-slate-600/50 bg-[length:200%_100%] animate-shimmer rounded-md" />
+                  <div className="h-4 bg-gradient-to-r from-slate-700/50 via-slate-600/50 to-slate-700/50 bg-[length:200%_100%] animate-shimmer rounded-sm w-3/4" />
+                  <div className="h-8 bg-gradient-to-r from-amber-600/50 via-amber-500/50 to-amber-600/50 bg-[length:200%_100%] animate-shimmer rounded-md" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );

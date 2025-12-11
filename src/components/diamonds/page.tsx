@@ -7,6 +7,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { Button } from "@/src/components/ui/button";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { loadDiamonds } from "@/store/thunks/diamondThunk";
+import { DiamondCardSkeleton } from "@/src/components/loaders";
 
 export default function DiamondsPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -57,11 +58,7 @@ export default function DiamondsPage() {
           </div>
 
           {loading && diamonds.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-xl font-bold text-white mb-2">
-                Loading diamonds...
-              </p>
-            </div>
+            <DiamondCardSkeleton count={8} />
           ) : diamonds.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">

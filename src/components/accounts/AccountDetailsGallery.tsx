@@ -2,19 +2,34 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { GalleryImageSkeleton } from "@/src/components/loaders";
 
 interface AccountDetailsGalleryProps {
   mainImage: string;
   galleryImages: string[];
   accountName: string;
+  loading?: boolean;
 }
 
 export function AccountDetailsGallery({
   mainImage,
   galleryImages,
   accountName,
+  loading = false,
 }: AccountDetailsGalleryProps) {
   const [selectedImage, setSelectedImage] = useState(mainImage);
+
+  if (loading) {
+    return (
+      <div className="space-y-3 sm:space-y-4">
+        {/* Main Image Skeleton */}
+        <div className="relative w-full aspect-square bg-gradient-to-r from-slate-700/50 via-slate-600/50 to-slate-700/50 bg-[length:200%_100%] animate-shimmer rounded-xl border-2 border-amber-500/30" />
+        
+        {/* Thumbnail Gallery Skeleton */}
+        <GalleryImageSkeleton count={4} aspectRatio="square" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3 sm:space-y-4">

@@ -7,6 +7,7 @@ import { Card, CardHeader, CardContent } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { SocialButtons } from "./SocialButtons";
+import { ChatSkeleton } from "@/src/components/loaders";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 
@@ -97,11 +98,10 @@ export default function ChatPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
-          <p className="text-slate-200">Loading chat...</p>
-        </div>
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-4xl">
+        <Card className="flex flex-col h-[500px] sm:h-[600px] border-2 border-amber-500/30 bg-gradient-to-br from-slate-800/90 to-slate-700/90">
+          <ChatSkeleton />
+        </Card>
       </div>
     );
   }

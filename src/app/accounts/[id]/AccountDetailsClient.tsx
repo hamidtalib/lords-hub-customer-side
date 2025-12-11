@@ -11,6 +11,7 @@ import { AccountDetailsHeader } from "@/src/components/accounts/AccountDetailsHe
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { AccountDetailsSkeleton } from "@/src/components/loaders";
 
 export default function AccountDetailsClient({ id }: { id: string }) {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,17 +28,11 @@ export default function AccountDetailsClient({ id }: { id: string }) {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+      <>
         <Header />
-        <div className="flex items-center justify-center min-h-[60vh] px-4">
-          <div className="text-center">
-            <p className="text-xl font-bold text-white mb-2">
-              Loading account details...
-            </p>
-          </div>
-        </div>
+        <AccountDetailsSkeleton />
         <Footer />
-      </main>
+      </>
     );
   }
 

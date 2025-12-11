@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/src/components/ui/card";
 import { StarRating } from "./StarRating";
 import { User, Calendar } from "lucide-react";
+import { ReviewCardSkeleton } from "@/src/components/loaders";
 
 export interface Review {
   id: string;
@@ -14,9 +15,14 @@ export interface Review {
 
 interface ReviewsListProps {
   reviews: Review[];
+  loading?: boolean;
 }
 
-export function ReviewsList({ reviews }: ReviewsListProps) {
+export function ReviewsList({ reviews, loading = false }: ReviewsListProps) {
+  if (loading) {
+    return <ReviewCardSkeleton count={6} />;
+  }
+
   if (reviews.length === 0) {
     return (
       <Card className="relative border-2 border-slate-600 bg-gradient-to-br from-slate-800/50 to-slate-700/50 overflow-hidden">

@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { MarketplaceProduct } from "@/store/types/products";
+import { TableSkeleton } from "@/src/components/loaders";
 
 type ColumnRenderer<T> = (item: T) => ReactNode;
 
@@ -38,14 +39,7 @@ export function MarketplaceDataTable<T extends MarketplaceProduct>({
   illustrationUrl = defaultIllustration,
 }: MarketplaceTableProps<T>) {
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-amber-500/30 bg-slate-900/40 py-16 shadow-2xl">
-        <Loader2 className="h-10 w-10 animate-spin text-amber-400 mb-4" />
-        <p className="text-lg font-semibold text-slate-200">
-          Syncing live data...
-        </p>
-      </div>
-    );
+    return <TableSkeleton rows={8} columns={columns.length} />;
   }
 
   if (!data.length) {

@@ -10,6 +10,7 @@ import { Input } from "@/src/components/ui/input";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { CategoryCardSkeleton, FormSkeleton } from "@/src/components/loaders";
 
 interface WishlistItem {
   id: string;
@@ -179,10 +180,30 @@ export default function GemsPage() {
 
           {/* Items Grid */}
           {loading ? (
-            <div className="text-center py-12">
-              <p className="text-xl font-bold text-white mb-2">
-                Loading items...
-              </p>
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-amber-500/30 p-4 animate-pulse"
+                    style={{ animationDelay: `${i * 100}ms` }}
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="w-12 h-12 bg-gradient-to-r from-slate-600/50 via-slate-500/50 to-slate-600/50 bg-[length:200%_100%] animate-shimmer rounded-lg" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-5 bg-gradient-to-r from-slate-600/50 via-slate-500/50 to-slate-600/50 bg-[length:200%_100%] animate-shimmer rounded-md" />
+                          <div className="h-4 bg-gradient-to-r from-amber-600/30 via-amber-500/30 to-amber-600/30 bg-[length:200%_100%] animate-shimmer rounded-sm w-24" />
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-center gap-2 lg:flex-row lg:gap-3">
+                        <div className="w-24 h-10 bg-gradient-to-r from-slate-700/50 via-slate-600/50 to-slate-700/50 bg-[length:200%_100%] animate-shimmer rounded-lg" />
+                        <div className="w-16 h-8 bg-gradient-to-r from-amber-600/50 via-amber-500/50 to-amber-600/50 bg-[length:200%_100%] animate-shimmer rounded-md" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : currentItems.length === 0 ? (
             <div className="text-center py-12">

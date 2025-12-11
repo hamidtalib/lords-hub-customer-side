@@ -5,6 +5,12 @@ import { ChevronRight, Zap } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
+import { 
+  HeroSkeleton, 
+  CategoryCardSkeleton, 
+  StatsSkeleton, 
+  TestimonialSkeleton 
+} from "@/src/components/loaders";
 
 export default function HomePage() {
   return (

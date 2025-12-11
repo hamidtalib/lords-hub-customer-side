@@ -12,6 +12,7 @@ import { Button } from "@/src/components/ui/button";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
 import { Wheat } from "lucide-react";
+import { BotCardSkeleton } from "@/src/components/loaders";
 
 export default function FarmBots() {
   const dispatch = useDispatch<AppDispatch>();
@@ -75,11 +76,7 @@ export default function FarmBots() {
       <section className="px-4 py-8 sm:py-12 sm:px-6 lg:px-8 fade-up">
         <div className="mx-auto max-w-6xl">
           {loading && bots.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-xl font-bold text-white mb-2">
-                Loading farm bots...
-              </p>
-            </div>
+            <BotCardSkeleton count={6} />
           ) : bots.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-xl font-bold text-white mb-2">
