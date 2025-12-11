@@ -422,3 +422,151 @@
 .Toastify__close-button:hover {
   opacity: 1 !important;
 }
+
+/* Blog Content Styles */
+.blog-content {
+  @apply text-slate-200 leading-relaxed;
+}
+
+.blog-content h1 {
+  @apply text-4xl font-black text-white mb-8 mt-10 first:mt-0 pb-6 relative;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.blog-content h1:after {
+  content: "";
+  @apply absolute bottom-0 left-0 w-full h-0.5;
+  background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%);
+}
+
+.blog-content h2 {
+  @apply text-3xl font-bold text-white mb-6 mt-8 pb-3 border-b border-slate-600/50 relative;
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.blog-content h2:before {
+  content: "✨";
+  @apply absolute -left-8 top-0 text-2xl;
+}
+
+.blog-content h3 {
+  @apply text-2xl font-bold text-amber-400 mb-4 mt-6 flex items-center gap-3 p-4 bg-gradient-to-r from-amber-500/10 to-transparent rounded-lg border-l-4 border-amber-500;
+}
+
+.blog-content h3:before {
+  content: "🔸";
+  @apply text-amber-500 text-xl;
+}
+
+.blog-content h4 {
+  @apply text-xl font-semibold text-slate-200 mb-3 mt-5 pl-4 border-l-2 border-blue-400/50;
+}
+
+.blog-content p {
+  @apply mb-6 text-slate-200 leading-relaxed text-lg p-4 bg-slate-800/20 rounded-lg border border-slate-700/30 shadow-sm;
+}
+
+.blog-content strong {
+  @apply font-bold text-white bg-gradient-to-r from-amber-500/20 to-amber-600/20 px-2 py-1 rounded-md border border-amber-500/30;
+}
+
+.blog-content em {
+  @apply italic text-amber-300 font-medium bg-amber-500/5 px-1 rounded;
+}
+
+.blog-content ul {
+  @apply list-none mb-8 space-y-4 text-slate-200 bg-slate-800/30 p-6 rounded-xl border border-slate-600/30;
+}
+
+.blog-content ul li {
+  @apply relative pl-8 text-slate-200 p-3 bg-slate-700/20 rounded-lg border-l-2 border-amber-400/50 hover:border-amber-400 transition-all duration-300;
+}
+
+.blog-content ul li:before {
+  content: "🎮";
+  @apply absolute left-2 top-3 text-amber-400;
+}
+
+.blog-content ol {
+  @apply list-none mb-8 space-y-4 text-slate-200 bg-slate-800/30 p-6 rounded-xl border border-slate-600/30;
+}
+
+.blog-content ol li {
+  @apply relative pl-8 text-slate-200 p-3 bg-slate-700/20 rounded-lg border-l-2 border-blue-400/50 hover:border-blue-400 transition-all duration-300;
+  counter-increment: list-counter;
+}
+
+.blog-content ol {
+  counter-reset: list-counter;
+}
+
+.blog-content ol li:before {
+  content: counter(list-counter) ".";
+  @apply absolute left-2 top-3 text-blue-400 font-bold;
+}
+
+.blog-content li {
+  @apply text-slate-200 leading-relaxed;
+}
+
+.blog-content blockquote {
+  @apply border-l-4 border-amber-500 pl-8 py-6 mb-8 bg-gradient-to-r from-slate-800/90 to-slate-700/60 rounded-r-2xl text-slate-300 italic text-xl relative shadow-lg backdrop-blur-sm;
+}
+
+.blog-content blockquote:before {
+  content: "\201C";
+  @apply absolute -top-4 -left-4 text-8xl text-amber-500/30 font-bold;
+}
+
+.blog-content code {
+  @apply bg-gradient-to-r from-slate-800 to-slate-700 text-amber-400 px-4 py-2 rounded-lg text-base font-mono border border-amber-500/30 shadow-md;
+}
+
+.blog-content pre {
+  @apply bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 p-8 rounded-2xl mb-8 overflow-x-auto border-2 border-slate-600/50 shadow-2xl relative;
+}
+
+.blog-content pre:before {
+  content: "💻 Code";
+  @apply absolute top-3 right-4 text-xs text-amber-400 font-bold bg-slate-700/50 px-2 py-1 rounded;
+}
+
+.blog-content pre code {
+  @apply bg-transparent p-0 border-none text-slate-200;
+}
+
+.blog-content a {
+  @apply text-amber-400 hover:text-amber-300 underline decoration-amber-400/50 hover:decoration-amber-300 transition-all duration-300 font-medium bg-amber-500/5 hover:bg-amber-500/10 px-1 py-0.5 rounded;
+}
+
+.blog-content img {
+  @apply rounded-2xl shadow-2xl mb-10 max-w-full h-auto border-4 border-slate-600/30 hover:border-amber-500/60 transition-all duration-500 hover:scale-[1.02] mx-auto;
+}
+
+.blog-content table {
+  @apply w-full border-collapse border-2 border-slate-600 mb-8 rounded-xl overflow-hidden shadow-2xl bg-slate-800/50;
+}
+
+.blog-content th {
+  @apply border border-slate-600 bg-gradient-to-r from-amber-600/20 to-amber-500/20 px-6 py-4 text-left font-bold text-white border-b-2 border-amber-500/30;
+}
+
+.blog-content td {
+  @apply border border-slate-600 px-6 py-4 text-slate-200 bg-slate-800/20 hover:bg-slate-700/30 transition-colors duration-300;
+}
+
+/* Additional Gaming-themed Enhancements */
+.blog-content p:first-of-type {
+  @apply text-xl font-medium bg-gradient-to-r from-slate-800/60 to-slate-700/40 border-2 border-amber-500/30 shadow-lg;
+}
+
+.blog-content p:first-of-type:before {
+  content: "🎯";
+  @apply float-left mr-3 text-2xl;
+}

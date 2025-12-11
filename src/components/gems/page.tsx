@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import { loadGems } from "@/store/thunks/gemsThunk";
-import { ShoppingCart, Trash2 } from "lucide-react";
+import { ShoppingCart, Trash2, Gem, Plus } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
@@ -127,12 +127,12 @@ export default function GemsPage() {
 
       {/* Gems Rate Image Section */}
       <section className="px-4 py-8 sm:px-6 lg:px-8 bg-slate-900/50 fade-up">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-5xl">
           <div className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl p-6 border-2 border-amber-500/30">
             <img
               src="https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?auto=format&fit=crop&w=1200&q=80"
               alt="Gems Rate"
-              className="w-full h-auto rounded-lg"
+              className="w-full max-w-2xl mx-auto h-64 sm:h-80 rounded-lg object-cover"
             />
             <p className="text-sm text-slate-400 mt-3 text-center font-semibold">
               Current Gems Rate Chart
@@ -192,47 +192,63 @@ export default function GemsPage() {
               <p className="text-slate-400">Check other tabs for items.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
               {currentItems.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-amber-500/30 overflow-hidden hover:border-amber-400/50 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/20 p-6 text-center"
+                  className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl border-2 border-amber-500/30 hover:border-amber-400/50 transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/10 p-4"
                 >
-                  <div className="mb-4">
-                    <h3 className="text-lg font-black text-white mb-1">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm text-amber-400 font-bold">
-                      {item.gemCost.toLocaleString()} Gems
-                    </p>
-                  </div>
-
-                  <div className="pt-4 border-t border-slate-700 space-y-3">
-                    <Input
-                      type="number"
-                      min="0"
-                      placeholder="Quantity"
-                      value={quantities[item.id] || ""}
-                      onChange={(e) =>
-                        handleQuantityChange(item.id, e.target.value)
-                      }
-                      className="bg-slate-700/50 border-slate-600 text-white text-sm text-center"
-                    />
-                    <Button
-                      onClick={() =>
-                        handleAddToWishlist(
-                          item.id,
-                          item.name,
-                          item.gemCost,
-                          activeTab
-                        )
-                      }
-                      disabled={!quantities[item.id] || quantities[item.id] <= 0}
-                      className="w-full btn-game text-xs cursor-pointer"
-                      size="sm"
-                    >
-                      Add to Wishlist
-                    </Button>
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className="flex-shrink-0">
+                        {item.imageUrl ? (
+                          <img
+                            src={item.imageUrl}
+                            alt={item.name}
+                            className="h-12 w-12 rounded-lg object-cover border border-amber-500/30"
+                          />
+                        ) : (
+                          <Gem className="h-10 w-10 text-amber-400" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-black text-white mb-1">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-amber-400 font-bold">
+                          {item.gemCost.toLocaleString()} Gems
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col items-center gap-2 lg:flex-row lg:gap-3">
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="Quantity"
+                        value={quantities[item.id] || ""}
+                        onChange={(e) =>
+                          handleQuantityChange(item.id, e.target.value)
+                        }
+                        className="bg-slate-700/50 border-slate-600 text-white text-sm text-center w-24"
+                      />
+                      <Button
+                        onClick={() =>
+                          handleAddToWishlist(
+                            item.id,
+                            item.name,
+                            item.gemCost,
+                            activeTab
+                          )
+                        }
+                        disabled={!quantities[item.id] || quantities[item.id] <= 0}
+                        className="btn-game text-xs cursor-pointer px-3 py-2 w-full lg:w-auto"
+                        size="sm"
+                      >
+                        <Plus className="h-4 w-4 mr-1" />
+                        Add
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}

@@ -10,6 +10,7 @@ export interface GemItem {
   gemCost: number; // Computed from quantity for compatibility
   tabName: string; // The tab this item belongs to
   tab: string; // Computed from tabName for compatibility
+  imageUrl?: string; // Image URL for the item icon
   createdAt?: any;
   order?: number;
 }
@@ -36,6 +37,7 @@ export const loadGems = createAsyncThunk(
           gemCost: data.quantity || 0, // quantity is the gem cost
           tabName: data.tabName || "",
           tab: data.tabName || "", // Use tabName as tab
+          imageUrl: data.imageUrl || "", // Include image URL from database
           createdAt: data.createdAt,
           order: data.order,
         };

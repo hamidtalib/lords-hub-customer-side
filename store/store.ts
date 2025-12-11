@@ -10,6 +10,7 @@ import diamondsReducer from "./slices/diamondSlice";
 import accountsReducer from "./slices/accountsSlice";
 import gemsReducer from "./slices/gemsSlice";
 import reviewsReducer from "./slices/reviewSlice";
+import blogReducer from "./slices/blogSlice";
 
 // --- STORE ---
 export const store = configureStore({
@@ -22,6 +23,7 @@ export const store = configureStore({
     accounts: accountsReducer,
     gems: gemsReducer,
     reviews: reviewsReducer,
+    blog: blogReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -20,7 +20,7 @@ export default function HomePage() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-40"
         >
-          <source src="/202512040143 (1).mp4" type="video/mp4" />
+          <source src="/video.mp4" type="video/mp4" />
         </video>
 
         {/* Center Video (Contained) */}
@@ -31,7 +31,7 @@ export default function HomePage() {
           playsInline
           className="absolute inset-0 w-full h-full object-contain scale-[2]"
         >
-          <source src="/202512040143 (1).mp4" type="video/mp4" />
+          <source src="/video.mp4" type="video/mp4" />
         </video>
 
         {/* Glassy Side Overlays */}
