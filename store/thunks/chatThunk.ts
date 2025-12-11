@@ -15,7 +15,7 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { firestore, storage } from "../../src/config/firebase";
 import { getOrCreateVisitorId } from "@/store/lib/utils/visitorId";
-import { SOCIAL_LINKS } from "@/src/config/social";
+import { loadSocialMediaLinks } from "@/store/thunks/socialMediaThunk";
 
 export interface ChatSession {
   visitorId: string;
@@ -297,13 +297,31 @@ export const sendAdminWelcomeMessage = createAsyncThunk(
     inquiry?: string;
     formUrl?: string;
     source?: "farm-bots" | "war-bots" | "kvk-bots" | "rein-bots" | "gems" | "diamonds" | "accounts" | "navbar" | "floating-button" | "home" | "faq" | "about" | "offers";
-  }, { rejectWithValue }) => {
+  }, { rejectWithValue, dispatch, getState }) => {
     try {
       const visitorId = getOrCreateVisitorId();
       
+      // Prevent rapid duplicate calls
+      const callKey = `${visitorId}_${context.source || 'navbar'}_${Date.now()}`;
+      const lastCallKey = (global as any).lastWelcomeCall;
+      const now = Date.now();
+      
+      if (lastCallKey && now - parseInt(lastCallKey.split('_')[2]) < 1000) {
+        console.log("Preventing duplicate welcome call within 1 second");
+        return null;
+      }
+      
+      (global as any).lastWelcomeCall = callKey;
+      
       console.log("=== sendAdminWelcomeMessage called ===");
+      console.log("Timestamp:", new Date().toISOString());
       console.log("Context:", JSON.stringify(context, null, 2));
       console.log("Visitor ID:", visitorId);
+      
+      // Load social media links first
+      await dispatch(loadSocialMediaLinks());
+      const state = getState() as any;
+      const socialLinks = state.socialMedia.links;
       
       // Check if there are already messages
       const messagesRef = collection(
@@ -316,6 +334,53 @@ export const sendAdminWelcomeMessage = createAsyncThunk(
       
       console.log("Existing messages count:", messagesSnapshot.size);
       
+      // Check if there's already an admin welcome message and what type
+      let hasAdminWelcomeMessage = false;
+      let hasContextualMessage = false;
+      let existingContexts: string[] = [];
+      
+      messagesSnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.sender === "admin" && data.text) {
+          if (data.text.includes("Welcome to Lords Hub")) {
+            hasAdminWelcomeMessage = true;
+          }
+          // Check for specific contextual messages
+          if (data.text.includes("Farm Bot services")) {
+            existingContexts.push("farm-bots");
+            hasContextualMessage = true;
+          }
+          if (data.text.includes("interested in purchasing gems")) {
+            existingContexts.push("gems");
+            hasContextualMessage = true;
+          }
+          if (data.text.includes("interested in purchasing diamonds")) {
+            existingContexts.push("diamonds");
+            hasContextualMessage = true;
+          }
+          if (data.text.includes("Lords Mobile accounts")) {
+            existingContexts.push("accounts");
+            hasContextualMessage = true;
+          }
+          if (data.text.includes("War Bot services")) {
+            existingContexts.push("war-bots");
+            hasContextualMessage = true;
+          }
+          if (data.text.includes("KVK Bot services")) {
+            existingContexts.push("kvk-bots");
+            hasContextualMessage = true;
+          }
+          if (data.text.includes("REIN Bot services")) {
+            existingContexts.push("rein-bots");
+            hasContextualMessage = true;
+          }
+        }
+      });
+      
+      console.log("Has admin welcome message:", hasAdminWelcomeMessage);
+      console.log("Has contextual message:", hasContextualMessage);
+      console.log("Existing contexts:", existingContexts);
+      
       // Determine if we should send a welcome message
       let shouldSendWelcome = false;
       
@@ -323,10 +388,14 @@ export const sendAdminWelcomeMessage = createAsyncThunk(
         // Always send welcome if no messages exist
         shouldSendWelcome = true;
         console.log("No messages exist, will send welcome");
-      } else if (context.gems || context.diamonds || context.accounts || context.productId || context.inquiry || context.source) {
-        // If there's a specific context, always send the welcome message
+      } else if (!hasAdminWelcomeMessage && !hasContextualMessage) {
+        // Send welcome if no admin messages exist yet
         shouldSendWelcome = true;
-        console.log("Context provided, will send welcome message");
+        console.log("No admin messages exist, will send welcome");
+      } else if (context.source && context.source !== "navbar" && !existingContexts.includes(context.source)) {
+        // Only send contextual welcome if it's a new context we haven't seen before
+        shouldSendWelcome = true;
+        console.log(`New context '${context.source}' provided, will send contextual welcome message`);
       }
       
       if (shouldSendWelcome) {
@@ -335,10 +404,10 @@ export const sendAdminWelcomeMessage = createAsyncThunk(
         
         console.log("Preparing welcome message...");
         
-        // Standard social buttons for all messages
+        // Always add social buttons - the SocialButtons component will handle validation
         const socialButtons: ChatButton[] = [
-          { label: "WhatsApp", url: SOCIAL_LINKS.whatsapp, type: "primary" },
-          { label: "Telegram", url: SOCIAL_LINKS.telegram, type: "secondary" }
+          { label: "WhatsApp", url: "#", type: "primary" },
+          { label: "Telegram", url: "#", type: "secondary" }
         ];
         
         // Customize message based on context

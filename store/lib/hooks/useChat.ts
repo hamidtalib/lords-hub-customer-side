@@ -31,6 +31,17 @@ export function useChat() {
     dispatch(createOrGetChatSession());
   }, [dispatch]);
 
+  // Track the last visitor ID to prevent unnecessary resets
+  const lastVisitorIdRef = useRef<string | null>(null);
+  
+  // Reset welcome sent flag only when visitor ID actually changes
+  useEffect(() => {
+    if (session?.visitorId && session.visitorId !== lastVisitorIdRef.current) {
+      lastVisitorIdRef.current = session.visitorId;
+      welcomeSentRef.current = false;
+    }
+  }, [session?.visitorId]);
+
   // Set up real-time listener
   useEffect(() => {
     if (!session) return;
@@ -60,11 +71,13 @@ export function useChat() {
     const formUrl = searchParams.get("formUrl");
     const source = searchParams.get("source");
 
-    // Only send welcome if there's a context parameter and we haven't sent it yet
-    if ((productId || gems || diamonds || accounts || inquiry || source) && !welcomeSentRef.current) {
+    // Send welcome message logic - the thunk will handle duplicate prevention
+    if (!welcomeSentRef.current && session?.visitorId) {
       welcomeSentRef.current = true;
       
-      console.log("Sending admin welcome message with context:", {
+      console.log("=== useChat: Attempting to send welcome message ===");
+      console.log("Session ID:", session.visitorId);
+      console.log("Context:", {
         productId,
         gems,
         diamonds,
@@ -76,23 +89,20 @@ export function useChat() {
         source,
       });
       
-      dispatch(sendAdminWelcomeMessage({
-        productId: productId || undefined,
-        gems: gems === "true",
-        diamonds: diamonds === "true",
-        accounts: accounts === "true",
-        wishlist: wishlist || undefined,
-        total: total || undefined,
-        inquiry: inquiry || undefined,
-        formUrl: formUrl || undefined,
-        source: source as any || undefined,
-      }));
-    } else if (!welcomeSentRef.current) {
-      // No specific context, send default welcome
-      welcomeSentRef.current = true;
-      dispatch(sendAdminWelcomeMessage({
-        source: "navbar",
-      }));
+      // Small delay to prevent race conditions
+      setTimeout(() => {
+        dispatch(sendAdminWelcomeMessage({
+          productId: productId || undefined,
+          gems: gems === "true",
+          diamonds: diamonds === "true",
+          accounts: accounts === "true",
+          wishlist: wishlist || undefined,
+          total: total || undefined,
+          inquiry: inquiry || undefined,
+          formUrl: formUrl || undefined,
+          source: source as any || "navbar", // Default to navbar if no source
+        }));
+      }, 100);
     }
   }, [session, searchParams, dispatch]);
 
