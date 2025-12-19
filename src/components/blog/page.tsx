@@ -19,7 +19,6 @@ import { BlogCardSkeleton } from "@/src/components/loaders";
 export default function BlogPage() {
   const dispatch = useDispatch<AppDispatch>();
   const { posts, loading, error } = useSelector((state: RootState) => state.blog);
-console.log(posts)
   useEffect(() => {
     dispatch(loadBlogPosts(50));
   }, [dispatch]);
@@ -77,6 +76,20 @@ console.log(posts)
 
           {loading ? (
             <BlogCardSkeleton count={6} />
+          ) : error ? (
+            <div className="text-center py-20">
+              <BookOpen className="h-16 w-16 text-red-500 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-red-400 mb-2">Error Loading Articles</h3>
+              <p className="text-slate-500 mb-6">
+                {error}
+              </p>
+              <Button
+                onClick={() => dispatch(loadBlogPosts(50))}
+                className="btn-game font-bold cursor-pointer"
+              >
+                Try Again
+              </Button>
+            </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-20">
               <BookOpen className="h-16 w-16 text-slate-500 mx-auto mb-4" />
@@ -88,9 +101,8 @@ console.log(posts)
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {posts.map((post) => (
-                <Link href={`/blog/${post.id}`}>
+                <Link key={post.id} href={`/blog/${post.id}`}>
                 <Card
-                  key={post.id}
                   className="group bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-2 border-amber-500/30 hover:border-amber-400/60 overflow-hidden hover:shadow-xl hover:shadow-amber-500/20 transition-all duration-500 hover:scale-[1.02]"
                 >
                   <div className="relative h-48 overflow-hidden">

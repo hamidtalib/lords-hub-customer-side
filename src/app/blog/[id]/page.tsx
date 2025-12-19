@@ -2,15 +2,22 @@ import BlogPostClient from "./BlogPostClient";
 
 // Generate static paths for blog posts
 export async function generateStaticParams() {
-  // For static export, we'll generate some common blog post IDs
-  // In a real scenario, you'd fetch these from your CMS or database
-  return [
-    { id: 'getting-started-lords-mobile' },
-    { id: 'best-strategies-2024' },
-    { id: 'kingdom-vs-kingdom-guide' },
-    { id: 'hero-builds-guide' },
-    { id: 'resource-management-tips' },
-  ];
+  try {
+    // Import Firebase here to avoid build issues
+    const { firestore } = await import("@/src/config/firebase");
+    const { collection, getDocs } = await import("firebase/firestore");
+    
+    const snapshot = await getDocs(collection(firestore, "blogs"));
+    const paths = snapshot.docs.map((doc) => ({
+      id: doc.id,
+    }));
+    
+    return paths;
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    // Fallback to empty array for dynamic rendering
+    return [];
+  }
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ id: string }> }) {
