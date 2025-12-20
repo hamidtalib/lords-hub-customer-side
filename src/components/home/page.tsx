@@ -5,11 +5,11 @@ import { ChevronRight, Zap } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { ScrollAnimation } from "@/src/components/scroll-animation";
-import { 
-  HeroSkeleton, 
-  CategoryCardSkeleton, 
-  StatsSkeleton, 
-  TestimonialSkeleton 
+import {
+  HeroSkeleton,
+  CategoryCardSkeleton,
+  StatsSkeleton,
+  TestimonialSkeleton,
 } from "@/src/components/loaders";
 
 export default function HomePage() {
@@ -17,38 +17,19 @@ export default function HomePage() {
     <>
       <ScrollAnimation />
       {/* HERO with VIDEO BACKGROUND */}
-      <section className="relative px-3 py-20 sm:px-4 sm:py-32 lg:px-8 lg:py-40 fade-up overflow-hidden">
-        {/* Blurred Background Video (Full Width) */}
+      <section className="relative px-3 py-10 sm:px-4 sm:py-20 lg:px-8 lg:py-24 min-h-[75vh] overflow-hidden flex items-end">
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-40"
+          className="absolute inset-0 w-full h-full object-cover"
         >
           <source src="/video.mp4" type="video/mp4" />
         </video>
-
-        {/* Center Video (Contained) */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-contain scale-[2]"
-        >
-          <source src="/video.mp4" type="video/mp4" />
-        </video>
-
-        {/* Glassy Side Overlays */}
-        <div className="absolute inset-y-0 left-0 w-[5%] bg-gradient-to-r from-slate-900/95 via-slate-900/60 to-transparent backdrop-blur-xl"></div>
-        <div className="absolute inset-y-0 right-0 w-[5%] bg-gradient-to-l from-slate-900/95 via-slate-900/60 to-transparent backdrop-blur-xl"></div>
-
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/40 via-slate-900/30 to-slate-900/50"></div>
 
         {/* Content */}
-        <div className="relative z-10 text-center max-w-6xl mx-auto">
+        <div className="relative z-10 text-center max-w-6xl mx-auto pb-10 w-full">
           <h1 className="mb-6 sm:mb-8 text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight leading-tight fade-up text-hover px-2">
             <span className="block mb-2 sm:mb-3">🎮 Lords Hub</span>
             Level Up Your Game 🚀
@@ -63,7 +44,7 @@ export default function HomePage() {
             <Link href="/chat" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm"
+                className="gap-2 font-bold cursor-pointer text-xs sm:text-sm bg-blue-500 hover:bg-blue-700 text-white"
               >
                 Chat Us <ChevronRight className="ml-2 sm:ml-3" />
               </Button>
@@ -71,9 +52,9 @@ export default function HomePage() {
             <Link href="/about" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="gap-2 btn-game font-bold cursor-pointer text-xs sm:text-sm"
+                className="gap-2 font-bold cursor-pointer text-xs sm:text-sm bg-blue-500 hover:bg-blue-700 text-white"
               >
-                Learn More 🌟
+                Learn More <Zap className="ml-2 sm:ml-3" />
               </Button>
             </Link>
           </div>
