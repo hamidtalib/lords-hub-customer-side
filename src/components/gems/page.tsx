@@ -153,11 +153,9 @@ export default function GemsPage() {
           {/* Section Header */}
           <div className="text-center">
             <p className="uppercase text-xs tracking-[0.4em] text-amber-300 font-semibold">
-              Item Categories
+              Create Your
             </p>
-            <h2 className="text-4xl font-black gradient-text mb-2">
-              Select Items
-            </h2>
+            <h2 className="text-4xl font-black gradient-text mb-2">Wishlist</h2>
           </div>
 
           {/* Tabs Navigation */}
@@ -292,7 +290,7 @@ export default function GemsPage() {
           {/* Section Header */}
           <div className="text-center">
             <p className="uppercase text-xs tracking-[0.4em] text-amber-300 font-semibold">
-              Your Selection
+              Your Selected
             </p>
             <h2 className="text-4xl font-black gradient-text mb-2">Wishlist</h2>
           </div>
