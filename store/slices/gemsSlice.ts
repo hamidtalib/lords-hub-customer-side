@@ -27,12 +27,27 @@ export const gemsSlice = createSlice({
 
           const items = action.payload;
 
-          const tabs = Array.from(new Set(items.map((i) => i.tab)));
-          state.tabs = tabs;
+          const desiredTabOrder = [
+            "Speed Ups",
+            "War Materials", 
+            "Boost",
+            "Chests",
+            "Familiar",
+            "Buildings Material",
+            "Energy", 
+            "Resources"
+          ];
+
+          const uniqueTabs = Array.from(new Set(items.map((i) => i.tab)));
+          
+          const sortedTabs = desiredTabOrder.filter(tab => uniqueTabs.includes(tab))
+            .concat(uniqueTabs.filter(tab => !desiredTabOrder.includes(tab)));
+          
+          state.tabs = sortedTabs;
 
           const itemsByTab: Record<string, GemItem[]> = {};
 
-          tabs.forEach((tab) => {
+          sortedTabs.forEach((tab) => {
             itemsByTab[tab] = items
               .filter((i) => i.tab === tab)
               .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));

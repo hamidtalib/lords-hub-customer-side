@@ -18,6 +18,7 @@ interface WishlistItem {
   gemCost: number;
   quantity: number;
   tab: string;
+  imageUrl?: string;
 }
 
 export default function GemsPage() {
@@ -30,7 +31,9 @@ export default function GemsPage() {
   const [activeTab, setActiveTab] = useState<string>("");
   const [wishlist, setWishlist] = useState<WishlistItem[]>([]);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
-  
+  const gemImageUrl = require("@/public/images/gems.png").default.src;
+  const bgImgUrl = require("@/public/images/gems_bg.jpeg").default.src;
+
   useEffect(() => {
     dispatch(loadGems());
   }, [dispatch]);
@@ -50,7 +53,8 @@ export default function GemsPage() {
     itemId: string,
     itemName: string,
     gemCost: number,
-    tab: string
+    tab: string,
+    imageUrl?: string
   ) => {
     const quantity = quantities[itemId] || 0;
     if (quantity <= 0) {
@@ -70,7 +74,7 @@ export default function GemsPage() {
       // Add new item
       setWishlist([
         ...wishlist,
-        { id: itemId, name: itemName, gemCost, quantity, tab },
+        { id: itemId, name: itemName, gemCost, quantity, tab, imageUrl },
       ]);
       toast.success(`Added ${itemName} to wishlist`);
     }
@@ -99,7 +103,9 @@ export default function GemsPage() {
     }
     const wishlistData = encodeURIComponent(JSON.stringify(wishlist));
     toast.success("Redirecting to chat...");
-    router.push(`/chat?source=gems&gems=true&wishlist=${wishlistData}&total=${totalGems}`);
+    router.push(
+      `/chat?source=gems&gems=true&wishlist=${wishlistData}&total=${totalGems}`
+    );
   };
 
   const currentItems = itemsByTab[activeTab] || [];
@@ -112,8 +118,7 @@ export default function GemsPage() {
       <section
         className="border-b-4 border-amber-500/30 px-4 py-24 sm:px-6 lg:px-8 bg-cover bg-center fade-up"
         style={{
-          backgroundImage:
-            "linear-gradient(180deg, rgba(9,11,25,0.9), rgba(7,10,21,0.97)), url('https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?auto=format&fit=crop&w=1600&q=80')",
+          backgroundImage: `url(${bgImgUrl})`,
         }}
       >
         <div className="mx-auto max-w-6xl">
@@ -241,7 +246,7 @@ export default function GemsPage() {
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex flex-col items-center gap-2 lg:flex-row lg:gap-3">
                       <Input
                         type="number"
@@ -259,10 +264,13 @@ export default function GemsPage() {
                             item.id,
                             item.name,
                             item.gemCost,
-                            activeTab
+                            activeTab,
+                            item.imageUrl
                           )
                         }
-                        disabled={!quantities[item.id] || quantities[item.id] <= 0}
+                        disabled={
+                          !quantities[item.id] || quantities[item.id] <= 0
+                        }
                         className="btn-game text-xs cursor-pointer px-3 py-2 w-full lg:w-auto"
                         size="sm"
                       >
@@ -286,9 +294,7 @@ export default function GemsPage() {
             <p className="uppercase text-xs tracking-[0.4em] text-amber-300 font-semibold">
               Your Selection
             </p>
-            <h2 className="text-4xl font-black gradient-text mb-2">
-              Wishlist
-            </h2>
+            <h2 className="text-4xl font-black gradient-text mb-2">Wishlist</h2>
           </div>
 
           {wishlist.length === 0 ? (
@@ -309,20 +315,39 @@ export default function GemsPage() {
                     key={item.id}
                     className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-2 border-amber-500/20 hover:border-amber-500/40 transition-all"
                   >
-                    <div className="flex-1">
-                      <h3 className="text-lg font-black text-white mb-1">
-                        {item.name}
-                      </h3>
-                      <p className="text-sm text-slate-400">
-                        <span className="text-amber-400 font-semibold">
-                          {item.tab}
-                        </span>{" "}
-                        • {item.gemCost.toLocaleString()} gems × {item.quantity}
-                      </p>
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className="flex-shrink-0">
+                        {item.imageUrl ? (
+                          <img
+                            src={item.imageUrl}
+                            alt={item.name}
+                            className="h-12 w-12 rounded-lg object-cover border border-amber-500/30"
+                          />
+                        ) : (
+                          <Gem className="h-10 w-10 text-amber-400" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-black text-white mb-1">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-slate-400">
+                          <span className="text-amber-400 font-semibold">
+                            {item.tab}
+                          </span>{" "}
+                          • {item.gemCost.toLocaleString()} gems ×{" "}
+                          {item.quantity}
+                        </p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <p className="text-2xl font-black gradient-text">
-                        💎 {(item.gemCost * item.quantity).toLocaleString()}
+                        <img
+                          src={gemImageUrl}
+                          alt="Gem"
+                          className="h-11 w-11 inline mr-1 rounded object-cover"
+                        />
+                        {(item.gemCost * item.quantity).toLocaleString()}
                       </p>
                       <button
                         onClick={() => handleRemoveFromWishlist(item.id)}
@@ -343,7 +368,12 @@ export default function GemsPage() {
                     Total Gems:
                   </span>
                   <span className="text-4xl font-black gradient-text">
-                    💎 {totalGems.toLocaleString()}
+                    <img
+                      src={gemImageUrl}
+                      alt="Gem"
+                      className="h-11 w-11 inline mr-1 rounded object-cover"
+                    />
+                    {totalGems.toLocaleString()}
                   </span>
                 </div>
                 <Button
