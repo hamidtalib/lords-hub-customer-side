@@ -50,7 +50,7 @@ export const gemsSlice = createSlice({
           sortedTabs.forEach((tab) => {
             itemsByTab[tab] = items
               .filter((i) => i.tab === tab)
-              .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+              .sort((a, b) => a.gemCost - b.gemCost); // Sort by gem cost ascending (small to big)
           });
 
           state.itemsByTab = itemsByTab;
